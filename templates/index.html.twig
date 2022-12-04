@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    <!-- Main Menu -->
+    {% include 'parts/mainmenu.html.twig' %}
+
+    <!-- Content -->
+    <section id="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+
+                    <!-- Sidebar -->
+                    {% include 'parts/sidebar.html.twig' %}
+
+
+                </div>
+                <div class="col-lg-10 col-md-12">
+
+                    <!-- Main Content -->
+                    <section>
+                        <header>
+                            <h2>{{ msg }}</h2>
+                            <h3>Space-Tactics ist ein Weltraum-Strategiespiel mit hunderten Spielern die erdumgreifend
+                                gleichzeitig versuchen der/die Beste zu werden. Alles was ihr zum spielen braucht ist
+                                euer Browser.</h3>
+                        </header>
+                        <p>
+                            [100+ Spieler, eigene Scripte, DE/EN] Nachdem die Menschheit die Erde vor Ewigkeiten
+                            verlassen und sich auf unterschiedlichsten Planeten niedergelassen hat war lange Zeit Stille
+                            und von kleinen Streitigkeiten abgesehen herrschte auch lange Zeit Frieden. Bis das
+                            passierte, was immer passierte. Dem einen gingen die Rohstoffe aus, dem anderen der Platz.
+                            Mehr und mehr Planeten steckten Ihre Ressourcen in die Rüstung und begannen Flotten zu bauen
+                            für kleine Scharmützel. Bald jedoch waren es riesige Flotten die unterwegs waren um sich mit
+                            Gewalt zu holen was ihnen nicht zustand. Die einen...
+                        </p>
+                    </section>
+
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-7 col-md-12">
+                                {{ form_start(form) }}
+                                <form>
+                                    <div class="row mb-3">
+                                        {{ form_label(form.email) }}
+                                        <div class="col-6">
+                                            {{ form_widget(form.email) }}
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        {{ form_label(form.password) }}
+                                        <div class="col-6">
+                                            {{ form_widget(form.password) }}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="offset-1">
+                                            {{ form_widget(form.submit) }}
+                                        </div>
+                                    </div>
+                                </form>
+                                {{ form_end(form) }}
+                            </div>
+
+                            <div class="col-lg-5 col-md-12">
+                                Noch keinen Account ? Melde dich noch heute <strong>kostenlos</strong> an
+                                und fange noch heute an, dein Imperium aufzubauen, epische Schlachten zu schlagen oder
+                                große Bündnisse zu schließen.<br />
+                                <span><a href="{{ path('register') }}" class="btn btn-outline-secondary">Registrieren</a></span>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    {% include 'parts/footer.html.twig' %}
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% block footer %}
+<section id="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-8 col-12-medium">
+
+                <!-- Links -->
+                <section>
+                    <h2>Links</h2>
+                    <div>
+                        <div class="row">
+                            <div class="col-4 col-12-small">
+                                <ul class="link-list last-child">
+                                    <li><a href="/">Startseite</a></li>
+                                    <li><a href="https://github.com/ShaoKhan/space-tactics-php8" target="_blank">Space-Tactics auf GIT</a></li>
+                                    <li><a href="https://github.com/jkroepke/2Moons" target="_blank">2moons auf GIT</a></li>
+                                    <li><a href="https://space-tactics.youtrack.cloud/dashboard?id=dfa35d29-ceb3-449e-a771-93eebb1aa3e3">Support / Tickets</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-4 col-12-small">
+                                <ul class="link-list last-child">
+                                    <li><a href="#">Kontakt</a></li>
+                                    <li><a href="#">Datenschutz</a></li>
+                                    <li><a href="#">Impressum</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-4 col-12-small">
+                                <ul class="link-list last-child">
+                                    <li><a href="#">Vote I</a></li>
+                                    <li><a href="#">Vote II</a></li>
+                                    <li><a href="#">Vote III</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+            <div class="col-4 col-12-medium imp-medium">
+
+                <!-- Blurb -->
+                <section>
+                    <h2>Info</h2>
+                    <p>
+                        Wenn du interesse hast, am Spiel mitzuentwickeln oder du kennst dich aus mit UI/UX, melde dich gerne bei uns.
+                    </p>
+                </section>
+
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Copyright -->
+<div id="copyright">
+    &copy; Space-Tactics 2020 - {{ 'now' | date('Y') }}
+</div>
+{% endblock %}
