@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,17 +94,19 @@ class IndexController extends AbstractController
     public function registerIndex()
     {
         $form = $this->createFormBuilder()
+                     ->setAction($this->generateUrl('user_register'))
                      ->add('username', TextType::class, [
-                         'label'      => 'Benutzername',
-                         'label_attr' => [
+                         'label'           => 'Benutzername',
+                         'label_attr'      => [
                              'class' => 'col-1 col-form-label',
                              'for'   => 'username',
                          ],
-                         'attr'       => [
+                         'attr'            => [
                              'class'       => 'form-control',
                              'id'          => 'username',
                              'placeholder' => 'Benutzername',
                          ],
+                         'required'        => TRUE,
                      ])
                      ->add('email', TextType::class, [
                          'label'      => 'E-Mail',
@@ -115,8 +119,9 @@ class IndexController extends AbstractController
                              'id'          => 'email',
                              'placeholder' => 'E-Mail',
                          ],
+                         'required'   => TRUE,
                      ])
-                     ->add('password', TextType::class, [
+                     ->add('password', PasswordType::class, [
                          'label'      => 'Passwort',
                          'label_attr' => [
                              'class' => 'col-1 col-form-label',
@@ -127,8 +132,12 @@ class IndexController extends AbstractController
                              'id'          => 'password',
                              'placeholder' => 'Passwort',
                          ],
+                         'required'   => TRUE,
                      ])
-                     ->add('universe', TextType::class, [
+                     ->add('universe', ChoiceType::class, [
+                         'choices'    => [
+                             'Universum 1' => 'uni1',
+                         ],
                          'label'      => 'Universum',
                          'label_attr' => [
                              'class' => 'col-1 col-form-label',
@@ -138,23 +147,30 @@ class IndexController extends AbstractController
                              'class'       => 'form-control',
                              'id'          => 'universe',
                              'placeholder' => 'Universum',
-                             'disabled'    => 'disabled',
-                             'value'       => "Universum 1",
                          ],
+                         'required'   => TRUE,
                      ])
-                     ->add('language', TextType::class, [
+                     ->add('language', ChoiceType::class, [
+                         'choices'    => [
+                             'Deutsch'  => 'de-DE',
+                             'English'  => 'en-GB',
+                             'Polski'   => 'pl_PL',
+                             'Italiano' => 'it-IT',
+                             'Français' => 'fr-FR',
+                             'Türkçe'   => 'tr-TR',
+                             'Русский'  => 'ru-RU',
+                         ],
                          'label'      => 'Sprache',
                          'label_attr' => [
                              'class' => 'col-1 col-form-label',
-                             'for'   => 'language',
+                             'for'   => 'sprache',
                          ],
                          'attr'       => [
                              'class'       => 'form-control',
-                             'id'          => 'language',
+                             'id'          => 'sprache',
                              'placeholder' => 'Sprache',
-                             'disabled'    => 'disabled',
-                             'value'       => "Deutsch",
                          ],
+                         'required'   => TRUE,
                      ])
                      ->add('submit', SubmitType::class, [
                          'label' => 'Anmelden',
