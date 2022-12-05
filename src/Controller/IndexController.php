@@ -8,7 +8,6 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Twig\Environment;
 
 class IndexController extends AbstractController
 {
@@ -20,43 +19,42 @@ class IndexController extends AbstractController
         $msg = $trans->trans('index.welcome');
         
         $form = $this->createFormBuilder()
-            ->add('email', TextType::class,[
-                'label' => 'E-Mail',
-                'label_attr' => [
-                    'class' => 'col-1 col-form-label',
-                    'for' => 'email'
-                ],
-                'attr' => [
-                    'class' => 'form-control',
-                    'id' => 'email',
-                    'placeholder' => 'E-Mail'
-                ]
-            ] )
-            ->add('password', TextType::class,[
-                'label' => 'Passwort',
-                'label_attr' => [
-                    'class' => 'col-1 col-form-label',
-                    'for' => 'password'
-                ],
-                'attr' => [
-                    'class' => 'form-control',
-                    'id' => 'password',
-                    'placeholder' => 'Passwort'
-                ]
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Anmelden',
-                'attr' => [
-                    'class' => 'btn btn-primary'
-                ]
-            ])
-            ->getForm();
-        
+                     ->add('email', TextType::class, [
+                         'label'      => 'E-Mail',
+                         'label_attr' => [
+                             'class' => 'col-1 col-form-label',
+                             'for'   => 'email',
+                         ],
+                         'attr'       => [
+                             'class'       => 'form-control',
+                             'id'          => 'email',
+                             'placeholder' => 'E-Mail',
+                         ],
+                     ])
+                     ->add('password', TextType::class, [
+                         'label'      => 'Passwort',
+                         'label_attr' => [
+                             'class' => 'col-1 col-form-label',
+                             'for'   => 'password',
+                         ],
+                         'attr'       => [
+                             'class'       => 'form-control',
+                             'id'          => 'password',
+                             'placeholder' => 'Passwort',
+                         ],
+                     ])
+                     ->add('submit', SubmitType::class, [
+                         'label' => 'Anmelden',
+                         'attr'  => [
+                             'class' => 'btn btn-primary',
+                         ],
+                     ])
+                     ->getForm();
         
         
         return $this->render('index.html.twig', [
-            'msg' => $msg,
-            'form' => $form->createView()
+            'msg'  => $msg,
+            'form' => $form->createView(),
         ]);
     }
     
@@ -93,7 +91,85 @@ class IndexController extends AbstractController
     #[Route('/register', name: 'register')]
     public function registerIndex()
     {
-        return $this->render('register.html.twig');
+        $form = $this->createFormBuilder()
+                     ->add('username', TextType::class, [
+                         'label'      => 'Benutzername',
+                         'label_attr' => [
+                             'class' => 'col-1 col-form-label',
+                             'for'   => 'username',
+                         ],
+                         'attr'       => [
+                             'class'       => 'form-control',
+                             'id'          => 'username',
+                             'placeholder' => 'Benutzername',
+                         ],
+                     ])
+                     ->add('email', TextType::class, [
+                         'label'      => 'E-Mail',
+                         'label_attr' => [
+                             'class' => 'col-1 col-form-label',
+                             'for'   => 'email',
+                         ],
+                         'attr'       => [
+                             'class'       => 'form-control',
+                             'id'          => 'email',
+                             'placeholder' => 'E-Mail',
+                         ],
+                     ])
+                     ->add('password', TextType::class, [
+                         'label'      => 'Passwort',
+                         'label_attr' => [
+                             'class' => 'col-1 col-form-label',
+                             'for'   => 'password',
+                         ],
+                         'attr'       => [
+                             'class'       => 'form-control',
+                             'id'          => 'password',
+                             'placeholder' => 'Passwort',
+                         ],
+                     ])
+                     ->add('universe', TextType::class, [
+                         'label'      => 'Universum',
+                         'label_attr' => [
+                             'class' => 'col-1 col-form-label',
+                             'for'   => 'universe',
+                         ],
+                         'attr'       => [
+                             'class'       => 'form-control',
+                             'id'          => 'universe',
+                             'placeholder' => 'Universum',
+                             'disabled'    => 'disabled',
+                             'value'       => "Universum 1",
+                         ],
+                     ])
+                     ->add('language', TextType::class, [
+                         'label'      => 'Sprache',
+                         'label_attr' => [
+                             'class' => 'col-1 col-form-label',
+                             'for'   => 'language',
+                         ],
+                         'attr'       => [
+                             'class'       => 'form-control',
+                             'id'          => 'language',
+                             'placeholder' => 'Sprache',
+                             'disabled'    => 'disabled',
+                             'value'       => "Deutsch",
+                         ],
+                     ])
+                     ->add('submit', SubmitType::class, [
+                         'label' => 'Anmelden',
+                         'attr'  => [
+                             'class' => 'btn btn-primary mt-3',
+                         ],
+                     ])
+                     ->getForm();
+        
+        return $this->render('register.html.twig',
+                             [
+                                 'form' => $form->createView(),
+        
+                             ]
+        );
     }
     
 }
