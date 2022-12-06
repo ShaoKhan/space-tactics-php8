@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,7 +19,7 @@ class User
     private ?int $id = NULL;
     
     #[ORM\Column]
-    private ?int $uuid = NULL;
+    private ?string $uuid = NULL;
     
     #[ORM\Column(length: 75)]
     private ?string $nickname = NULL;
@@ -36,19 +37,19 @@ class User
     private ?int $uni = NULL;
     
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $register_on = NULL;
+    private ?DateTimeInterface $register_on = NULL;
     
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: TRUE)]
-    private ?\DateTimeInterface $activate_on = NULL;
+    private ?DateTimeInterface $activate_on = NULL;
     
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: TRUE)]
-    private ?\DateTimeInterface $referal_on = NULL;
+    private ?DateTimeInterface $referal_on = NULL;
     
     #[ORM\Column(length: 6)]
     private ?int $referal_by = NULL;
     
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: TRUE)]
-    private ?\DateTimeInterface $last_active = NULL;
+    private ?DateTimeInterface $last_active = NULL;
     
     public function getId(): ?int
     {
@@ -60,7 +61,7 @@ class User
         return $this->uuid;
     }
     
-    public function setUuid(int $uuid): self
+    public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
         
@@ -127,36 +128,36 @@ class User
         return $this;
     }
     
-    public function getRegisterOn(): ?\DateTimeInterface
+    public function getRegisterOn(): ?DateTimeInterface
     {
         return $this->register_on;
     }
     
-    public function setRegisterOn(\DateTimeInterface $register_on): self
+    public function setRegisterOn(DateTimeInterface $register_on): self
     {
         $this->register_on = $register_on;
         
         return $this;
     }
     
-    public function getActivateOn(): ?\DateTimeInterface
+    public function getActivateOn(): ?DateTimeInterface
     {
         return $this->activate_on;
     }
     
-    public function setActivateOn(?\DateTimeInterface $activate_on): self
+    public function setActivateOn(?DateTimeInterface $activate_on): self
     {
         $this->activate_on = $activate_on;
         
         return $this;
     }
     
-    public function getReferalOn(): ?\DateTimeInterface
+    public function getReferalOn(): ?DateTimeInterface
     {
         return $this->referal_on;
     }
     
-    public function setReferalOn(?\DateTimeInterface $referal_on): self
+    public function setReferalOn(?DateTimeInterface $referal_on): self
     {
         $this->referal_on = $referal_on;
         
@@ -175,28 +176,42 @@ class User
         return $this;
     }
     
-    public function getLastActive(): ?\DateTimeInterface
+    public function getLastActive(): ?DateTimeInterface
     {
         return $this->last_active;
     }
     
-    public function setLastActive(?\DateTimeInterface $last_active): self
+    public function setLastActive(?DateTimeInterface $last_active): self
     {
         $this->last_active = $last_active;
         
         return $this;
     }
     
-    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    public static function loadValidatorMetadata(ClassMetadata $metadata):void
     {
         $metadata->addPropertyConstraint('nickname', new NotBlank(['message' => 'Unter welchem Namen möchtest du dich anmelden?']));
         $metadata->addPropertyConstraint('nickname', new Assert\Length(['min' => 3]));
         $metadata->addPropertyConstraint('email', new Assert\Email(['message' => 'Die E-Mail "{{ value }}" ist nicht gültig.',]));
+        $metadata->addPropertyConstraint('email', new Assert\Unique(['fields'=> 'email','message' => 'Die E-Mail "{{ value }}" ist bereits vergeben.',]));
         $metadata->addPropertyConstraint('pass', new NotBlank(['message' => 'Ein Passwort wird benötigt!']));
         $metadata->addPropertyConstraint('pass', new Assert\Length(['min' => 8]));
         $metadata->addPropertyConstraint('pass', new Assert\NotCompromisedPassword(['message' => 'Das Passwort ist zu schwach!']));
         $metadata->addPropertyConstraint('locale', new NotBlank(['message' => 'In welcher Sprache dürfen wir dich begrüßen?']));
         $metadata->addPropertyConstraint('uni', new NotBlank(['message' => 'In welchem Universum möchtest du spielen?']));
+    }
+    
+    /**
+     * @throws \Exception
+     */
+    public function generateUuid()
+    {
+        if(function_exists('com_create_guid') === TRUE)
+            return trim(com_create_guid(), '{}');
+        $data    = random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);    // Set version to 0100
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);    // Set bits 6-7 to 10
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
     
 }

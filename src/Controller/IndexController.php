@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Form\Type\UserType;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -91,101 +94,35 @@ class IndexController extends AbstractController
     }
     
     #[Route('/register', name: 'register')]
-    public function registerIndex()
+    public function registerIndex(Request $request, ManagerRegistry $doctrine, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $form = $this->createFormBuilder()
-                     ->setAction($this->generateUrl('user_register'))
-                     ->add('username', TextType::class, [
-                         'label'           => 'Benutzername',
-                         'label_attr'      => [
-                             'class' => 'col-1 col-form-label',
-                             'for'   => 'username',
-                         ],
-                         'attr'            => [
-                             'class'       => 'form-control',
-                             'id'          => 'username',
-                             'placeholder' => 'Benutzername',
-                         ],
-                         'required'        => TRUE,
-                     ])
-                     ->add('email', TextType::class, [
-                         'label'      => 'E-Mail',
-                         'label_attr' => [
-                             'class' => 'col-1 col-form-label',
-                             'for'   => 'email',
-                         ],
-                         'attr'       => [
-                             'class'       => 'form-control',
-                             'id'          => 'email',
-                             'placeholder' => 'E-Mail',
-                         ],
-                         'required'   => TRUE,
-                     ])
-                     ->add('password', PasswordType::class, [
-                         'label'      => 'Passwort',
-                         'label_attr' => [
-                             'class' => 'col-1 col-form-label',
-                             'for'   => 'password',
-                         ],
-                         'attr'       => [
-                             'class'       => 'form-control',
-                             'id'          => 'password',
-                             'placeholder' => 'Passwort',
-                         ],
-                         'required'   => TRUE,
-                     ])
-                     ->add('universe', ChoiceType::class, [
-                         'choices'    => [
-                             'Universum 1' => 'uni1',
-                         ],
-                         'label'      => 'Universum',
-                         'label_attr' => [
-                             'class' => 'col-1 col-form-label',
-                             'for'   => 'universe',
-                         ],
-                         'attr'       => [
-                             'class'       => 'form-control',
-                             'id'          => 'universe',
-                             'placeholder' => 'Universum',
-                         ],
-                         'required'   => TRUE,
-                     ])
-                     ->add('language', ChoiceType::class, [
-                         'choices'    => [
-                             'Deutsch'  => 'de-DE',
-                             'English'  => 'en-GB',
-                             'Polski'   => 'pl_PL',
-                             'Italiano' => 'it-IT',
-                             'Français' => 'fr-FR',
-                             'Türkçe'   => 'tr-TR',
-                             'Русский'  => 'ru-RU',
-                         ],
-                         'label'      => 'Sprache',
-                         'label_attr' => [
-                             'class' => 'col-1 col-form-label',
-                             'for'   => 'sprache',
-                         ],
-                         'attr'       => [
-                             'class'       => 'form-control',
-                             'id'          => 'sprache',
-                             'placeholder' => 'Sprache',
-                         ],
-                         'required'   => TRUE,
-                     ])
-                     ->add('submit', SubmitType::class, [
-                         'label' => 'Anmelden',
-                         'attr'  => [
-                             'class' => 'btn btn-primary mt-3',
-                         ],
-                     ])
-                     ->getForm();
+        $user = new User();
         
-        return $this->render('register.html.twig',
-                             [
-                                 'form' => $form->createView(),
+        $form = $this->createForm(UserType::class, $user, [
+            'action' => $this->generateUrl('register'),
+        ]);
         
-                             ]
-        );
+        $form->handleRequest($request);
+        
+        if($form->isSubmitted() && $form->isValid()){
+            $userData = $form->getData();
+            /** @var User $userData */
+            $userData->setUuid($user->generateUuid());
+            $userData->setRegisterOn(new \DateTime());
+            #$hashedPassword = $passwordHasher->hashPassword($userData, $userData->getPass());
+            $userData->setPass(password_hash($userData->getPass(), PASSWORD_DEFAULT));
+            
+            $entityManager = $doctrine->getManager();
+            $entityManager->persist($userData);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'User created!');
+            
+        }
+        
+        return $this->render('register.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
     
 }
