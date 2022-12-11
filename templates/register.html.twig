@@ -9,19 +9,47 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-
-                    <!-- Main Content -->
-                    <section>
-                        <header>
-                            <h2>Registrieren</h2>
-                        </header>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget
-                        </p>
-                    </section>
-
+                    <header>
+                        <h2>Registrieren</h2>
+                        <h3></h3>
+                        {% for error in app.flashes('error') %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                        {% for success in app.flashes('success') %}
+                            <div class="alert alert-success" role="alert">
+                                {{ success }}
+                            </div>
+                        {% endfor %}
+                    </header>
                 </div>
             </div>
+
+            <section>
+                <div class="row">
+                    <div class="col-6">
+                        {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        <?= csrf_field() ?>
+                        {{ form_end(form) }}
+                    </div>
+                    <div class="col-6">
+                        <p>
+                            Mit deiner Registrierung erhältst du Zugriff auf alle Funktionen von Space-Tactics.<br/>
+                            Bitte beachte auch unsere Datenschutzerklärung.
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+            <div class="row">
+                <div class="col-12">
+                    <a href="{{ path('index') }}">Zurück zum Login</a>
+                </div>
+            </div>
+
         </div>
     </section>
 

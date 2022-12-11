@@ -1,0 +1,26 @@
+{% block login_form %}
+
+    <form action="{{ path('index') }}" method="post" name="login">
+        <div class="row mb-3">
+            <label for="email" class="col-1 col-form-label required">E-Mail:</label>
+            <div class="col-6">
+                <input type="text" id="email" name="email" class="form-control">
+            </div>
+        </div>
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        <input type="hidden" name="go_to" value="{{ path('main') }}">
+        <input type="hidden" name="back_to" value="{{ path('index') }}">
+        <div class="row mb-3">
+            <label for="password" class="col-1 col-form-label required">Password:</label>
+            <div class="col-6">
+                <input type="password" id="password" name="password" class="form-control">
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-1">
+                <button type="submit" class="btn btn-primary">Anmelden</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}
