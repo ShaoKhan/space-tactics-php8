@@ -8,7 +8,11 @@
 </head>
 <body class="subpage">
 <div id="page-wrapper">
+    {% block mainmenu %}{% endblock %}
     {% block body %}{% endblock %}
+    {% if app.user is not null %}
+        {% block sidebar %}{% endblock %}
+    {% endif %}
 
 </div>
 

@@ -12,6 +12,16 @@
                     <header>
                         <h2>Registrieren</h2>
                         <h3></h3>
+                        {% for error in app.flashes('error') %}
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                        {% for success in app.flashes('success') %}
+                            <div class="alert alert-success" role="alert">
+                                {{ success }}
+                            </div>
+                        {% endfor %}
                     </header>
                 </div>
             </div>

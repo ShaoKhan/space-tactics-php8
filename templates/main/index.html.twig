@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Space-Tactics Main{% endblock %}
+
+{% block body %}
+    <!-- Main Menu -->
+    {% include 'parts/mainmenu.html.twig' %}
+
+
+    <!-- Content -->
+    <section id="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    <!-- Sidebar -->
+                    {% if app.user is not null %}
+                        {% include 'parts/sidebar.html.twig' %}
+                    {% endif %}
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-7 col-md-12">
+                                <h3>{{  app.user.username }} </h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-7 col-md-12">
+                                <div class="col-lg-12 planet-switcher">
+                                    <select name="planet" class="form-control">
+                                        <option value="planet-1">Pitch Black</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-12 build">Bau:</div>
+                                <div class="col-lg-12 science">Forschung:</div>
+                                <div class="col-lg-12 fleet mb-3">Flotte:</div>
+                                <div class="col-lg-12 science">Planet:</div>
+                            </div>
+                        </div>
+
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    {% include 'parts/footer.html.twig' %}
+{% endblock %}
+
+

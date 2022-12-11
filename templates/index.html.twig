@@ -37,29 +37,11 @@
                     </section>
 
                     <section>
+
                         <div class="row">
                             <div class="col-lg-7 col-md-12">
-                                {{ form_start(form) }}
-                                <form>
-                                    <div class="row mb-3">
-                                        {{ form_label(form.email) }}
-                                        <div class="col-6">
-                                            {{ form_widget(form.email) }}
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        {{ form_label(form.password) }}
-                                        <div class="col-6">
-                                            {{ form_widget(form.password) }}
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="offset-1">
-                                            {{ form_widget(form.submit) }}
-                                        </div>
-                                    </div>
-                                </form>
-                                {{ form_end(form) }}
+
+                                {% include('parts/login_form.html.twig') %}
                             </div>
 
                             <div class="col-lg-5 col-md-12">
