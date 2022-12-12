@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block sidebar %}
+    <section>
+        <header>
+            <h2>
+                Menu
+                {% if app.user.roles.0 == 'ROLE_ADMIN' %}
+                    <span class="hint"><a href="admin">Admin</a></span>
+                {%  endif %}
+            </h2>
+        </header>
+        <ul class="link-list">
+            <li><a href="admin_server">Server</a></li>
+            <li><a href="#">Module</a></li>
+            <li><a href="#">Uni</a></li>
+            <li><a href="#">Support</a></li>
+            <li><a href="#">Erstellen</a></li>
+            <li><a href="#">Bans</a></li>
+            <li><a href="#">Aktive Spieler</a></li>
+            <li><a href="#">Fliegende Spieler</a></li>
+            <li><a href="#">News</a></li>
+            <li><a href="#">Nachrichtenliste</a></li>
+            <li><a href="#">Globale Nachricht</a></li>
+            <li><a href="#">Multis</a></li>
+        </ul>
+    </section>
+{% endblock %}

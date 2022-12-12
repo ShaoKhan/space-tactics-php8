@@ -2,7 +2,12 @@
 {% block sidebar %}
     <section>
         <header>
-            <h2>Menu</h2>
+            <h2>
+                Menu
+                {% if app.user.roles.0 == 'ROLE_ADMIN' %}
+                    <span class="hint"><a href="admin">Admin</a></span>
+                {%  endif %}
+            </h2>
         </header>
         <ul class="link-list">
             <li><a href="#">Nachrichten</a></li>

@@ -1,8 +1,14 @@
 @import "vars";
 @import "imports";
-@import "main.scss";
+@import "bootstrap";
+@import "main";
+
 
 
 body{
 
+}
+
+.container-fluid{
+  padding-left: 0;
 }

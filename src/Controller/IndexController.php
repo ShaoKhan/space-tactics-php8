@@ -8,6 +8,7 @@ use App\Security\EmailVerifier;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -146,6 +147,14 @@ class IndexController extends AbstractController
             'data_class' => User::class,
         ]);
     }
+
+    #[Route('/logout', name: 'logout')]
+    public function logout(Security $security)
+    {
+        $response = $security->logout(false);
+        return $this->redirectToRoute('index' );
+    }
+
 
 
 }

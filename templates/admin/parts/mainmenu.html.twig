@@ -13,12 +13,8 @@
 
                     <!-- Nav -->
                     <nav id="nav">
-                        <a href="{{ path('index') }}">Index</a>
-                        <a href="{{ path('news') }}">News</a>
-                        <a href="{{ path('rules') }}">Regeln</a>
-                        <a href="{{ path('fights') }}">Kämpfe</a>
-                        <a href="{{ path('pillory') }}">Pranger</a>
-                        <a href="{{ path('imprint') }}">Impressum</a>
+                        <a href="{{ path('index') }}">Support</a>
+                        <a href="{{ path('news') }}">Spielerliste</a>
                         {% if app.user is not null %}
                             <a href="{{ path('logout') }}" class="text-danger">Logout</a>
                         {% endif %}

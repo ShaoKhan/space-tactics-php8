@@ -4,7 +4,7 @@
 
 {% block body %}
     <!-- Main Menu -->
-    {% include 'parts/ingame_mainmenu.html.twig' %}
+    {% include 'admin/parts/mainmenu.html.twig' %}
 
 
     <!-- Content -->
@@ -14,7 +14,7 @@
                 <div class="col-lg-2 col-md-12">
                     <!-- Sidebar -->
                     {% if app.user is not null %}
-                        {% include 'parts/sidebar.html.twig' %}
+                        {% include 'admin/parts/sidebar.html.twig' %}
                     {% endif %}
                 </div>
 
@@ -23,20 +23,16 @@
                     <section>
                         <div class="row">
                             <div class="col-lg-7 col-md-12">
-                                <h3>{{  app.user.username }} </h3>
+                                <h3>Server-Konfiguration</h3>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-7 col-md-12">
-                                <div class="col-lg-12 planet-switcher">
-                                    <select name="planet" class="form-control">
-                                        <option value="planet-1">Pitch Black</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-12 build">Bau:</div>
-                                <div class="col-lg-12 science">Forschung:</div>
-                                <div class="col-lg-12 fleet mb-3">Flotte:</div>
-                                <div class="col-lg-12 science">Planet:</div>
+
+                                {{ form_start(form) }}
+                                {{ form_end(form) }}
+
+
                             </div>
                         </div>
 

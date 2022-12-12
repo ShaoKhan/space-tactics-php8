@@ -4,7 +4,7 @@
 
 {% block body %}
     <!-- Main Menu -->
-    {% include 'parts/ingame_mainmenu.html.twig' %}
+    {% include 'admin/parts/mainmenu.html.twig' %}
 
 
     <!-- Content -->
@@ -14,7 +14,7 @@
                 <div class="col-lg-2 col-md-12">
                     <!-- Sidebar -->
                     {% if app.user is not null %}
-                        {% include 'parts/sidebar.html.twig' %}
+                        {% include 'admin/parts/sidebar.html.twig' %}
                     {% endif %}
                 </div>
 
