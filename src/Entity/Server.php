@@ -12,55 +12,55 @@ class Server
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $id = NULL;
 
     #[ORM\Column(length: 125)]
-    private ?string $game_name = null;
+    private ?string $game_name = NULL;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $timezone = null;
-
-    #[ORM\Column]
-    private ?int $msg_delete_after = null;
+    #[ORM\Column(length: 75, nullable: TRUE)]
+    private ?string $timezone = NULL;
 
     #[ORM\Column]
-    private ?int $user_delete_after = null;
+    private ?int $msg_delete_after = NULL;
 
     #[ORM\Column]
-    private ?int $inactive_delete_after = null;
+    private ?int $user_delete_after = NULL;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $reminder_mail = null;
+    #[ORM\Column]
+    private ?int $inactive_delete_after = NULL;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $activate_emails = null;
+    #[ORM\Column(type: Types::SMALLINT, nullable: TRUE)]
+    private ?int $reminder_mail = NULL;
 
-    #[ORM\Column(length: 75, nullable: true)]
-    private ?string $sender_type = null;
+    #[ORM\Column(type: Types::SMALLINT, nullable: TRUE)]
+    private ?int $activate_emails = NULL;
 
-    #[ORM\Column(length: 125)]
-    private ?string $sender_mail = null;
-
-    #[ORM\Column(length: 125, nullable: true)]
-    private ?string $sendmailpath = null;
+    #[ORM\Column(length: 75, nullable: TRUE)]
+    private ?string $sender_type = NULL;
 
     #[ORM\Column(length: 125, nullable: true)]
-    private ?string $smtp_host = null;
+    private ?string $sender_mail = NULL;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $smtp_ssl_tls = null;
+    #[ORM\Column(length: 125, nullable: TRUE)]
+    private ?string $sendmailpath = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $smtp_port = null;
+    #[ORM\Column(length: 125, nullable: TRUE)]
+    private ?string $smtp_host = NULL;
 
-    #[ORM\Column(length: 125, nullable: true)]
-    private ?string $smtp_username = null;
+    #[ORM\Column(length: 50, nullable: TRUE)]
+    private ?string $smtp_ssl_tls = NULL;
 
-    #[ORM\Column(length: 125, nullable: true)]
-    private ?string $smtp_password = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $smtp_port = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $send_reminder_after = null;
+    #[ORM\Column(length: 125, nullable: TRUE)]
+    private ?string $smtp_username = NULL;
+
+    #[ORM\Column(length: 125, nullable: TRUE)]
+    private ?string $smtp_password = NULL;
+
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $send_reminder_after = NULL;
 
     public function getId(): ?int
     {
@@ -79,12 +79,12 @@ class Server
         return $this;
     }
 
-    public function getTimezone(): ?\DateTimeInterface
+    public function getTimezone(): ?string
     {
         return $this->timezone;
     }
 
-    public function setTimezone(?\DateTimeInterface $timezone): self
+    public function setTimezone(?string $timezone): self
     {
         $this->timezone = $timezone;
 

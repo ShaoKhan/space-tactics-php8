@@ -28,9 +28,99 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-7 col-md-12">
+                                {% for error in app.flashes('error') %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                                {% for success in app.flashes('success') %}
+                                    <div class="alert alert-success" role="alert">
+                                        {{ success }}
+                                    </div>
+                                {% endfor %}
 
-                                {{ form_start(form) }}
-                                {{ form_end(form) }}
+                                {% if form is not null %}
+                                    {{ form_start(form) }}
+                                    {{ form_end(form) }}
+                                {% endif %}
+
+                                {% if server is iterable %}
+                                    {% for serverdata in server %}
+                                        <div class="row">
+                                            <div class="col-lg-6">ServerName:</div>
+                                            <div class="col-lg-6"><h3>{{ serverdata.gameName }}</h3></div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">Nachrichten löschen nach:</div>
+                                            <div class="col-lg-6">{{ serverdata.msgDeleteAfter }} Tagen</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">Spieler löschen nach:</div>
+                                            <div class="col-lg-6">{{ serverdata.userDeleteAfter }} Tagen</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">Inaktive Spieler löschen nach:</div>
+                                            <div class="col-lg-6">{{ serverdata.inactiveDeleteAfter }} Tagen</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">Erinnerungsmails versenden:</div>
+                                            <div class="col-lg-6">
+                                                {% if serverdata.reminderMail == 0 %}
+                                                    Nein
+                                                {% else %}
+                                                    Ja
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                        {% if serverdata.reminderMail == 1 %}
+                                        <div class="row">
+                                            <div class="col-lg-6">Erinnerungsmail versenden nach:</div>
+                                            <div class="col-lg-6">{{ serverdata.sendReminderAfter }} Inaktivität</div>
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="row">
+                                            <div class="col-lg-6">Mails versenden via:</div>
+                                            <div class="col-lg-6">{{ serverdata.senderType }}</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">Absender in der E-Mail:</div>
+                                            <div class="col-lg-6">{{ serverdata.senderMail }}</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">Pfad zu sendmail:</div>
+                                            <div class="col-lg-6">{{ serverdata.sendmailpath }}</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">SMTP Host:</div>
+                                            <div class="col-lg-6">{{ serverdata.smtpHost }}</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">SMTP Port:</div>
+                                            <div class="col-lg-6">{{ serverdata.smtpPort }}</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">SMTP mit SSL/TLS:</div>
+                                            <div class="col-lg-6">{{ serverdata.smtpSslTls }}</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">SMTP Benutzername:</div>
+                                            <div class="col-lg-6">{{ serverdata.smtpUsername }}</div>
+                                        </div>
+
+                                    {% endfor %}
+                                {% endif %}
 
 
                             </div>

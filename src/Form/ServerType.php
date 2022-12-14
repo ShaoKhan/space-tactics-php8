@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Choice;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class ServerType extends AbstractType
 {
@@ -18,215 +20,222 @@ class ServerType extends AbstractType
     {
         $builder
             ->add('game_name', TextType::class, [
-                'label' => 'Game-Name',
+                'label'      => 'Game-Name',
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'game_name',
+                    'for'   => 'game_name',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'game_name',
-                    'placeholder' => 'Space-Tactics',
+                    'id'    => 'game_name',
                 ],
-                'required' => TRUE,
+                'required'   => TRUE,
 
             ])
             ->add('timezone', ChoiceType::class, [
-                'choices' => [
-                    'Europe/Berlin' => "(GMT+01:00) Berlin",
-                    'US/Central' => "(GMT-06:00) Central Time (US &amp; Canada)",
-                    'US/Eastern' => "(GMT-05:00) Eastern Time (US &amp; Canada)",
-                    'Europe/Dublin' => "(GMT) Dublin",
-                    'Europe/Athens' => "(GMT+02:00) Athens",
-                    'Europe/Moscow' => "(GMT+03:00) Moscow",
-                    'Asia/Tbilisi' => "(GMT+04:00) Tbilisi",
-                    'Asia/Tashkent' => "(GMT+05:00) Tashkent",
-                    'Asia/Bangkok' => "(GMT+07:00) Bangkok",
-                    'Asia/Hong_Kong' => "(GMT+08:00) Hong Kong",
-                    'Asia/Tokyo' => "(GMT+09:00) Tokyo",
+                'choices'    => [
+                    'Select'             => '',
+                    'Europe/Berlin'      => "(GMT+01:00) Berlin",
+                    'US/Central'         => "(GMT-06:00) Central Time (US &amp; Canada)",
+                    'US/Eastern'         => "(GMT-05:00) Eastern Time (US &amp; Canada)",
+                    'Europe/Dublin'      => "(GMT) Dublin",
+                    'Europe/Athens'      => "(GMT+02:00) Athens",
+                    'Europe/Moscow'      => "(GMT+03:00) Moscow",
+                    'Asia/Tbilisi'       => "(GMT+04:00) Tbilisi",
+                    'Asia/Tashkent'      => "(GMT+05:00) Tashkent",
+                    'Asia/Bangkok'       => "(GMT+07:00) Bangkok",
+                    'Asia/Hong_Kong'     => "(GMT+08:00) Hong Kong",
+                    'Asia/Tokyo'         => "(GMT+09:00) Tokyo",
                     'Australia/Canberra' => "(GMT+10:00) Canberra",
-                    'Asia/Vladivostok' => "(GMT+11:00) Vladivostok",
-                    'Pacific/Fiji' => "(GMT+12:00) Fiji",
+                    'Asia/Vladivostok'   => "(GMT+11:00) Vladivostok",
+                    'Pacific/Fiji'       => "(GMT+12:00) Fiji",
                 ],
-                'label' => 'Zeitzone',
+                'label'      => 'Zeitzone',
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'timezone',
+                    'for'   => 'timezone',
                 ],
-                'attr' => [
-                    'class' => 'form-control',
-                    'id' => 'timezone',
+                'attr'       => [
+                    'class'       => 'form-control',
+                    'id'          => 'timezone',
                     'placeholder' => 'Zeitzone',
                 ],
             ])
             ->add('msg_delete_after', TextType::class, [
-                'label' => 'Lösche Nachrichten nach:',
+                'label'      => 'Lösche Nachrichten nach:',
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'msg_delete_after',
+                    'for'   => 'msg_delete_after',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'msg_delete_after',
+                    'id'    => 'msg_delete_after',
                 ],
-                'required' => TRUE,
+                'required'   => TRUE,
             ])
             ->add('user_delete_after', TextType::class, [
-                'label' => 'Lösche User nach:',
+                'label'      => 'Lösche User nach:',
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'user_delete_after',
+                    'for'   => 'user_delete_after',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'user_delete_after',
+                    'id'    => 'user_delete_after',
                 ],
-                'required' => TRUE,
+                'required'   => TRUE,
             ])
             ->add('inactive_delete_after', TextType::class, [
-                'label' => 'Lösche Inaktive nach:',
+                'label'      => 'Lösche Inaktive nach:',
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'inactive_delete_after',
+                    'for'   => 'inactive_delete_after',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'inactive_delete_after',
+                    'id'    => 'inactive_delete_after',
                 ],
-                'required' => TRUE,
+                'required'   => TRUE,
             ])
             ->add('reminder_mail', CheckboxType::class, [
-                'label' => 'Erinnerungs Mail:',
+                'label'      => 'Erinnerungs Mail:',
+                'required'   => FALSE,
                 'label_attr' => [
                     'class' => 'form-check-label',
-                    'for' => 'reminder_mail',
+                    'for'   => 'reminder_mail',
                 ],
-                'attr' => [
-                    'type' => 'checkbox',
+                'attr'       => [
+                    'type'  => 'checkbox',
                     'class' => 'form-check-input',
-                    'id' => 'reminder_mail',
+                    'id'    => 'reminder_mail',
                 ],
-                'required' => TRUE,
             ])
             ->add('send_reminder_after', TextType::class, [
-                'label' => 'Erinnerungs Mail nach X inaktiven Tagen versenden:',
+                'label'      => 'Erinnerungs Mail nach X inaktiven Tagen versenden:',
+                'required'   => FALSE,
                 'label_attr' => [
                     'class' => 'col-6 col-form-label',
-                    'for' => 'send_reminder_after',
+                    'for'   => 'send_reminder_after',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'send_reminder_after',
+                    'id'    => 'send_reminder_after',
                 ],
-                'required' => TRUE,
             ])
             ->add('activate_emails', CheckboxType::class, [
-                'label' => 'E-Mailversand aktivieren:',
+                'label'      => 'E-Mailversand aktivieren:',
+                'required'   => FALSE,
                 'label_attr' => [
                     'class' => 'form-check-label',
-                    'for' => 'activate_emails',
+                    'for'   => 'activate_emails',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-check-input',
-                    'id' => 'activate_emails',
+                    'id'    => 'activate_emails',
                 ],
-                'required' => TRUE,
             ])
             ->add('sender_type', ChoiceType::class, [
-                'choices' => [
-                    'se_mail_sel' => 'se_mail_sel'
+                'choices'    => [
+                    'se_mail_sel' => 'se_mail_sel',
                 ],
-                'label' => 'Mail Versand',
+                'required'   => FALSE,
+                'label'      => 'Mail Versand',
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'user_delete_after',
+                    'for'   => 'user_delete_after',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'user_delete_after',
+                    'id'    => 'user_delete_after',
                 ],
             ])
             ->add('sender_mail', TextType::class, [
-                'label' => 'E-Mail Absender:',
+                'label'      => 'E-Mail Absender:',
+                'required'   => FALSE,
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'sender_mail',
+                    'for'   => 'sender_mail',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'sender_mail',
+                    'id'    => 'sender_mail',
                 ],
-                'required' => TRUE,
             ])
             ->add('sendmailpath', TextType::class, [
-                'label' => 'Pfad zu sendmail:',
+                'label'      => 'Pfad zu sendmail:',
+                'required'   => FALSE,
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'sendmailpath',
+                    'for'   => 'sendmailpath',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'sendmailpath',
+                    'id'    => 'sendmailpath',
                 ],
             ])
             ->add('smtp_host', TextType::class, [
-                'label' => 'SMTP Host:',
+                'label'      => 'SMTP Host:',
+                'required'   => FALSE,
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'smtp_host',
+                    'for'   => 'smtp_host',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'smtp_host',
+                    'id'    => 'smtp_host',
                 ],
             ])
             ->add('smtp_ssl_tls', ChoiceType::class, [
-                'choices' => [
+                'choices'    => [
                     'keine Verschlüsselung' => 0,
-                    'SSL' => 1,
-                    'TLS' => 2,
+                    'SSL'                   => 1,
+                    'TLS'                   => 2,
                 ],
-                'label' => 'Verschlüsselung:',
+                'required'   => FALSE,
+                'label'      => 'Verschlüsselung:',
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'smtp_ssl_tls',
+                    'for'   => 'smtp_ssl_tls',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'smtp_ssl_tls',
+                    'id'    => 'smtp_ssl_tls',
                 ],
             ])
             ->add('smtp_port', TextType::class, [
-                'label' => 'SMTP Port:',
+                'label'      => 'SMTP Port:',
+                'required'   => FALSE,
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'smtp_port',
+                    'for'   => 'smtp_port',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'smtp_port',
+                    'id'    => 'smtp_port',
                 ],
             ])
             ->add('smtp_username', TextType::class, [
-                'label' => 'SMTP Benutzername:',
+                'label'      => 'SMTP Benutzername:',
+                'required'   => FALSE,
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'smtp_username',
+                    'for'   => 'smtp_username',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'smtp_username',
+                    'id'    => 'smtp_username',
                 ],
             ])
             ->add('smtp_password', TextType::class, [
-                'label' => 'SMTP Passwort:',
+                'label'      => 'SMTP Passwort:',
+                'required'   => FALSE,
                 'label_attr' => [
                     'class' => 'col-4 col-form-label',
-                    'for' => 'smtp_password',
+                    'for'   => 'smtp_password',
                 ],
-                'attr' => [
+                'attr'       => [
                     'class' => 'form-control',
-                    'id' => 'smtp_password',
+                    'id'    => 'smtp_password',
                 ],
             ])
             ->add('submit', SubmitType::class, [
@@ -235,15 +244,6 @@ class ServerType extends AbstractType
                     'class' => 'btn btn-primary mt-3',
                 ],
             ])
-            ->getForm();
-
-        ;
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => Server::class,
-        ]);
+            ->getForm();;
     }
 }
