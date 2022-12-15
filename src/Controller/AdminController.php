@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Server;
 use App\Form\ServerType;
-use App\Form\Type\UserType;
-use App\Repository\ServerRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,7 +49,7 @@ class AdminController extends AbstractController
         $repo       = $doctrine->getRepository(Server::class);
         $servername = $repo->findAll();
 
-        if($servername[0] === null) {
+        if($servername[0] === NULL) {
             $form = $this->createForm(ServerType::class, $server, [
                 'action' => $this->generateUrl('admin_server'),
             ]);
