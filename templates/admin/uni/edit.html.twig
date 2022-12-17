@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Space-Tactics Main{% endblock %}
+
+{% block body %}
+    <!-- Main Menu -->
+    {% include 'admin/parts/mainmenu.html.twig' %}
+
+
+    <!-- Content -->
+    <section id="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    <!-- Sidebar -->
+                    {% if app.user is not null %}
+                        {% include 'admin/parts/sidebar.html.twig' %}
+                    {% endif %}
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-7 col-md-12">
+                                <h3>Universum bearbeiten</h3>
+
+                                <div class="row">
+                                    <div class="col-3">
+                                        <a href="{{ path('uni_index') }}">back to list</a>
+                                    </div>
+                                    <div class="col-3">
+                                        {{ include('admin/uni/_delete_form.html.twig') }}
+                                    </div>
+                                </div>
+
+                                {{ include('admin/uni/_form.html.twig', {'button_label': 'Update'}) }}
+
+                                <div class="row">
+                                    <div class="col-3">
+                                        <a href="{{ path('uni_index') }}">back to list</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    {% include 'parts/footer.html.twig' %}
+{% endblock %}

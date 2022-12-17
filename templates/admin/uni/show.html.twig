@@ -1,0 +1,348 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Space-Tactics Main{% endblock %}
+
+{% block body %}
+    <!-- Main Menu -->
+    {% include 'admin/parts/mainmenu.html.twig' %}
+
+
+    <!-- Content -->
+    <section id="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    <!-- Sidebar -->
+                    {% if app.user is not null %}
+                        {% include 'admin/parts/sidebar.html.twig' %}
+                    {% endif %}
+                </div>
+
+
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-7 col-md-12">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <h3>Details Universum {{ uni.uniName }}</h3>
+                                    </div>
+                                    <div class="col-2">
+                                        {{ include('admin/uni/_delete_form.html.twig') }}
+                                    </div>
+                                </div>
+
+                                <div class="row mt-4 mb-4">
+                                    <div class="col-2">
+                                        <a href="{{ path('uni_index') }}">back to list</a>
+                                    </div>
+                                    <div class="col-2">
+                                        <a class="" href="{{ path('uni_edit', {'id': uni.id}) }}">edit</a>
+                                    </div>
+
+                                    <div class="col-2">
+
+                                    </div>
+                                </div>
+
+                                <div class="datalist">
+                                    <div class="row">
+                                        <div class="col-6">Universum aktiv</div>
+                                        <div class="col-6">{{ uni.uniEnabled == 1 ? 'Ja'  : 'Nein' }}</div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6">Spielerzahl</div>
+                                        <div class="col-6">{{ uni.usersAmount }}</div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6">Game Geschwindigkeit</div>
+                                        <div class="col-6">{{ uni.gameSpeed }}</div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6">Flottengeschwindigkeit</div>
+                                        <div class="col-6">{{ uni.fleetSpeed }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Resourcen Multiplikator</div>
+                                        <div class="col-6">{{ uni.resourceMultiplier }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Storage Multiplikator</div>
+                                        <div class="col-6">{{ uni.storageMultiplier }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Nachrichten Löschverhalten</div>
+                                        <div class="col-6">{{ uni.messageDeleteBehavior == null ? 'Hard Delete' : "Soft Delete" }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Nachrichten löschen nach:</div>
+                                        <div class="col-6">{{ uni.messageDeleteDays }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Expeditionsdauer</div>
+                                        <div class="col-6">{{ uni.haltSpeed }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">TF aus X Prozent der Flotte</div>
+                                        <div class="col-6">{{ uni.fleetCdr }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">TF aus X Prozent der Verteidigung</div>
+                                        <div class="col-6">{{ uni.defInTf }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Anzahl Felder des Startplaneten</div>
+                                        <div class="col-6">{{ uni.planetFields }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Schließgrund des Universums</div>
+                                        <div class="col-6">{{ uni.closedText }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Standard Metall / Stunde</div>
+                                        <div class="col-6">{{ uni.metalStandardIncome }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Standard Kristall / Stunde</div>
+                                        <div class="col-6">{{ uni.crystalStandardIncome }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Standard Deuterium / Stunde</div>
+                                        <div class="col-6">{{ uni.deuteriumStandardIncome }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Energy_standard_income</div>
+                                        <div class="col-6">{{ uni.energyStandardIncome }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Noobschutz aktiviert?</div>
+                                        <div class="col-6">{{ uni.noobProtection == 1 ? 'Ja' : 'Nein' }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Noobschutzdauer in Tagen</div>
+                                        <div class="col-6">{{ uni.noobProtectiontime }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Foren Link</div>
+                                        <div class="col-6">{{ uni.forumUrl }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Admins angreifbar</div>
+                                        <div class="col-6">{{ uni.adminAttackable == null ? 'Ja' : 'Nein' }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Hauptsprache</div>
+                                        <div class="col-6">{{ uni.language }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Teamspeak aktivieren?</div>
+                                        <div class="col-6">{{ uni.teamspeakMod == null ? 'Nein' : 'Ja' }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">IP des TS Servers</div>
+                                        <div class="col-6">{{ uni.teamspeakServer }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">TCP Port des TS Servers</div>
+                                        <div class="col-6">{{ uni.teamspeakTcpPort }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">UDP Port des TS Servers</div>
+                                        <div class="col-6">{{ uni.teamspeakUdpPort }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Registrierung geschlossen ?</div>
+                                        <div class="col-6">{{ uni.registrationClosed }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Willkommensnachricht</div>
+                                        <div class="col-6">{{ uni.welcomeText }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Mindest-Bauzeit für Gebäude und Schiffe in Sekunden</div>
+                                        <div class="col-6">{{ uni.minBuildTime }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Modules</div>
+                                        <div class="col-6">{{ uni.modules }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Schiff-Ids die gehandelt werden können</div>
+                                        <div class="col-6">{{ uni.tradeableShips }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Verschrottungskosten in %</div>
+                                        <div class="col-6">{{ uni.tradeableShipsFee }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Breite des Universums</div>
+                                        <div class="col-6">{{ uni.galaxyWidth }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Höhe des Universums</div>
+                                        <div class="col-6">{{ uni.galaxyHeight }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Anzahl Planeten in einem Feld</div>
+                                        <div class="col-6">{{ uni.galaxyDepth }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Anzahl gleichzeitiger Bauten</div>
+                                        <div class="col-6">{{ uni.maxConstructionCount }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Anzahl gleichzeitiger Forschungen</div>
+                                        <div class="col-6">{{ uni.maxScienceCount }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Anzahl gleichzeitiger Schiffsbauten</div>
+                                        <div class="col-6">{{ uni.maxShipCount }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Besiedelbare Planeten (ohne Forschungen etc.)</div>
+                                        <div class="col-6">{{ uni.maxStartPlanetsPerPlayer }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Zusätzliche Planeten mit Forschung Astrophysik</div>
+                                        <div class="col-6">{{ uni.maxPlanetsAstrophysics }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Zusätzliche Planeten durch Offiziere</div>
+                                        <div class="col-6">{{ uni.maxPlanetsOfficers }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Zusätzliche Planeten durch Forschung</div>
+                                        <div class="col-6">{{ uni.maxPlanetsScience }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Deuteriumkosten für 1 Click</div>
+                                        <div class="col-6">{{ uni.flightDeuteriumCostPerClick }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Anzahl paralleler DM-Missionen</div>
+                                        <div class="col-6">{{ uni.maxDmMissions }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Maximale Überladung der Speicher/Tanks in %</div>
+                                        <div class="col-6">{{ uni.maxResourceOverflow }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Multiplikator zur Entstehung eines Mondes</div>
+                                        <div class="col-6">{{ uni.moonChanceFactor }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Chance auf Entstehung eines Mondes in %</div>
+                                        <div class="col-6">{{ uni.moonChance }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">DM Gebühren für Händler</div>
+                                        <div class="col-6">{{ uni.traderDmCost }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Verkürzung von Forschungen in % je Universität</div>
+                                        <div class="col-6">{{ uni.universityFactorScience }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Maximale Anzahl Flotten in einem Verband</div>
+                                        <div class="col-6">{{ uni.maxFleetsPerAssociation }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">TF löschen nach Enstehung eines Mondes</div>
+                                        <div class="col-6">{{ uni.deleteMoonDebris }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">U-Mode Mindestdauer</div>
+                                        <div class="col-6">{{ uni.minUmodeTime }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Sprungtorwartezeit in Sekunden bis zur Wiederbenutzung</div>
+                                        <div class="col-6">{{ uni.gateIntervalTime }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Start Metall</div>
+                                        <div class="col-6">{{ uni.startMetal }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Start Kristall</div>
+                                        <div class="col-6">{{ uni.startCrystal }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Start Deuterium</div>
+                                        <div class="col-6">{{ uni.startDeuterium }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Start dunkle Materie</div>
+                                        <div class="col-6">{{ uni.startDm }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Referals aktiv?</div>
+                                        <div class="col-6">{{ uni.referalActive }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Bonus bei Empfehlung</div>
+                                        <div class="col-6">{{ uni.referalBonusDm }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Mindestpunktzahl des Geworbenen für Bonuszahlung</div>
+                                        <div class="col-6">{{ uni.referalMinpoints }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Wieviele Spieler darf ein Spieler werben?</div>
+                                        <div class="col-6">{{ uni.referalMaxReferals }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Benutzer manuell oder automatisch löschen?</div>
+                                        <div class="col-6">{{ uni.delUserManual }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">E-Mail an Inaktive?</div>
+                                        <div class="col-6">{{ uni.sendInavtiveMail }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Faktor für die Größe des Raketensilos</div>
+                                        <div class="col-6">{{ uni.siloSizeFactor }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Energiefaktor</div>
+                                        <div class="col-6">{{ uni.energyFactor }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Mindestpunktzahl zur Gründung einer Allianz</div>
+                                        <div class="col-6">{{ uni.allianceMinPoints }}</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">Menge Resourcen die von einer Expedition maximal erlangt
+                                            werden
+                                        </div>
+                                        <div class="col-6">{{ uni.expeditionResLimit }}</div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row mt-4">
+                                    <div class="col-2">
+                                        <a href="{{ path('uni_index') }}">back to list</a>
+                                    </div>
+                                    <div class="col-2">
+                                        <a class="" href="{{ path('uni_edit', {'id': uni.id}) }}">edit</a>
+                                    </div>
+
+                                    <div class="col-2">
+                                        {{ include('admin/uni/_delete_form.html.twig') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    {% include 'parts/footer.html.twig' %}
+{% endblock %}

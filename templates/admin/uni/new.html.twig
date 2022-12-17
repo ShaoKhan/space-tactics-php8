@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Neues Universum erstellen{% endblock %}
+
+{% block body %}
+    <!-- Main Menu -->
+    {% include 'admin/parts/mainmenu.html.twig' %}
+
+
+    <!-- Content -->
+    <section id="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    <!-- Sidebar -->
+                    {% if app.user is not null %}
+                        {% include 'admin/parts/sidebar.html.twig' %}
+                    {% endif %}
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-7 col-md-12">
+                                <h3 class="mb-3">Neues Universum erstellen</h3>
+
+                                {{ include('admin/uni/_form.html.twig') }}
+
+                                <a href="{{ path('uni_index') }}">back to list</a>
+
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    {% include 'parts/footer.html.twig' %}
+{% endblock %}

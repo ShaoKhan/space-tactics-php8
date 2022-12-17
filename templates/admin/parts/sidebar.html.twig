@@ -5,14 +5,14 @@
             <h2>
                 Menu
                 {% if app.user.roles.0 == 'ROLE_ADMIN' %}
-                    <span class="hint"><a href="admin">Admin</a></span>
+                    <span class="hint"><a href="{{ path('admin') }}">Admin</a></span>
                 {% endif %}
             </h2>
         </header>
         <ul class="link-list">
-            <li><a href="{{ relative_path('/admin_server') }}">Server</a></li>
+            <li><a href="{{ path('admin_server') }}">Server</a></li>
             <li><a href="#">Module</a></li>
-            <li><a href="{{ relative_path('uni/') }}">Uni</a></li>
+            <li><a href="{{ path('uni_index') }}">Uni</a></li>
             <li><a href="#">Support</a></li>
             <li><a href="#">Erstellen</a></li>
             <li><a href="#">Bans</a></li>
