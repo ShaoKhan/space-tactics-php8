@@ -15,6 +15,7 @@
                     <nav id="nav">
                         <a href="{{ path('index') }}">Support</a>
                         <a href="{{ path('news') }}">Spielerliste</a>
+                        <a href="{{ path('index') }}">Zurück zum Spiel</a>
                         {% if app.user is not null %}
                             <a href="{{ path('logout') }}" class="text-danger">Logout</a>
                         {% endif %}
