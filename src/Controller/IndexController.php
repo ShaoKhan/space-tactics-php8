@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\Type\UserType;
+use App\Repository\PlanetRepository;
+use App\Repository\UniRepository;
 use App\Security\EmailVerifier;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -75,9 +77,10 @@ class IndexController extends AbstractController
         ManagerRegistry             $doctrine,
         UserPasswordHasherInterface $passwordHasher,
         EmailVerifier               $emailVerifier,
+        PlanetRepository            $planetRepository,
+        UniRepository               $uniRepository,
 
-    ): Response
-    {
+    ): Response {
         $user = new User();
 
         $form = $this->createForm(UserType::class, $user, [
@@ -85,11 +88,13 @@ class IndexController extends AbstractController
         ]);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $userData = $form->getData();
+        if($form->isSubmitted() && $form->isValid()) {
 
-            $email = $doctrine->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
-            if ($email) {
+            $planetController = new PlanetController();
+            $userData         = $form->getData();
+            $email            = $doctrine->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+
+            if($email) {
                 $this->session->getFlashBag()->add('error', 'Diese E-Mail-Adresse ist bereits vergeben.');
                 return $this->redirectToRoute('register');
             }
@@ -98,20 +103,30 @@ class IndexController extends AbstractController
             $userData->setRegisterOn(new \DateTime());
             $hashedPassword = $passwordHasher->hashPassword($userData, $userData->getPassword());
             $userData->setPassword($hashedPassword);
-
             $userData->setRoles(['ROLE_USER']);
 
             $entityManager = $doctrine->getManager();
             $entityManager->persist($userData);
             $entityManager->flush();
 
+            /**
+             * create new planet
+             * check if position is used !
+             */
+
+            $planetData = $planetController->initialPlanetData($user->getUni(), $planetRepository, $uniRepository);
+            dd($planetData);
+            #$planet = $doctrine->getRepository(Planet::class);
+
+
             // generate a signed url and email it to the user
-            $emailVerifier->sendEmailConfirmation('verify_email', $user,
+            $emailVerifier->sendEmailConfirmation(
+                'verify_email', $user,
                 (new TemplatedEmail())
                     ->from(new Address('account@space-tactics.com', 'Space-Tactics Account'))
                     ->to($userData->getEmail())
                     ->subject('Dein Account wurde erstellt')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
+                    ->htmlTemplate('registration/confirmation_email.html.twig'),
             );
 
             $this->session->getFlashBag()->add('success', 'Dein Account wurde erfolgreich erstellt.');
@@ -131,7 +146,8 @@ class IndexController extends AbstractController
         // validate email confirmation link, sets User::isVerified=true and persists
         try {
             $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
-        } catch (VerifyEmailExceptionInterface $exception) {
+        }
+        catch(VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 
             return $this->redirectToRoute('register');
@@ -144,17 +160,14 @@ class IndexController extends AbstractController
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
-        ]);
+                                   'data_class' => User::class,
+                               ]);
     }
 
     #[Route('/logout', name: 'logout')]
     public function logout(Security $security)
     {
-        $response = $security->logout(false);
-        return $this->redirectToRoute('index' );
+        $response = $security->logout(FALSE);
+        return $this->redirectToRoute('index');
     }
-
-
-
 }
