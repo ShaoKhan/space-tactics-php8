@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Planet;
 use App\Entity\User;
 use App\Form\Type\UserType;
 use App\Repository\PlanetRepository;
@@ -115,8 +116,9 @@ class IndexController extends AbstractController
              */
 
             $planetData = $planetController->initialPlanetData($user->getUni(), $planetRepository, $uniRepository);
+
             dd($planetData);
-            #$planet = $doctrine->getRepository(Planet::class);
+
 
 
             // generate a signed url and email it to the user
