@@ -14,8 +14,8 @@ class Planet
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $user_id = null;
+    #[ORM\Column(length: 255)]
+    private ?string $user_uuid = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -205,14 +205,14 @@ class Planet
         return $this->id;
     }
 
-    public function getUserId(): ?int
+    public function getUserUuid(): ?string
     {
-        return $this->user_id;
+        return $this->user_uuid;
     }
 
-    public function setUserId(int $user_id): self
+    public function setUserUuid(string $user_uuid): self
     {
-        $this->user_id = $user_id;
+        $this->user_uuid = $user_uuid;
 
         return $this;
     }

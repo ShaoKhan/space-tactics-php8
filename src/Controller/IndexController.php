@@ -94,13 +94,15 @@ class IndexController extends AbstractController
             $planetController = new PlanetController();
             $userData         = $form->getData();
             $email            = $doctrine->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+            $uuid             = $user->generateUuid();
 
             if($email) {
                 $this->session->getFlashBag()->add('error', 'Diese E-Mail-Adresse ist bereits vergeben.');
                 return $this->redirectToRoute('register');
             }
+
             /** @var User $userData */
-            $userData->setUuid($user->generateUuid());
+            $userData->setUuid($uuid);
             $userData->setRegisterOn(new \DateTime());
             $hashedPassword = $passwordHasher->hashPassword($userData, $userData->getPassword());
             $userData->setPassword($hashedPassword);
@@ -110,15 +112,21 @@ class IndexController extends AbstractController
             $entityManager->persist($userData);
             $entityManager->flush();
 
-            /**
-             * create new planet
-             * check if position is used !
-             */
-
-            $planetData = $planetController->initialPlanetData($user->getUni(), $planetRepository, $uniRepository);
-
-            dd($planetData);
-
+            $planetData = $planetController->initialPlanetData($planetRepository, $uniRepository);
+            $planet     = new Planet();
+            $planet->setUserUuid($uuid);
+            $planet->setUniverse($user->getUni());
+            $planet->setSystemX($planetData['system_x']);
+            $planet->setSystemY($planetData['system_y']);
+            $planet->setSystemZ($planetData['system_z']);
+            $planet->setName($planetData['name']);
+            $planet->setType($planetData['type']);
+            $planet->setMetal(10000);
+            $planet->setCrystal(7500);
+            $planet->setDeuterium(5000);
+            $planetManager = $doctrine->getManager();
+            $planetManager->persist($planet);
+            $planetManager->flush();
 
 
             // generate a signed url and email it to the user
@@ -128,7 +136,12 @@ class IndexController extends AbstractController
                     ->from(new Address('account@space-tactics.com', 'Space-Tactics Account'))
                     ->to($userData->getEmail())
                     ->subject('Dein Account wurde erstellt')
-                    ->htmlTemplate('registration/confirmation_email.html.twig'),
+                    ->htmlTemplate('registration/confirmation_email.html.twig')
+                    ->context([
+                                  'username'   => $user->getUsername(),
+                                  'planetname' => $planetData['name'],
+                              ]),
+
             );
 
             $this->session->getFlashBag()->add('success', 'Dein Account wurde erfolgreich erstellt.');

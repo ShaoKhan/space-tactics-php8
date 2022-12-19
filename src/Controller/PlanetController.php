@@ -23,7 +23,6 @@ class PlanetController extends AbstractController
     }
 
     public function initialPlanetData(
-        int $universe,
             $planetRepo,
             $uniRepo,
     ): array {
@@ -43,7 +42,6 @@ class PlanetController extends AbstractController
         if($isTaken === NULL) {
             return [
                 'name' => $this->randomName(),
-                'universe' => $universe,
                 'system_x' => $new_x,
                 'system_y' => $new_y,
                 'system_z' => $new_z,
