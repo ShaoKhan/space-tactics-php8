@@ -200,6 +200,9 @@ class Planet
     #[ORM\Column(nullable: true)]
     private ?int $dmcollector_ship = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $darkmatter = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -945,6 +948,18 @@ class Planet
     public function setDmcollectorShip(?int $dmcollector_ship): self
     {
         $this->dmcollector_ship = $dmcollector_ship;
+
+        return $this;
+    }
+
+    public function getDarkmatter(): ?float
+    {
+        return $this->darkmatter;
+    }
+
+    public function setDarkmatter(?float $darkmatter): self
+    {
+        $this->darkmatter = $darkmatter;
 
         return $this;
     }

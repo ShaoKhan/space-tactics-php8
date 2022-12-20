@@ -124,6 +124,7 @@ class IndexController extends AbstractController
             $planet->setMetal(10000);
             $planet->setCrystal(7500);
             $planet->setDeuterium(5000);
+            $planet->setDarkmatter(500);
             $planetManager = $doctrine->getManager();
             $planetManager->persist($planet);
             $planetManager->flush();
