@@ -1,3 +1,22 @@
-.hint{
+.hint {
   font-size: 0.5em;
+}
+
+#header {
+  nav {
+
+    .planet-switcher {
+      margin: 0 auto;
+    }
+
+  }
+}
+.planetData {
+  position: absolute;
+  background: rgba(89,89,89,0.5);
+  border: 1px solid #FFF;
+  color: #FFFFFF;
+  width: 500px;
+  height: 200px;
+  padding: 10px 20px;
 }
