@@ -12378,8 +12378,11 @@ section:last-child,
   font-size: 0.5em;
 }
 
-#header nav .planet-switcher {
-  margin: 0 auto;
+.planet-switcher-select {
+  background: transparent;
+  color: #000;
+  border: 0;
+  font-size: 1.3em;
 }
 
 .planetData {
@@ -12390,6 +12393,12 @@ section:last-child,
   width: 500px;
   height: 200px;
   padding: 10px 20px;
+}
+.planetData .planet-switcher-select-main {
+  background: transparent;
+  color: #FFF;
+  border: 0;
+  font-size: 1.5em;
 }
 
 .datalist .row {

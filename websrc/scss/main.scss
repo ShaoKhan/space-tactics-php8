@@ -2,21 +2,26 @@
   font-size: 0.5em;
 }
 
-#header {
-  nav {
-
-    .planet-switcher {
-      margin: 0 auto;
-    }
-
-  }
+.planet-switcher-select {
+  background: transparent;
+  color: #000;
+  border: 0;
+  font-size: 1.3em;
 }
+
 .planetData {
   position: absolute;
-  background: rgba(89,89,89,0.5);
+  background: rgba(89, 89, 89, 0.5);
   border: 1px solid #FFF;
   color: #FFFFFF;
   width: 500px;
   height: 200px;
   padding: 10px 20px;
+
+  .planet-switcher-select-main {
+    background: transparent;
+    color: #FFF;
+    border: 0;
+    font-size: 1.5em;
+  }
 }
