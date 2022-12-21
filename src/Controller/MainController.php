@@ -25,6 +25,7 @@ class MainController extends AbstractController
         }
 
         //ToDo needs Selected planet for display data and all others for dropdown
+        $planets = $planetRepo->findBy(['user_uuid' => $userdata[0]->getUuid()]);
 
         if($planetID !== null) {
             $planetdata = $planetRepo->findBy(['user_uuid' => $userdata[0]->getUuid(), 'id' => $planetID,]);
@@ -39,6 +40,8 @@ class MainController extends AbstractController
 
         return $this->render('main/index.html.twig', [
             'user'    => $userdata[0],
+            'selectPlanets' => $planets,
+            'selectedPlanet' => $planetID,
             'planets' => $planetdata,
             'planetData' => $planetTypeData,
         ]);

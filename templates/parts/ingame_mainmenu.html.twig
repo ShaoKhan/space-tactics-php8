@@ -12,26 +12,31 @@
 
                     <nav id="nav">
                         <div class="col-lg-12">
-                        <a href="#">Nachrichten</a>
-                        <a href="#">Metall: {{ planets.0.metal|number_format(0,',','.') }}</a>
-                        <a href="#">Kristall: {{ planets.0.crystal|number_format(0,',','.') }}</a>
-                        <a href="#">Deuterium: {{ planets.0.deuterium|number_format(0,',','.') }}</a>
-                        <a href="#">DM: {{ planets.0.darkmatter|number_format(0,',','.') }}</a>
-                        {% if app.user is not null %}
-                            <a href="{{ path('logout') }}" class="text-danger">Logout</a>
-                        {% endif %}
+                            <a href="#">Nachrichten</a>
+                            <a href="#">Metall: {{ planets.0.metal|number_format(0,',','.') }}</a>
+                            <a href="#">Kristall: {{ planets.0.crystal|number_format(0,',','.') }}</a>
+                            <a href="#">Deuterium: {{ planets.0.deuterium|number_format(0,',','.') }}</a>
+                            <a href="#">DM: {{ planets.0.darkmatter|number_format(0,',','.') }}</a>
+                            {% if app.user is not null %}
+                                <a href="{{ path('logout') }}" class="text-danger">Logout</a>
+                            {% endif %}
                         </div>
                         <div class="col-lg-12">
                             <div class="col-lg-4 planet-switcher">
-                                {% if planets|length > 1 %}
-                                    <select name="planet" class="form-control planet-switcher-select">
-                                        {% for planet in planets %}
-                                            <option value="{{ planet.id }}" class="text-center">{{ planet.name }} [{{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}]</option>
-                                        {% endfor %}
-                                    </select>
-                                {% else %}
-                                    <strong>Planet</strong>: {{ planets.0.name }} [{{ planets.0.systemX }}:{{ planets.0.systemY }}:{{ planets.0.systemZ }}]
-                                {% endif %}
+
+                                <select name="planet" class="form-control planet-switcher-select">
+                                    {% for planet in selectPlanets %}
+                                        <option
+                                                value="{{ planet.id }}"
+                                                class="text-center"
+                                                {{ planet.id == selectedPlanet ? 'selected' : '' }}
+                                        >
+                                            {{ planet.name }}
+                                            [{{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}]
+                                        </option>
+                                    {% endfor %}
+                                </select>
+
                             </div>
                         </div>
                     </nav>
