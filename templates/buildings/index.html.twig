@@ -22,9 +22,9 @@
                                         <select name="planet" class="form-control planet-switcher-select">
                                             {% for planet in selectPlanets %}
                                                 <option
-                                                        value="{{ planet.id }}"
+                                                        value="{{ planet.slug }}"
                                                         style="color: #000;"
-                                                        {{ planet.id == selectedPlanet ? 'selected' : '' }}
+                                                        {{ planet.slug == selectedPlanet ? 'selected' : '' }}
                                                 >
                                                     {{ planet.name }}
                                                     [{{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}]

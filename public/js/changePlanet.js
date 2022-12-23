@@ -5,7 +5,6 @@ $(document).ready(function () {
         let path = window.location.pathname.split('/');
         let referer = path[1];
         document.location.href = '/' + referer + '/' + $(this).children("option:selected").val();
-        //document.location.href = '/buildings/'+$(this).children("option:selected").val();
     })
 });
 

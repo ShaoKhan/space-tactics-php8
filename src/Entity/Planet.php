@@ -203,6 +203,9 @@ class Planet
     #[ORM\Column(nullable: true)]
     private ?float $darkmatter = null;
 
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $slug = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -960,6 +963,18 @@ class Planet
     public function setDarkmatter(?float $darkmatter): self
     {
         $this->darkmatter = $darkmatter;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
