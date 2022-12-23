@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+{% block title %}Space-Tactics Main{% endblock %}
+{% block body %}
+    {% include 'parts/ingame_mainmenu.html.twig' %}
+    <section id="content" class="main">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    {% if app.user is not null %}
+                        {% include 'parts/sidebar.html.twig' %}
+                    {% endif %}
+                </div>
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-7 col-md-12">
+                                <div class="row">
+                                    <div class="col-lg-6 mt-1">
+                                        <h3>{{ user.username }}, du befindest dich im Baumenü für: </h3>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select name="planet" class="form-control planet-switcher-select">
+                                            {% for planet in selectPlanets %}
+                                                <option
+                                                        value="{{ planet.id }}"
+                                                        style="color: #000;"
+                                                        {{ planet.id == selectedPlanet ? 'selected' : '' }}
+                                                >
+                                                    {{ planet.name }}
+                                                    [{{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}]
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'parts/footer.html.twig' %}
+{% endblock %}
