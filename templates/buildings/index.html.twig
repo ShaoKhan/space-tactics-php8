@@ -1,8 +1,13 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/buildings.css') }}" rel="stylesheet"/>
+{% endblock %}
 {% block title %}Space-Tactics Main{% endblock %}
 {% block body %}
+
     {% include 'parts/ingame_mainmenu.html.twig' %}
-    <section id="content" class="main">
+    <section id="content" class="main buildings-container">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-2 col-md-12">
@@ -35,7 +40,42 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="container-fluid mt-5 p-3">
+
+                            <div class="row buildings">
+                                <div class="col-lg-6 col-md-12 building p-3">
+                                    <div class="building-headline">Metallmine</div>
+                                    <div class="row">
+                                        <div class="col-6 building-image">
+                                            <img src="{{ asset('img/planets/1.jpg') }}" />
+                                        </div>
+                                        <div class="col-6 building-specs">
+                                            <span>Das ist eine Mine ... eine Miiiiiiiineeeeee</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 building-button">
+                                        <button type="button" class="btn btn-light">Ausbauen</button>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-md-12 building p-3">
+                                    <div class="building-headline">Kristallmine</div>
+                                    <div class="row">
+                                        <div class="col-6 building-image">
+                                            <img src="{{ asset('img/planets/1.jpg') }}"
+                                                 style="width: 100%; height: auto; display: inline-block;"/>
+                                        </div>
+                                        <div class="col-6 building-specs">
+                                            <span>Das ist eine ANDERE Mine ... eine Miiiiiiiineeeeee</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="button" class="btn btn-light">Ausbauen</button>
+                                    </div>
+                                </div>
+
+
+                            </div>
 
                         </div>
                     </section>

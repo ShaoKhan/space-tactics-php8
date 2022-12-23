@@ -1,0 +1,23 @@
+.buildings-container {
+  .buildings {
+
+    color: #FFF;
+
+    .building {
+      background: #2E3337;
+
+      &-headline {
+        background: rgba(255, 255, 255, 0.5);
+        text-align: center;
+        margin: 0 0 0.5em 0;
+      }
+
+      &-image {
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+    }
+  }
+}
