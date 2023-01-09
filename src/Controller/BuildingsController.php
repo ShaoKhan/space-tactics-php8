@@ -16,19 +16,19 @@ class BuildingsController extends AbstractController
     #[Route('/buildings/{slug?}', name: 'buildings')]
     public function index(
         ManagerRegistry        $managerRegistry,
-                               $slug = NULL,
         DependenciesRepository $dp,
-        BuildingsRepository    $b,
+        BuildingsRepository    $br,
         PlanetRepository       $p,
+        $slug = NULL,
     ): Response {
         $pl = new Planet();
+        $userid = $this->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planet    = $this->getPlanets($managerRegistry, $slug);
         $buildings = $pl->getAllBuildings();
 
-
         $planet["selectedPlanet"] = $planet["selectedPlanet"][0];
-
+        $planet["darkmatter"] = $p->getDarkmatter($userid)[0]['darkmatter'];
 
         return $this->render('buildings/index.html.twig', [
             'planets'   => $planet,

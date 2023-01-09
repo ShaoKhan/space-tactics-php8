@@ -14,7 +14,7 @@
                             <a href="#">Metall: {{ planets.selectedPlanet.metal|number_format(0,',','.') }}</a>
                             <a href="#">Kristall: {{ planets.selectedPlanet.crystal|number_format(0,',','.') }}</a>
                             <a href="#">Deuterium: {{ planets.selectedPlanet.deuterium|number_format(0,',','.') }}</a>
-                            <a href="#">DM: {{ planets.selectedPlanet.darkmatter|number_format(0,',','.') }}</a>
+                            <a href="#">DM: {{ planets.darkmatter|number_format(0,',','.') }}</a>
                             {% if app.user is not null %}
                                 <a href="{{ path('logout') }}" class="text-danger">Logout</a>
                             {% endif %}

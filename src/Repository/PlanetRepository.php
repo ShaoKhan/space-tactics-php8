@@ -137,6 +137,53 @@ class PlanetRepository extends ServiceEntityRepository
 
     }
 
+    public function getPlanetScience($uuid, $slug, ManagerRegistry $mr):array
+    {
+
+        $sr   = new ScienceRepository($mr);
+        $sr->createQueryBuilder('b');
+        $qb   = $this->createQueryBuilder('p')
+                     ->select(
+                         '
+            p.metal_building, 
+            p.crystal_building,
+            p.deuterium_building,
+            p.solar_building,
+            p.nuclear_building,
+            p.robot_building,
+            p.nanite_building,
+            p.hangar_building,
+            p.metalstorage_building,
+            p.crystalstorage_building,
+            p.deuteriumstorage_building,
+            p.laboratory_building,
+            p.university_building,
+            p.alliancehangar_building,
+            p.missilesilo_building
+            ',
+                     )
+                     ->andWhere('p.user_uuid = :val')
+                     ->andWhere('p.slug = :slug')
+                     ->setParameter('val', $uuid)
+                     ->setParameter('slug', $slug)
+                     ->getQuery()
+                     ->getResult();
+
+        return $qb;
+    }
+
+    public function getDarkmatter($uuid)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.darkmatter')
+            ->where('p.user_uuid = :uuid')
+            ->andWhere('p.darkmatter IS NOT null')
+            ->setParameter('uuid', $uuid)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 //    public function findOneBySomeField($value): ?Planet
 //    {
 //        return $this->createQueryBuilder('p')
