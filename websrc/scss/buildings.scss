@@ -1,10 +1,19 @@
 .buildings-container {
   .buildings {
-
     color: #FFF;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
 
     .building {
       background: #2E3337;
+      width: 40%;
+      min-width: 30%;
+      margin: 0 0 20px 0;
+      padding: 10px;
+      border: 1px solid #2E3337;
 
       &-headline {
         background: rgba(255, 255, 255, 0.5);

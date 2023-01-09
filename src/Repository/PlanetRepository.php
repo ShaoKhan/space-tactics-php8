@@ -2,10 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Buildings;
 use App\Entity\Planet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use MongoDB\Driver\Manager;
 
 /**
  * @extends ServiceEntityRepository<Planet>
@@ -75,31 +75,67 @@ class PlanetRepository extends ServiceEntityRepository
     {
 
         return $this->createQueryBuilder('p')
-                   ->andWhere('p.user_uuid = :val')
-                   ->andWhere('p.slug = :slug')
-                   ->setParameter('val', $userid)
-                   ->setParameter('slug', $slug)
-                   ->getQuery()
-                   ->getResult();
-    }
-
-    public function getPlanetBuildings($uuid, $slug, ManagerRegistry $mr)
-    {
-
-        $br = new BuildingsRepository($mr);
-        $brqb = ($br->createQueryBuilder('b'));
-
-        $qb = $this->createQueryBuilder('p')
                     ->andWhere('p.user_uuid = :val')
                     ->andWhere('p.slug = :slug')
-                    ->setParameter('val', $uuid)
+                    ->setParameter('val', $userid)
                     ->setParameter('slug', $slug)
                     ->getQuery()
                     ->getResult();
+    }
+
+    /**
+     * @param                 $uuid
+     * @param                 $slug
+     * @param ManagerRegistry $mr
+     *
+     * @return array Buildings
+     */
+    public function getPlanetBuildings($uuid, $slug, ManagerRegistry $mr):array
+    {
+
+        $br   = new BuildingsRepository($mr);
+        $brqb = ($br->createQueryBuilder('b'));
+        $qb   = $this->createQueryBuilder('p')
+                     ->select(
+                         '
+            p.metal_building, 
+            p.crystal_building,
+            p.deuterium_building,
+            p.solar_building,
+            p.nuclear_building,
+            p.robot_building,
+            p.nanite_building,
+            p.hangar_building,
+            p.metalstorage_building,
+            p.crystalstorage_building,
+            p.deuteriumstorage_building,
+            p.laboratory_building,
+            p.university_building,
+            p.alliancehangar_building,
+            p.missilesilo_building
+            ',
+                     )
+                     ->andWhere('p.user_uuid = :val')
+                     ->andWhere('p.slug = :slug')
+                     ->setParameter('val', $uuid)
+                     ->setParameter('slug', $slug)
+                     ->getQuery()
+                     ->getResult();
 
         return $qb;
     }
 
+    public function getPlanetNamesByUuid(string $uuid)
+    {
+
+        return $this->createQueryBuilder('p')
+            #->select('p.name as name, p.slug as slug, p.system_x, p.system_y, p-system_z')
+                    ->andWhere('p.user_uuid = :val')
+                    ->setParameter('val', $uuid)
+                    ->getQuery()
+                    ->getResult();
+
+    }
 
 //    public function findOneBySomeField($value): ?Planet
 //    {

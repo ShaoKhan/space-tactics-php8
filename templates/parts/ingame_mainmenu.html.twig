@@ -11,10 +11,10 @@
                     <nav id="nav">
                         <div class="col-lg-12">
                             <a href="#">Nachrichten</a>
-                            <a href="#">Metall: {{ planets.0.metal|number_format(0,',','.') }}</a>
-                            <a href="#">Kristall: {{ planets.0.crystal|number_format(0,',','.') }}</a>
-                            <a href="#">Deuterium: {{ planets.0.deuterium|number_format(0,',','.') }}</a>
-                            <a href="#">DM: {{ planets.0.darkmatter|number_format(0,',','.') }}</a>
+                            <a href="#">Metall: {{ planets.selectedPlanet.metal|number_format(0,',','.') }}</a>
+                            <a href="#">Kristall: {{ planets.selectedPlanet.crystal|number_format(0,',','.') }}</a>
+                            <a href="#">Deuterium: {{ planets.selectedPlanet.deuterium|number_format(0,',','.') }}</a>
+                            <a href="#">DM: {{ planets.selectedPlanet.darkmatter|number_format(0,',','.') }}</a>
                             {% if app.user is not null %}
                                 <a href="{{ path('logout') }}" class="text-danger">Logout</a>
                             {% endif %}
