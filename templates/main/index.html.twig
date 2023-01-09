@@ -12,13 +12,11 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-2 col-md-12">
-                    <!-- Sidebar -->
                     {% if app.user is not null %}
                         {% include 'parts/sidebar.html.twig' %}
                     {% endif %}
                 </div>
 
-                <!-- Main Content -->
                 <div class="col-lg-10 col-md-12">
                     <section>
                         <div class="row">
@@ -32,11 +30,37 @@
                                 <div class="col-lg-12 science"><strong>Forschung</strong>:</div>
                                 <div class="col-lg-12 fleet mb-3"><strong>Flotte</strong>:</div>
                             </div>
-                            <div class="col-lg-7 col-md-12" style="background: url({{ asset('img/'~planetData.0.image) }}); height: 510px;">
+                            <div class="col-lg-7 col-md-12"
+                                 style="background: url({{ asset('img/'~planets.selectedPlanetData.0.image) }}); height: 510px;">
                                 <div class="planetData">
-                                    <div class="">Größe: {{ planetData.0.diameter|number_format(0,',','.') }} km &Oslash;</div>
-                                    <div class="">Temperatur: {{ planetData.0.tempMin }}°C / {{ planetData.0.tempMax }}°C</div>
-                                    <div class="">Durchmesser: {{ planetData.0.fields }}/{{ planetData.0.fieldsMax }} Felder</div>
+                                    <div class="col-lg-8">
+                                        <select name="planet" class="form-control planet-switcher-select-main">
+                                            {% for planet in planets.playerPlanets %}
+
+                                                <option
+                                                        value="{{ planet.slug }}"
+                                                        style="color: #000;"
+                                                        {{ planet.slug == slug ? 'selected' : '' }}
+                                                >
+                                                    {{ planet.name }}
+                                                    [{{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}]
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        Größe: {{ planets.selectedPlanetData.0.diameter|number_format(0,',','.') }} km
+                                        &Oslash;
+                                    </div>
+                                    <div>
+                                        Temperatur: {{ planets.selectedPlanetData.0.tempMin }}°C
+                                        / {{ planets.selectedPlanetData.0.tempMax }}°C
+                                    </div>
+                                    <div>
+                                        Durchmesser: {{ planets.selectedPlanetData.0.fields }}
+                                        /{{ planets.selectedPlanetData.0.fieldsMax }}
+                                        Felder
+                                    </div>
                                 </div>
                             </div>
                         </div>

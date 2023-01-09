@@ -94,7 +94,7 @@ class IndexController extends AbstractController
             $planetController = new PlanetController();
             $userData         = $form->getData();
             $email            = $doctrine->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
-            $uuid             = $user->generateUuid();
+            $uuid             = $this->generateUuid();
 
             if($email) {
                 $this->session->getFlashBag()->add('error', 'Diese E-Mail-Adresse ist bereits vergeben.');
@@ -125,6 +125,7 @@ class IndexController extends AbstractController
             $planet->setCrystal(7500);
             $planet->setDeuterium(5000);
             $planet->setDarkmatter(500);
+            $planet->setSlug($this->generateUuid());
             $planetManager = $doctrine->getManager();
             $planetManager->persist($planet);
             $planetManager->flush();

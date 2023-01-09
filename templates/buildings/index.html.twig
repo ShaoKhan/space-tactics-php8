@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/buildings.css') }}" rel="stylesheet"/>
+{% endblock %}
+{% block title %}Space-Tactics Main{% endblock %}
+{% block body %}
+
+    {% include 'parts/ingame_mainmenu.html.twig' %}
+    <section id="content" class="main buildings-container">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    {% if app.user is not null %}
+                        {% include 'parts/sidebar.html.twig' %}
+                    {% endif %}
+                </div>
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-7 col-md-12">
+                                <div class="row">
+                                    <div class="col-lg-6 mt-1">
+                                        <h3>{{ user.username }}, du befindest dich im Baumenü für: </h3>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <select name="planet" class="form-control planet-switcher-select">
+                                            {% for planet in planets.playerPlanets %}
+
+                                                <option
+                                                        value="{{ planet.slug }}"
+                                                        style="color: #000;"
+                                                        {{ planet.slug == slug ? 'selected' : '' }}
+                                                >
+                                                    {{ planet.name }}
+                                                    [{{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}]
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-fluid">
+
+                            <div class="buildings">
+                                {% for building in buildings %}
+                                    <div class="building">
+                                        <div class="building-headline">Metallmine</div>
+                                        <div class="row">
+                                            <div class="col-6 building-image">
+                                                <img src="{{ asset('img/planets/1.jpg') }}"/>
+                                            </div>
+                                            <div class="col-6 building-specs">
+                                                <span>Das ist eine Mine ... eine Miiiiiiiineeeeee</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 building-button">
+                                            <button type="button" class="btn btn-light">Ausbauen</button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% include 'parts/footer.html.twig' %}
+{% endblock %}

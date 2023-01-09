@@ -12,196 +12,199 @@ class Planet
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $id = NULL;
 
     #[ORM\Column(length: 255)]
-    private ?string $user_uuid = null;
+    private ?string $user_uuid = NULL;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private ?string $name = NULL;
 
     #[ORM\Column]
-    private ?int $universe = null;
+    private ?int $universe = NULL;
 
     #[ORM\Column]
-    private ?int $system_x = null;
+    private ?int $system_x = NULL;
 
     #[ORM\Column]
-    private ?int $system_y = null;
+    private ?int $system_y = NULL;
 
     #[ORM\Column]
-    private ?int $system_z = null;
+    private ?int $system_z = NULL;
 
     #[ORM\Column]
-    private ?int $type = null;
+    private ?int $type = NULL;
 
-    #[ORM\Column(type: Types::SMALLINT, nullable: true)]
-    private ?int $destroyed = null;
+    #[ORM\Column(type: Types::SMALLINT, nullable: TRUE)]
+    private ?int $destroyed = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $metal = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?float $metal = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $metal_max = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?float $metal_max = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $crystal = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?float $crystal = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $crystal_max = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?float $crystal_max = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $deuterium = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?float $deuterium = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $deuterium_max = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?float $deuterium_max = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $metal_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $metal_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $crystal_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $crystal_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $deuterium_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $deuterium_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $solar_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $solar_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $nuclear_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $nuclear_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $robot_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $robot_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $nanite_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $nanite_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $hangar_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $hangar_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $metalstorage_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $metalstorage_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $crystalstorage_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $crystalstorage_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $deuteriumstorage_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $deuteriumstorage_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $laboratory_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $laboratory_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $university_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $university_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $alliancehangar_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $alliancehangar_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $missilesilo_building = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $missilesilo_building = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $missilelauncher_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $missilelauncher_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $phalanx_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $phalanx_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $smalllaser_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $smalllaser_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $biglaser_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $biglaser_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $gausscannon_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $gausscannon_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $ioncannon_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $ioncannon_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $plasmacannon_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $plasmacannon_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $smallshield_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $smallshield_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $bigshield_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $bigshield_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $planetshield_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $planetshield_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $gravitoncannon_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $gravitoncannon_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $interceptormissile_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $interceptormissile_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $orbitaldefenseplatform_defense = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $orbitaldefenseplatform_defense = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $smalltransportship_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $smalltransportship_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $bigtransportship_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $bigtransportship_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $lighthunter_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $lighthunter_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $heavyhunter_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $heavyhunter_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $cruiser_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $cruiser_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $battleship_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $battleship_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $colonyship_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $colonyship_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $smallrecycler_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $smallrecycler_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $mediumrecycler_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $mediumrecycler_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $bigrecycler_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $bigrecycler_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $spyprobe_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $spyprobe_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $bomber_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $bomber_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $solarsatellite_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $solarsatellite_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $destroyer_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $destroyer_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $deathstar_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $deathstar_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $battlecruiser_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $battlecruiser_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $lunenoire_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $lunenoire_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $evolutiontransporter_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $evolutiontransporter_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $gigarecycler_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $gigarecycler_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $dmcollector_ship = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?int $dmcollector_ship = NULL;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $darkmatter = null;
+    #[ORM\Column(nullable: TRUE)]
+    private ?float $darkmatter = NULL;
+
+    #[ORM\Column(length: 255, unique: TRUE)]
+    private ?string $slug = NULL;
 
     public function getId(): ?int
     {
@@ -372,186 +375,6 @@ class Planet
     public function setDeuteriumMax(?float $deuterium_max): self
     {
         $this->deuterium_max = $deuterium_max;
-
-        return $this;
-    }
-
-    public function getMetalBuilding(): ?int
-    {
-        return $this->metal_building;
-    }
-
-    public function setMetalBuilding(?int $metal_building): self
-    {
-        $this->metal_building = $metal_building;
-
-        return $this;
-    }
-
-    public function getCrystalBuilding(): ?int
-    {
-        return $this->crystal_building;
-    }
-
-    public function setCrystalBuilding(?int $crystal_building): self
-    {
-        $this->crystal_building = $crystal_building;
-
-        return $this;
-    }
-
-    public function getDeuteriumBuilding(): ?int
-    {
-        return $this->deuterium_building;
-    }
-
-    public function setDeuteriumBuilding(?int $deuterium_building): self
-    {
-        $this->deuterium_building = $deuterium_building;
-
-        return $this;
-    }
-
-    public function getSolarBuilding(): ?int
-    {
-        return $this->solar_building;
-    }
-
-    public function setSolarBuilding(?int $solar_building): self
-    {
-        $this->solar_building = $solar_building;
-
-        return $this;
-    }
-
-    public function getNuclearBuilding(): ?int
-    {
-        return $this->nuclear_building;
-    }
-
-    public function setNuclearBuilding(?int $nuclear_building): self
-    {
-        $this->nuclear_building = $nuclear_building;
-
-        return $this;
-    }
-
-    public function getRobotBuilding(): ?int
-    {
-        return $this->robot_building;
-    }
-
-    public function setRobotBuilding(?int $robot_building): self
-    {
-        $this->robot_building = $robot_building;
-
-        return $this;
-    }
-
-    public function getNaniteBuilding(): ?int
-    {
-        return $this->nanite_building;
-    }
-
-    public function setNaniteBuilding(?int $nanite_building): self
-    {
-        $this->nanite_building = $nanite_building;
-
-        return $this;
-    }
-
-    public function getHangarBuilding(): ?int
-    {
-        return $this->hangar_building;
-    }
-
-    public function setHangarBuilding(?int $hangar_building): self
-    {
-        $this->hangar_building = $hangar_building;
-
-        return $this;
-    }
-
-    public function getMetalstorageBuilding(): ?int
-    {
-        return $this->metalstorage_building;
-    }
-
-    public function setMetalstorageBuilding(?int $metalstorage_building): self
-    {
-        $this->metalstorage_building = $metalstorage_building;
-
-        return $this;
-    }
-
-    public function getCrystalstorageBuilding(): ?int
-    {
-        return $this->crystalstorage_building;
-    }
-
-    public function setCrystalstorageBuilding(?int $crystalstorage_building): self
-    {
-        $this->crystalstorage_building = $crystalstorage_building;
-
-        return $this;
-    }
-
-    public function getDeuteriumstorageBuilding(): ?int
-    {
-        return $this->deuteriumstorage_building;
-    }
-
-    public function setDeuteriumstorageBuilding(?int $deuteriumstorage_building): self
-    {
-        $this->deuteriumstorage_building = $deuteriumstorage_building;
-
-        return $this;
-    }
-
-    public function getLaboratoryBuilding(): ?int
-    {
-        return $this->laboratory_building;
-    }
-
-    public function setLaboratoryBuilding(?int $laboratory_building): self
-    {
-        $this->laboratory_building = $laboratory_building;
-
-        return $this;
-    }
-
-    public function getUniversityBuilding(): ?int
-    {
-        return $this->university_building;
-    }
-
-    public function setUniversityBuilding(?int $university_building): self
-    {
-        $this->university_building = $university_building;
-
-        return $this;
-    }
-
-    public function getAlliancehangarBuilding(): ?int
-    {
-        return $this->alliancehangar_building;
-    }
-
-    public function setAlliancehangarBuilding(?int $alliancehangar_building): self
-    {
-        $this->alliancehangar_building = $alliancehangar_building;
-
-        return $this;
-    }
-
-    public function getMissilesiloBuilding(): ?int
-    {
-        return $this->missilesilo_building;
-    }
-
-    public function setMissilesiloBuilding(?int $missilesilo_building): self
-    {
-        $this->missilesilo_building = $missilesilo_building;
 
         return $this;
     }
@@ -960,6 +783,219 @@ class Planet
     public function setDarkmatter(?float $darkmatter): self
     {
         $this->darkmatter = $darkmatter;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getAllBuildings(): array
+    {
+        $buildings[1] = ['name' => 'metal_building', 'level' => $this->getMetalBuilding()];
+        $buildings[2] = ['name' => 'crystal_building', 'level' => $this->getCrystalBuilding()];
+        $buildings[3]  = ['name' => 'deuterium_building', 'level' => $this->getDeuteriumBuilding()];
+        $buildings[4]  = ['name' => 'solar_building', 'level' => $this->getSolarBuilding()];
+        $buildings[5]  = ['name' => 'university_building', 'level' => $this->getLaboratoryBuilding()];
+        $buildings[6]  = ['name' => 'nuclear_building', 'level' => $this->getUniversityBuilding()];
+        $buildings[7]  = ['name' => 'robot_building', 'level' => $this->getNuclearBuilding()];
+        $buildings[8]  = ['name' => 'nanite_building', 'level' => $this->getRobotBuilding()];
+        $buildings[9]  = ['name' => 'hangar_building', 'level' => $this->getNaniteBuilding()];
+        $buildings[10]  = ['name' => 'metalstorage_building', 'level' => $this->getHangarBuilding()];
+        $buildings[11]  = ['name' => 'crystalstorage_building', 'level' => $this->getMetalstorageBuilding()];
+        $buildings[12]  = ['name' => 'deuteriumstorage_building', 'level' => $this->getCrystalstorageBuilding()];
+        $buildings[13]  = ['name' => 'laboratory_building', 'level' => $this->getDeuteriumstorageBuilding()];
+        $buildings[15]  = ['name' => 'alliancehangar_building', 'level' => $this->getAlliancehangarBuilding()];
+        $buildings[17]  = ['name' => 'missilesilo_building', 'level' => $this->getMissilesiloBuilding()];
+
+        return $buildings;
+    }
+
+    public function getMetalBuilding(): ?int
+    {
+        return $this->metal_building;
+    }
+
+    public function setMetalBuilding(?int $metal_building): self
+    {
+        $this->metal_building = $metal_building;
+
+        return $this;
+    }
+
+    public function getCrystalBuilding(): ?int
+    {
+        return $this->crystal_building;
+    }
+
+    public function setCrystalBuilding(?int $crystal_building): self
+    {
+        $this->crystal_building = $crystal_building;
+
+        return $this;
+    }
+
+    public function getDeuteriumBuilding(): ?int
+    {
+        return $this->deuterium_building;
+    }
+
+    public function setDeuteriumBuilding(?int $deuterium_building): self
+    {
+        $this->deuterium_building = $deuterium_building;
+
+        return $this;
+    }
+
+    public function getSolarBuilding(): ?int
+    {
+        return $this->solar_building;
+    }
+
+    public function setSolarBuilding(?int $solar_building): self
+    {
+        $this->solar_building = $solar_building;
+
+        return $this;
+    }
+
+    public function getUniversityBuilding(): ?int
+    {
+        return $this->university_building;
+    }
+
+    public function setUniversityBuilding(?int $university_building): self
+    {
+        $this->university_building = $university_building;
+
+        return $this;
+    }
+
+    public function getNuclearBuilding(): ?int
+    {
+        return $this->nuclear_building;
+    }
+
+    public function setNuclearBuilding(?int $nuclear_building): self
+    {
+        $this->nuclear_building = $nuclear_building;
+
+        return $this;
+    }
+
+    public function getRobotBuilding(): ?int
+    {
+        return $this->robot_building;
+    }
+
+    public function setRobotBuilding(?int $robot_building): self
+    {
+        $this->robot_building = $robot_building;
+
+        return $this;
+    }
+
+    public function getNaniteBuilding(): ?int
+    {
+        return $this->nanite_building;
+    }
+
+    public function setNaniteBuilding(?int $nanite_building): self
+    {
+        $this->nanite_building = $nanite_building;
+
+        return $this;
+    }
+
+    public function getHangarBuilding(): ?int
+    {
+        return $this->hangar_building;
+    }
+
+    public function setHangarBuilding(?int $hangar_building): self
+    {
+        $this->hangar_building = $hangar_building;
+
+        return $this;
+    }
+
+    public function getMetalstorageBuilding(): ?int
+    {
+        return $this->metalstorage_building;
+    }
+
+    public function setMetalstorageBuilding(?int $metalstorage_building): self
+    {
+        $this->metalstorage_building = $metalstorage_building;
+
+        return $this;
+    }
+
+    public function getCrystalstorageBuilding(): ?int
+    {
+        return $this->crystalstorage_building;
+    }
+
+    public function setCrystalstorageBuilding(?int $crystalstorage_building): self
+    {
+        $this->crystalstorage_building = $crystalstorage_building;
+
+        return $this;
+    }
+
+    public function getDeuteriumstorageBuilding(): ?int
+    {
+        return $this->deuteriumstorage_building;
+    }
+
+    public function setDeuteriumstorageBuilding(?int $deuteriumstorage_building): self
+    {
+        $this->deuteriumstorage_building = $deuteriumstorage_building;
+
+        return $this;
+    }
+
+    public function getLaboratoryBuilding(): ?int
+    {
+        return $this->laboratory_building;
+    }
+
+    public function setLaboratoryBuilding(?int $laboratory_building): self
+    {
+        $this->laboratory_building = $laboratory_building;
+
+        return $this;
+    }
+
+    public function getAlliancehangarBuilding(): ?int
+    {
+        return $this->alliancehangar_building;
+    }
+
+    public function setAlliancehangarBuilding(?int $alliancehangar_building): self
+    {
+        $this->alliancehangar_building = $alliancehangar_building;
+
+        return $this;
+    }
+
+    public function getMissilesiloBuilding(): ?int
+    {
+        return $this->missilesilo_building;
+    }
+
+    public function setMissilesiloBuilding(?int $missilesilo_building): self
+    {
+        $this->missilesilo_building = $missilesilo_building;
 
         return $this;
     }
