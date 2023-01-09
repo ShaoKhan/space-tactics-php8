@@ -2,36 +2,34 @@
 
 namespace App\Controller;
 
+use App\Entity\Planet;
 use App\Repository\PlanetRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MainController extends AbstractController
+class ScienceController extends AbstractController
 {
-    #[Route('/main/{slug?}', name: 'main')]
+    #[Route('/science/{slug?}', name: 'science')]
     public function index(
-        Request $request,
-        ManagerRegistry $managerRegistry,
+        ManagerRegistry  $managerRegistry,
+                         $slug = NULL,
         PlanetRepository $p,
-        $slug = NULL
-    ): Response
-    {
+    ): Response {
+        $pl     = new Planet();
         $userid = $this->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planet                   = $this->getPlanets($managerRegistry, $slug);
         $planet["selectedPlanet"] = $planet["selectedPlanet"][0];
-        $planet["darkmatter"]     = $p->getDarkmatter($userid)[0]['darkmatter'];
+        $planet["darkmatter"] = $p->getDarkmatter($userid)[0]['darkmatter'];
+        $science                  = $p->getPlanetScience($userid, $slug, $managerRegistry);
 
-        if($request->get('slug') !== NULL) {
-            $slug = $request->get('slug');
-        }
-        return $this->render('main/index.html.twig', [
+        return $this->render('science/index.html.twig', [
             'planets' => $planet,
             'user'    => $this->getUser(),
             'slug'    => $slug,
+            'science' => $science ?? NULL,
         ]);
     }
 }
