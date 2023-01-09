@@ -184,6 +184,15 @@ class PlanetRepository extends ServiceEntityRepository
             ;
     }
 
+    public function getAllCoords()
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.system_x, p.system_y, p.system_z')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
 //    public function findOneBySomeField($value): ?Planet
 //    {
 //        return $this->createQueryBuilder('p')

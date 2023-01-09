@@ -12405,6 +12405,25 @@ section:last-child,
   border-bottom: 1px solid #3B4346;
 }
 
+.galaxy {
+  background: #0c4128;
+  display: flex;
+  flex-flow: row wrap;
+  align-content: space-between;
+  justify-content: space-between;
+  width: 100%;
+  height: 100vh;
+}
+
+.galaxy-item {
+  width: 5px;
+  height: 3px;
+  text-align: center;
+}
+.galaxy-item:hover {
+  background: #69e527;
+}
+
 .container-fluid, .container-sm, .container-md, .container-lg, .container-xl, .container-xxl {
   padding-left: 0;
 }
