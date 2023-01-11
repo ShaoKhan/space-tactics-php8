@@ -39,6 +39,15 @@ class UniRepository extends ServiceEntityRepository
         }
     }
 
+    public function getUniDimensions()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u.galaxy_width', 'u.galaxy_height', 'u.galaxy_depth')
+            ->getQuery()
+            ->getResult();
+    }
+
+
 //    /**
 //     * @return Uni[] Returns an array of Uni objects
 //     */

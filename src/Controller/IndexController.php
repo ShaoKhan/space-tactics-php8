@@ -34,9 +34,19 @@ class IndexController extends AbstractController
     }
 
     #[Route('/', name: 'index')]
-    public function index(TranslatorInterface $trans, Request $request, RequestStack $requestStack)
-    {
+    public function index(
+        TranslatorInterface $trans,
+        PlanetRepository    $pr,
+    ) {
+        if($this->getUser() !== NULL) {
+            $planet = $pr->findBy(['user_uuid' => $this->getUser()->getUuid()]);
+            if($planet !== NULL) {
+                return $this->redirectToRoute('main');
+            }
+        }
+
         $msg = $trans->trans('index.welcome');
+
         return $this->render('index.html.twig', [
             'msg' => $msg,
         ]);

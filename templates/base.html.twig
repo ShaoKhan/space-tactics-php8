@@ -6,14 +6,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/index.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('css/index.css') }}"/>
+        <link rel="manifest" href="{{ asset('site.webmanifest') }}"/>
     {% endblock %}
 </head>
 <body class="subpage">
 <div id="page-wrapper">
 
     {% block mainmenu %}{% endblock %}
-
     {% block body %}{% endblock %}
 
     {% if app.user is not null %}
@@ -23,13 +23,13 @@
 </div>
 
 <!-- Scripts -->
- <script src="{{ asset('js/index.js') }}" type="module"></script>
-{#<script src="{{ asset('js/jquery.min.js') }}"></script>
+<script src="{{ asset('js/index.js') }}" type="module"></script>
+{# <script src="{{ asset('js/jquery.min.js') }}"></script>
 <script src="{{ asset('js/browser.min.js') }}"></script>
 <script src="{{ asset('js/breakpoints.min.js') }}"></script>
 <script src="{{ asset('js/util.js') }}"></script>
 <script src="{{ asset('js/main.js') }}"></script>
-<script src="{{ asset('js/changePlanet.js') }}"></script>#}
+<script src="{{ asset('js/changePlanet.js') }}"></script> #}
 
 </body>
 </html>

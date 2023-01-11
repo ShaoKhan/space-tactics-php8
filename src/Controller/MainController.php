@@ -28,6 +28,7 @@ class MainController extends AbstractController
         if($request->get('slug') !== NULL) {
             $slug = $request->get('slug');
         }
+
         return $this->render('main/index.html.twig', [
             'planets' => $planet,
             'user'    => $this->getUser(),
