@@ -1,19 +1,28 @@
 .galaxy {
-  background: #0c4128;
+  background: #FFF;
   display: flex;
   flex-flow: row wrap;
   align-content: space-between;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
-  height: 100vh;
-}
-.galaxy-item {
-  width: 5px;
-  height: 5px;
-  text-align: center;
+  height: 100%;
 
-  &:hover{
-    background: #69e527;
+
+  .galaxy-row {
+
+    .galaxy-item {
+      text-align: center;
+      border: 1px solid #000;
+      background: #0c4128;
+      float: left;
+
+     &.populated {
+        background: #69e527;
+      }
+
+      &:hover {
+        background: #ff0800;
+      }
+    }
   }
-
 }

@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Uni;
 use App\Repository\PlanetRepository;
 use App\Repository\UniRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,32 +14,47 @@ class GalaxymapController extends AbstractController
 {
     #[Route('/galaxymap/{slug?}', name: 'galaxymap')]
     public function index(
-        Request $request,
-        ManagerRegistry $managerRegistry,
+        Request          $request,
+        ManagerRegistry  $managerRegistry,
         PlanetRepository $p,
-        UniRepository $ur,
-        $slug = NULL
+        UniRepository    $ur,
+        $slug = NULL,
 
-    ): Response
-    {
-        $userid = $this->getUser()->getUuid();
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_USER');
+        $userid                   = $this->getUser()->getUuid();
         $planet                   = $this->getPlanets($managerRegistry, $slug);
         $planet["selectedPlanet"] = $planet["selectedPlanet"][0];
         $planet["darkmatter"]     = $p->getDarkmatter($userid)[0]['darkmatter'];
-        $uniDimensions = $ur->getUniDimensions()[0];
+        $uniDimensions            = $ur->getUniDimensions()[0];
 
         if($request->get('slug') !== NULL) {
             $slug = $request->get('slug');
         }
 
+        if($uniDimensions["galaxy_width"] <= 50 && $uniDimensions["galaxy_height"] <= 50) {
+            $uniDimensions['itemsize']  = 27;
+            $uniDimensions['break'] = 50;
+
+        } elseif($uniDimensions["galaxy_width"] <= 100 && $uniDimensions["galaxy_height"] <= 100) {
+            $uniDimensions['itemsize'] = 13;
+            $uniDimensions['break'] = 100;
+        }elseif($uniDimensions["galaxy_width"] <= 200 && $uniDimensions["galaxy_height"] <= 200) {
+            $uniDimensions['itemsize']  = 6.7;
+            $uniDimensions['break'] = 200;
+        }else{
+            $uniDimensions['itemsize'] = 0;
+            $uniDimensions['break'] = 0;
+        }
+
         $coords = $p->getAllCoords();
 
         return $this->render('galaxymap/index.html.twig', [
-            'planets' => $planet,
-            'user'    => $this->getUser(),
-            'slug'    => $slug,
+            'planets'    => $planet,
+            'user'       => $this->getUser(),
+            'slug'       => $slug,
             'dimensions' => $uniDimensions,
+            'coords' => $coords,
         ]);
     }
 }

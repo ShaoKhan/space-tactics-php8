@@ -14,8 +14,8 @@ class ScienceController extends AbstractController
     #[Route('/science/{slug?}', name: 'science')]
     public function index(
         ManagerRegistry  $managerRegistry,
-                         $slug = NULL,
         PlanetRepository $p,
+        $slug = NULL,
     ): Response {
         $pl     = new Planet();
         $userid = $this->getUser()->getUuid();

@@ -12406,22 +12406,25 @@ section:last-child,
 }
 
 .galaxy {
-  background: #0c4128;
+  background: #FFF;
   display: flex;
   flex-flow: row wrap;
   align-content: space-between;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
-  height: 100vh;
+  height: 100%;
 }
-
-.galaxy-item {
-  width: 5px;
-  height: 3px;
+.galaxy .galaxy-row .galaxy-item {
   text-align: center;
+  border: 1px solid #000;
+  background: #0c4128;
+  float: left;
 }
-.galaxy-item:hover {
+.galaxy .galaxy-row .galaxy-item.populated {
   background: #69e527;
+}
+.galaxy .galaxy-row .galaxy-item:hover {
+  background: #ff0800;
 }
 
 .container-fluid, .container-sm, .container-md, .container-lg, .container-xl, .container-xxl {

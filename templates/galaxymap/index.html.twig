@@ -27,16 +27,27 @@
                             </div>
                         </div>
                         <div class="container-fluid">
+                            {% if dimensions.itemsize > 0 %}
                             {% set width = dimensions.galaxy_width %}
                             {% set height = dimensions.galaxy_height %}
 
                             <div class="galaxy">
-                            {% for i in 1..width %}
-                                <div class="galaxy-item"></div>
-                                {% for j in 1..height %}
-                                    <div class="galaxy-item"></div>
+                                {% for i in 1..width %}
+                                    <div class="galaxy-row">
+                                    {% for j in 1..height %}
+                                        <div class="galaxy-item {% for coord in coords %}{{ coord.x == i and coord.y == j ? ' populated' : '' }}{% endfor %}"
+                                             data-toggle="tooltip" data-placement="bottom"
+                                             data-html="true" title="{{ i }}:{{ j }}"
+                                             style="width: {{ dimensions.itemsize }}px; height: {{ dimensions.itemsize }}px;">
+                                        </div>
+
+                                        {% if j is divisible by(dimensions.break) %}
+                                            </div>
+                                        {% endif %}
+
+                                    {% endfor %}
                                 {% endfor %}
-                            {% endfor %}
+                                {% endif %}
                             </div>
 
                         </div>

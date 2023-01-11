@@ -452,7 +452,7 @@ class UniType extends AbstractType
                 ],
             ])
             ->add('galaxy_width', TextType::class, [
-                'label'      => 'Breite des Universums',
+                'label'      => 'Breite des Universums (empfohlen max. 100)',
                 'label_attr' => [
                     'class' => 'col-4 col-form-label col-lg-4',
                     'for'   => 'galaxy_width',
@@ -464,7 +464,7 @@ class UniType extends AbstractType
                 ],
             ])
             ->add('galaxy_height', TextType::class, [
-                'label'      => 'Höhe des Universums',
+                'label'      => 'Höhe des Universums (empfohlen max. 100)',
                 'label_attr' => [
                     'class' => 'col-4 col-form-label col-lg-4',
                     'for'   => 'galaxy_height',
