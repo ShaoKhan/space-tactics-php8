@@ -21,7 +21,7 @@
                             <div class="col-lg-7 col-md-12">
                                 <div class="row">
                                     <div class="col-lg-6 mt-1">
-                                        <h3>{{ user.username }}, dein letzter Scan zeigt dir folgendes an! </h3>
+                                        <h3>{{ user.username }}, dein letzter Scan zeigt dir Folgendes an! </h3>
                                     </div>
                                 </div>
                             </div>
@@ -37,19 +37,17 @@
                                     {% for j in 1..height %}
                                         <div class="galaxy-item {% for coord in coords %}{{ coord.x == i and coord.y == j ? ' populated' : '' }}{% endfor %}"
                                              data-toggle="tooltip" data-placement="bottom"
-                                             data-html="true" title="{{ i }}:{{ j }}"
+                                             data-html="true" title="{{ i }}:{{ j }}" data-coords="{{ i }}:{{ j }}"
                                              style="width: {{ dimensions.itemsize }}px; height: {{ dimensions.itemsize }}px;">
                                         </div>
-
+                                        <div class="col-12 message message_{{ i }}_{{ j }}"></div>
                                         {% if j is divisible by(dimensions.break) %}
                                             </div>
                                         {% endif %}
-
                                     {% endfor %}
                                 {% endfor %}
                                 {% endif %}
                             </div>
-
                         </div>
                     </section>
                 </div>

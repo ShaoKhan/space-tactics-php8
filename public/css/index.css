@@ -1,11 +1,23 @@
 @charset "UTF-8";
 /*!
+ * space-tactics-php8
+ * index.scss | 1/16/23, 8:07 PM
+ * Copyright (C)  2023 ShaoKhan
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+/*!
  * Bootstrap  v5.2.3 (https://getbootstrap.com/)
  * Copyright 2011-2022 The Bootstrap Authors
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 @import url("https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,300,200");
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css");
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
@@ -12405,6 +12417,17 @@ section:last-child,
   border-bottom: 1px solid #3B4346;
 }
 
+/*!
+ * space-tactics-php8
+ * galaxy.scss | 1/16/23, 8:14 PM
+ * Copyright (C)  2023 ShaoKhan
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 .galaxy {
   background: #FFF;
   display: flex;
@@ -12415,6 +12438,7 @@ section:last-child,
   height: 100%;
 }
 .galaxy .galaxy-row .galaxy-item {
+  position: relative;
   text-align: center;
   border: 1px solid #000;
   background: #0c4128;
@@ -12425,6 +12449,22 @@ section:last-child,
 }
 .galaxy .galaxy-row .galaxy-item:hover {
   background: #ff0800;
+}
+.galaxy .galaxy-row .message {
+  position: absolute;
+  height: 200px;
+  width: 400px;
+  background: #2E3337;
+  color: #FFF;
+  display: none;
+  z-index: 600;
+  padding: 10px 20px;
+  margin: 10px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 19px 38px, rgba(0, 0, 0, 0.22) 0 15px 12px;
+}
+.galaxy .galaxy-row .message i.bi {
+  font-size: 1em;
+  padding-right: 5px;
 }
 
 .container-fluid, .container-sm, .container-md, .container-lg, .container-xl, .container-xxl {

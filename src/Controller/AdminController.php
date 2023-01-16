@@ -1,7 +1,7 @@
 <?php
 /*
  * space-tactics-php8
- * AdminController.php | 1/12/23, 12:11 AM by silvi
+ * AdminController.php | 1/12/23, 11:17 PM
  * Copyright (C)  2023 ShaoKhan
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -53,7 +53,6 @@ class AdminController extends AbstractController
         $errorsString = NULL;
         $errors       = $validator->validate($server);
         $servername   = [];
-        #$this->session->getFlashBag()->clear();
         $form = NULL;
 
         $repo       = $doctrine->getRepository(Server::class);
