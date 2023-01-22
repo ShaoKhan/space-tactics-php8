@@ -40,7 +40,7 @@
                                              data-html="true" title="{{ i }}:{{ j }}" data-coords="{{ i }}:{{ j }}"
                                              style="width: {{ dimensions.itemsize }}px; height: {{ dimensions.itemsize }}px;">
                                         </div>
-                                        <div class="col-12 message message_{{ i }}_{{ j }}"></div>
+                                        <div class="col-12 message message_{{ i }}_{{ j }}" data-width="{{ width }}"></div>
                                         {% if j is divisible by(dimensions.break) %}
                                             </div>
                                         {% endif %}
