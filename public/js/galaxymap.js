@@ -1,6 +1,6 @@
 /*
  * space-tactics-php8
- * galaxymap.js | 1/22/23, 7:22 PM
+ * galaxymap.js | 1/26/23, 9:09 PM
  * Copyright (C)  2023 ShaoKhan
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -36,24 +36,32 @@ $(document).ready(function () {
 
                 $('.message').html('').css('display', 'none');
                 if (data.message.length > 0) {
-
                     for (let i = 0; i < data.message.length; i++) {
+
+                        let result = data.message[i];
                         html += '<div class="row">';
-                        html += '<div class="col-4">' + data.message[i].name + '</div>';
-                        html += '<div class="col-3">' + data.message[i].user + '</div>';
-                        html += '<div class="col-2">' + coords[0] + ':' + coords[1] + ':' + data.message[i].z + '</div>';
+                        html += '<div class="col-4 planet">' + result.name + '</div>';
+                        html += '<div class="col-3 player">' + result.user + '</div>';
+                        html += '<div class="col-2 coords">' + coords[0] + ':' + coords[1] + ':' + result.z + '</div>';
                         html += '<div class="col-3">'
-                            + '<i class="bi bi-eye" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Spionage"></i>'
-                            + '<i class="bi bi-envelope-at" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Nachricht senden"></i>'
-                            + '<i class="bi bi-person-plus" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Als Freund adden"></i>'
+
+                        /*if (data.user !== result.id) {
+                            html += '<i class="bi bi-eye sendSpio" data-content="' + result.id + '" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Spionage"></i>'
+                                + '<i class="bi bi-envelope-at sendMessage" data-content="' + result.id + '" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Nachricht senden"></i>'
+                                + '<i class="bi bi-person-plus addFriend" data-content="' + result.id + '" data-toggle="tooltip" data-placement="bottom" data-html="true" title="Als Freund adden" onClick="addFriend(\'' + result.id + '\')"></i>';
+                        }*/
+
+
+                        html += '</div>'
                             + '</div>';
-                        html += '</div>';
+
                     }
                     $('.message_' + coords[0] + '_' + coords[1]).html(html).css({
                         position: 'absolute',
                         top: top,
                         left: left
                     }).toggle('display');
+
                 }
             },
             error: function (data) {
@@ -61,5 +69,4 @@ $(document).ready(function () {
             }
         })
     });
-
 });

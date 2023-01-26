@@ -1,7 +1,7 @@
 <?php
 /*
  * space-tactics-php8
- * GalaxymapController.php | 1/16/23, 8:21 PM
+ * GalaxymapController.php | 1/26/23, 9:07 PM
  * Copyright (C)  2023 ShaoKhan
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -79,7 +79,7 @@ class GalaxymapController extends AbstractController
         EntityManagerInterface $emi,
         PlanetRepository       $p,
         UserRepository         $ur,
-    ):JsonResponse
+    ): JsonResponse
     {
 
         if (!$request->isXmlHttpRequest()) {
@@ -108,9 +108,11 @@ class GalaxymapController extends AbstractController
                 ]);
 
                 $planets[] = [
+                    'id' => $user->getUuid(),
                     'name' => $p->getName(),
                     'user' => $user->getUsername(),
                     'z' => $p->getSystemZ(),
+                    'pslug' => $p->getSlug(),
                 ];
             }
 
@@ -118,6 +120,7 @@ class GalaxymapController extends AbstractController
 
                 return new JsonResponse([
                     'status' => 'success',
+                    'user' => $p->getUserUuid(),
                     'message' => $planets],
                     200);
             }
@@ -128,5 +131,28 @@ class GalaxymapController extends AbstractController
             'message' => 'empty request'],
             400);
 
+    }
+
+    #[Route('/galaxymap/addFriend', name: 'galaxymap_addfriend')]
+    public function addFriend(UserRepository $userRepo, ManagerRegistry $emi):JsonResponse
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $srcId = $this->getUser()->getUuid();
+
+        if (isset($request->request)) {
+            $targetId = $request->request->get('slug');
+        }
+
+        if($userRepo->addFriend($srcId, $targetId, $emi)){
+            return new JsonResponse([
+                'status' => 'success',
+                'message' => 'Friend added'],
+                200);
+        }else{
+            return new JsonResponse([
+                'status' => 'Error',
+                'message' => 'Friend not added'],
+                400);
+        }
     }
 }

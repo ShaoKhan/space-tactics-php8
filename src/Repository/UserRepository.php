@@ -1,7 +1,19 @@
 <?php
+/*
+ * space-tactics-php8
+ * UserRepository.php | 1/26/23, 8:43 PM
+ * Copyright (C)  2023 ShaoKhan
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace App\Repository;
 
+use App\Entity\Buddylist;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,18 +33,30 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function save(User $entity, bool $flush = false): void
+    public function remove(User $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->persist($entity);
+        $this->getEntityManager()->remove($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
     }
 
-    public function remove(User $entity, bool $flush = false): void
+    public function addFriend($srcID, $targetId, ManagerRegistry $registry)
     {
-        $this->getEntityManager()->remove($entity);
+        $buddy = new Buddylist();
+        $buddyRepo = new BuddylistRepository($registry);
+        $buddy->setSrc($srcID);
+        $buddy->setTarget($targetId);
+        $buddy->setAccepted(0);
+        $buddy->setAsked(new \DateTime());
+
+        $buddyRepo->save($buddy, true);
+    }
+
+    public function save(User $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();

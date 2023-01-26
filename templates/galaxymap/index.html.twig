@@ -40,7 +40,8 @@
                                              data-html="true" title="{{ i }}:{{ j }}" data-coords="{{ i }}:{{ j }}"
                                              style="width: {{ dimensions.itemsize }}px; height: {{ dimensions.itemsize }}px;">
                                         </div>
-                                        <div class="col-12 message message_{{ i }}_{{ j }}" data-width="{{ width }}"></div>
+                                        <div class="col-12 message message_{{ i }}_{{ j }}"
+                                             data-width="{{ width }}"></div>
                                         {% if j is divisible by(dimensions.break) %}
                                             </div>
                                         {% endif %}
@@ -55,4 +56,21 @@
         </div>
     </section>
     {% include 'parts/footer.html.twig' %}
+    <script>
+        function addFriend(slug) {
+            $.ajax({
+                url: "/galaxymap/add_friend",
+                type: 'POST',
+                data: {
+                    'slug': slug
+                },
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (data) {
+                    console.log('error');
+                }
+            })
+        }
+    </script>
 {% endblock %}
