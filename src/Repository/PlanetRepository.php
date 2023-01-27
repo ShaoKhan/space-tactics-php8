@@ -1,8 +1,18 @@
 <?php
+/*
+ * space-tactics-php8
+ * PlanetRepository.php | 1/27/23, 10:49 PM
+ * Copyright (C)  2023 ShaoKhan
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace App\Repository;
 
-use App\Entity\Buildings;
 use App\Entity\Planet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -26,7 +36,7 @@ class PlanetRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($entity);
 
-        if($flush) {
+        if ($flush) {
             $this->getEntityManager()->flush();
         }
     }
@@ -35,7 +45,7 @@ class PlanetRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->remove($entity);
 
-        if($flush) {
+        if ($flush) {
             $this->getEntityManager()->flush();
         }
     }
@@ -46,23 +56,23 @@ class PlanetRepository extends ServiceEntityRepository
     public function findByField($value): array
     {
         return $this->createQueryBuilder('p')
-                    ->andWhere('p.user_uuid = :val')
-                    ->setParameter('val', $value)
-                    ->orderBy('p.id', 'ASC')
+            ->andWhere('p.user_uuid = :val')
+            ->setParameter('val', $value)
+            ->orderBy('p.id', 'ASC')
             #->setMaxResults(10)
-                    ->getQuery()
-                    ->getResult();
+            ->getQuery()
+            ->getResult();
     }
 
     public function findFirst($uuid): array
     {
         return $this->createQueryBuilder('p')
-                    ->andWhere('p.user_uuid = :val')
-                    ->setParameter('val', $uuid)
-                    ->orderBy('p.id', 'ASC')
-                    ->setMaxResults(1)
-                    ->getQuery()
-                    ->getResult();
+            ->andWhere('p.user_uuid = :val')
+            ->setParameter('val', $uuid)
+            ->orderBy('p.id', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -75,12 +85,12 @@ class PlanetRepository extends ServiceEntityRepository
     {
 
         return $this->createQueryBuilder('p')
-                    ->andWhere('p.user_uuid = :val')
-                    ->andWhere('p.slug = :slug')
-                    ->setParameter('val', $userid)
-                    ->setParameter('slug', $slug)
-                    ->getQuery()
-                    ->getResult();
+            ->andWhere('p.user_uuid = :val')
+            ->andWhere('p.slug = :slug')
+            ->setParameter('val', $userid)
+            ->setParameter('slug', $slug)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
@@ -90,14 +100,14 @@ class PlanetRepository extends ServiceEntityRepository
      *
      * @return array Buildings
      */
-    public function getPlanetBuildings($uuid, $slug, ManagerRegistry $mr):array
+    public function getPlanetBuildings($uuid, $slug, $mr): array
     {
 
-        $br   = new BuildingsRepository($mr);
+        $br = new BuildingsRepository($mr);
         $brqb = ($br->createQueryBuilder('b'));
-        $qb   = $this->createQueryBuilder('p')
-                     ->select(
-                         '
+        $qb = $this->createQueryBuilder('p')
+            ->select(
+                '
             p.metal_building, 
             p.crystal_building,
             p.deuterium_building,
@@ -114,13 +124,13 @@ class PlanetRepository extends ServiceEntityRepository
             p.alliancehangar_building,
             p.missilesilo_building
             ',
-                     )
-                     ->andWhere('p.user_uuid = :val')
-                     ->andWhere('p.slug = :slug')
-                     ->setParameter('val', $uuid)
-                     ->setParameter('slug', $slug)
-                     ->getQuery()
-                     ->getResult();
+            )
+            ->andWhere('p.user_uuid = :val')
+            ->andWhere('p.slug = :slug')
+            ->setParameter('val', $uuid)
+            ->setParameter('slug', $slug)
+            ->getQuery()
+            ->getResult();
 
         return $qb;
     }
@@ -130,21 +140,21 @@ class PlanetRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('p')
             #->select('p.name as name, p.slug as slug, p.system_x, p.system_y, p-system_z')
-                    ->andWhere('p.user_uuid = :val')
-                    ->setParameter('val', $uuid)
-                    ->getQuery()
-                    ->getResult();
+            ->andWhere('p.user_uuid = :val')
+            ->setParameter('val', $uuid)
+            ->getQuery()
+            ->getResult();
 
     }
 
-    public function getPlanetScience($uuid, $slug, ManagerRegistry $mr):array
+    public function getPlanetScience($uuid, $slug, ManagerRegistry $mr): array
     {
 
-        $sr   = new ScienceRepository($mr);
+        $sr = new ScienceRepository($mr);
         $sr->createQueryBuilder('b');
-        $qb   = $this->createQueryBuilder('p')
-                     ->select(
-                         '
+        $qb = $this->createQueryBuilder('p')
+            ->select(
+                '
             p.metal_building, 
             p.crystal_building,
             p.deuterium_building,
@@ -161,13 +171,13 @@ class PlanetRepository extends ServiceEntityRepository
             p.alliancehangar_building,
             p.missilesilo_building
             ',
-                     )
-                     ->andWhere('p.user_uuid = :val')
-                     ->andWhere('p.slug = :slug')
-                     ->setParameter('val', $uuid)
-                     ->setParameter('slug', $slug)
-                     ->getQuery()
-                     ->getResult();
+            )
+            ->andWhere('p.user_uuid = :val')
+            ->andWhere('p.slug = :slug')
+            ->setParameter('val', $uuid)
+            ->setParameter('slug', $slug)
+            ->getQuery()
+            ->getResult();
 
         return $qb;
     }
@@ -180,8 +190,7 @@ class PlanetRepository extends ServiceEntityRepository
             ->andWhere('p.darkmatter IS NOT null')
             ->setParameter('uuid', $uuid)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function getAllCoords()
@@ -189,12 +198,23 @@ class PlanetRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('p')
             ->select('p.system_x x, p.system_y y, p.system_z z')
             ->getQuery()
-            ->getResult()
-            ;
-        foreach($query as $key => $value) {
+            ->getResult();
+        foreach ($query as $key => $value) {
             $coords[] = ['x' => $value['x'], 'y' => $value['y'], 'z' => $value['z']];
         }
         return $coords;
+    }
+
+    public function getLevelByName($building, $planeteSlug)
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p.' . $building . ' as level')
+            ->where('p.slug = :slug')
+            #->andWhere('p.user_uuid = :uuid')
+            ->setParameter('slug', $planeteSlug)
+            #->setParameter('uuid', $_SESSION['uuid'])
+            ->getQuery()
+            ->getResult();
     }
 
 //    public function findOneBySomeField($value): ?Planet

@@ -45,14 +45,21 @@
 
                             <div class="buildings">
                                 {% for building in buildings %}
+                                    {% set image = 'img/'~building.image %}
                                     <div class="building">
-                                        <div class="building-headline">Metallmine</div>
+                                        <div class="building-headline">{{ building.type }} - Level: {{ building.level }}</div>
                                         <div class="row">
                                             <div class="col-6 building-image">
-                                                <img src="{{ asset('img/planets/1.jpg') }}"/>
+
+                                                <img src="{{ image }}" alt="Planet image"/>
                                             </div>
                                             <div class="col-6 building-specs">
-                                                <span>Das ist eine Mine ... eine Miiiiiiiineeeeee</span>
+                                                {% set nextLevel = building.level + 1 %}
+                                                <div>Produktion: {{ building.production }}</div>
+                                                <h4>Kosten Stufe {{ nextLevel }}:</h4>
+                                                <div class="metal">Metall: {{ building.price.metal }}</div>
+                                                <div class="crystal">Kristall: {{ building.price.crystal }}</div>
+                                                <div class="deuterium">Deuterium: {{ building.price.deuterium }}</div>
                                             </div>
                                         </div>
                                         <div class="col-12 building-button">
