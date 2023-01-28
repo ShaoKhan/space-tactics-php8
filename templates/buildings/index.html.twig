@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'buildings' %}
 {% block stylesheets %}
     {{ parent() }}
     <link href="{{ asset('css/buildings.css') }}" rel="stylesheet"/>
@@ -45,12 +46,14 @@
 
                             <div class="buildings">
                                 {% for building in buildings %}
-                                    {% set image = 'img/'~building.image %}
+                                    {% set image = 'img/buildings/'~building.image %}
+                                    {% set buildingName = building.type %}
                                     <div class="building">
-                                        <div class="building-headline">{{ building.type }} - Level: {{ building.level }}</div>
+                                        <div class="building-headline">
+                                            {{ building.type }} - Level: {{ building.level }}
+                                        </div>
                                         <div class="row">
                                             <div class="col-6 building-image">
-
                                                 <img src="{{ asset(image) }}" alt="Planet image"/>
                                             </div>
                                             <div class="col-6 building-specs">

@@ -1,7 +1,7 @@
 <?php
 /*
  * space-tactics-php8
- * BuildingsController.php | 1/28/23, 12:35 AM
+ * BuildingsController.php | 1/28/23, 9:20 PM
  * Copyright (C)  2023 ShaoKhan
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -41,6 +41,9 @@ class BuildingsController extends AbstractController
         $buildings = $this->BuildingMapping();
         foreach ($buildings as $key => $value) {
             $level = $p->getLevelByName($value, $planet["selectedPlanet"][0]->getSlug())[0]['level'] ?? 1;
+
+
+
             $price = $br->getBuildingPrice($key);
             $planetType = $ptr->findBy(['type' => $planet["selectedPlanet"][0]->getType()]);
             $planetTemp = ($planetType[0]->getTempMin() + $planetType[0]->getTempMax()) / 2;
@@ -48,7 +51,7 @@ class BuildingsController extends AbstractController
             $built[$key] = [
                 'type' => $value,
                 'level' => $level,
-                'image' => $planetType[0]->getImage() ?? 'planets/6.jpg',
+                'image' => $price[0]->getImage() ?? 'planets/6.jpg',
                 'price' => [
                     'metal' => number_format($this->getMetalCosts($price, $level), 0, ',', '.'),
                     'crystal' => number_format($this->getCrystalCosts($price, $level), 0, ',', '.'),
