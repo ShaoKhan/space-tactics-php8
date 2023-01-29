@@ -50,7 +50,7 @@
                                     {% set buildingName = building.type %}
                                     <div class="building">
                                         <div class="building-headline">
-                                            {{ building.type }} - Level: {{ building.level }}
+                                            {{ building.type|trans({},'buildings') }} - Level: {{ building.level }}
                                         </div>
                                         <div class="row">
                                             <div class="col-6 building-image">
@@ -58,15 +58,15 @@
                                             </div>
                                             <div class="col-6 building-specs">
                                                 {% set nextLevel = building.level + 1 %}
-                                                <div>Produktion: {{ building.production }}</div>
-                                                <h4>Kosten Stufe {{ nextLevel }}:</h4>
-                                                <div class="metal">Metall: {{ building.price.metal }}</div>
-                                                <div class="crystal">Kristall: {{ building.price.crystal }}</div>
-                                                <div class="deuterium">Deuterium: {{ building.price.deuterium }}</div>
+                                                <div>{{ 'production'|trans({},'ui') }}: {{ building.production }}</div>
+                                                <h4> {{ 'costs'|trans({},'ui') }} {{ 'stage'|trans({},'ui') }} {{ nextLevel }}:</h4>
+                                                <div class="metal">{{ 'metal'|trans({},'resources') }}: {{ building.price.metal }}</div>
+                                                <div class="crystal">{{ 'crystal'|trans({},'resources') }}: {{ building.price.crystal }}</div>
+                                                <div class="deuterium">{{ 'deuterium'|trans({},'resources') }}: {{ building.price.deuterium }}</div>
                                             </div>
                                         </div>
                                         <div class="col-12 building-button">
-                                            <button type="button" class="btn btn-light">Ausbauen auf Stufe {{ nextLevel}} </button>
+                                            <button type="button" class="btn btn-light">{{ 'upgrade_to'|trans({},'buildings') }} {{ nextLevel}} </button>
                                         </div>
                                     </div>
                                 {% endfor %}

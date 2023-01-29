@@ -11,11 +11,11 @@
                     <nav id="nav">
                         <div class="col-lg-12">
                             {% if planets is defined %}
-                            <a href="#">Nachrichten</a>
-                            <a class="metal" href="#">Metall: {{ planets.selectedPlanet.metal|number_format(0,',','.') }}</a>
-                            <a href="#">Kristall: {{ planets.selectedPlanet.crystal|number_format(0,',','.') }}</a>
-                            <a href="#">Deuterium: {{ planets.selectedPlanet.deuterium|number_format(0,',','.') }}</a>
-                            <a href="#">DM: {{ planets.darkmatter|number_format(0,',','.') }}</a>
+                            <a href="#">{{ 'messages'|trans({},'ui') }}</a>
+                            <a class="metal" href="#">{{ 'metal'|trans({},'resources') }}: {{ planets.selectedPlanet.metal|number_format(0,',','.') }}</a>
+                            <a href="#">{{ 'crystal'|trans({},'resources') }}: {{ planets.selectedPlanet.crystal|number_format(0,',','.') }}</a>
+                            <a href="#">{{ 'deuterium'|trans({},'resources') }}: {{ planets.selectedPlanet.deuterium|number_format(0,',','.') }}</a>
+                            <a href="#">{{ 'darkmatter'|trans({},'resources') }}: {{ planets.darkmatter|number_format(0,',','.') }}</a>
                                 {% else %}
                                 <h3>In einer Zeitschleife gefangen landest du mitten im Nirgendwo.</h3>
                             {% endif %}

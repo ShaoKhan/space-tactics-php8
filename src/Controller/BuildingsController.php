@@ -1,7 +1,7 @@
 <?php
 /*
  * space-tactics-php8
- * BuildingsController.php | 1/28/23, 9:20 PM
+ * BuildingsController.php | 1/29/23, 5:54 PM 
  * Copyright (C)  2023 ShaoKhan
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
@@ -41,6 +41,9 @@ class BuildingsController extends AbstractController
         $buildings = $this->BuildingMapping();
         foreach ($buildings as $key => $value) {
             $level = $p->getLevelByName($value, $planet["selectedPlanet"][0]->getSlug())[0]['level'] ?? 1;
+            echo '<pre>';
+            print_r($level);
+            echo '</pre>';
 
 
 
