@@ -1,4 +1,15 @@
 <?php
+/*
+ * space-tactics-php8
+ * Planet.php | 1/27/23, 11:02 PM
+ * Copyright (C)  2023 ShaoKhan
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
 
 namespace App\Entity;
 
@@ -205,6 +216,18 @@ class Planet
 
     #[ORM\Column(length: 255, unique: TRUE)]
     private ?string $slug = NULL;
+
+    #[ORM\Column]
+    private ?int $terraforming_building = null;
+
+    #[ORM\Column]
+    private ?int $moonbase_building = null;
+
+    #[ORM\Column]
+    private ?int $jumpgate_building = null;
+
+    #[ORM\Column]
+    private ?int $laserphalanx_building = null;
 
     public function getId(): ?int
     {
@@ -868,6 +891,18 @@ class Planet
         return $this;
     }
 
+    public function getLaboratoryBuilding(): ?int
+    {
+        return $this->laboratory_building;
+    }
+
+    public function setLaboratoryBuilding(?int $laboratory_building): self
+    {
+        $this->laboratory_building = $laboratory_building;
+
+        return $this;
+    }
+
     public function getUniversityBuilding(): ?int
     {
         return $this->university_building;
@@ -964,18 +999,6 @@ class Planet
         return $this;
     }
 
-    public function getLaboratoryBuilding(): ?int
-    {
-        return $this->laboratory_building;
-    }
-
-    public function setLaboratoryBuilding(?int $laboratory_building): self
-    {
-        $this->laboratory_building = $laboratory_building;
-
-        return $this;
-    }
-
     public function getAlliancehangarBuilding(): ?int
     {
         return $this->alliancehangar_building;
@@ -996,6 +1019,54 @@ class Planet
     public function setMissilesiloBuilding(?int $missilesilo_building): self
     {
         $this->missilesilo_building = $missilesilo_building;
+
+        return $this;
+    }
+
+    public function getTerraformingBuilding(): ?int
+    {
+        return $this->terraforming_building;
+    }
+
+    public function setTerraformingBuilding(int $terraforming_building): self
+    {
+        $this->terraforming_building = $terraforming_building;
+
+        return $this;
+    }
+
+    public function getMoonbaseBuilding(): ?int
+    {
+        return $this->moonbase_building;
+    }
+
+    public function setMoonbaseBuilding(int $moonbase_building): self
+    {
+        $this->moonbase_building = $moonbase_building;
+
+        return $this;
+    }
+
+    public function getJumpgateBuuilding(): ?int
+    {
+        return $this->jumpgate_buuilding;
+    }
+
+    public function setJumpgateBuuilding(int $jumpgate_buuilding): self
+    {
+        $this->jumpgate_buuilding = $jumpgate_buuilding;
+
+        return $this;
+    }
+
+    public function getLaserphalanxBuilding(): ?int
+    {
+        return $this->laserphalanx_building;
+    }
+
+    public function setLaserphalanxBuilding(int $laserphalanx_building): self
+    {
+        $this->laserphalanx_building = $laserphalanx_building;
 
         return $this;
     }
