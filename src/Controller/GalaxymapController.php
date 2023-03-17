@@ -38,7 +38,7 @@ class GalaxymapController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
         $userid = $this->getUser()->getUuid();
-        $planet = $this->getPlanets($managerRegistry, $slug);
+        $planet = $this->getAllPlayerPlanets($managerRegistry, $slug);
         $planet["selectedPlanet"] = $planet["selectedPlanet"][0];
         $planet["darkmatter"] = $p->getDarkmatter($userid)[0]['darkmatter'];
         $uniDimensions = $ur->getUniDimensions()[0];

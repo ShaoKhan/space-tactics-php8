@@ -44,6 +44,7 @@ class Planet
     private ?int $system_z = NULL;
 
     #[ORM\Column]
+    #[ORM\ManyToOne(targetEntity: Planet::class)]
     private ?int $type = NULL;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: TRUE)]

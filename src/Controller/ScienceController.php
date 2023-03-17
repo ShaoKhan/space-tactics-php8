@@ -20,7 +20,7 @@ class ScienceController extends AbstractController
         $pl     = new Planet();
         $userid = $this->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planet                   = $this->getPlanets($managerRegistry, $slug);
+        $planet                   = $this->getAllPlayerPlanets($managerRegistry, $slug);
         $planet["selectedPlanet"] = $planet["selectedPlanet"][0];
         $planet["darkmatter"] = $p->getDarkmatter($userid)[0]['darkmatter'];
         $science                  = $p->getPlanetScience($userid, $slug, $managerRegistry);

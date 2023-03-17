@@ -35,7 +35,7 @@ class BuildingsController extends AbstractController
     {
         $userid = $this->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planet = $this->getPlanets($managerRegistry, $slug);
+        $planet = $this->getAllPlayerPlanets($managerRegistry, $slug);
 
         $built = $p->getPlanetBuildings($userid, $planet["selectedPlanet"][0]->getSlug(), $managerRegistry);
         $buildings = $this->BuildingMapping();
