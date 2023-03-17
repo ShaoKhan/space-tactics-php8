@@ -44,7 +44,8 @@ class Planet
     private ?int $system_z = NULL;
 
     #[ORM\Column]
-    #[ORM\ManyToOne(targetEntity: Planet::class)]
+    #[ORM\ManyToOne(targetEntity: PlanetType::class, inversedBy: "planets")]
+    #[ORM\JoinColumn(name: "planet_type", referencedColumnName: "type")]
     private ?int $type = NULL;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: TRUE)]

@@ -14,7 +14,6 @@ class PlanetType
     private ?int $id = null;
 
     #[ORM\Column]
-    #[ORM\ManyToOne(targetEntity: Planet::class, inversedBy: "planetTypes")]
     private ?int $type = null;
 
     #[ORM\Column(length: 255, nullable: true)]
