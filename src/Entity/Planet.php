@@ -18,6 +18,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PlanetRepository::class)]
+#[ORM\Table(name: "planet")]
 class Planet
 {
     #[ORM\Id]
@@ -44,8 +45,6 @@ class Planet
     private ?int $system_z = NULL;
 
     #[ORM\Column]
-    #[ORM\ManyToOne(targetEntity: PlanetType::class, inversedBy: "planets")]
-    #[ORM\JoinColumn(name: "planet_type", referencedColumnName: "type")]
     private ?int $type = NULL;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: TRUE)]
@@ -1069,6 +1068,30 @@ class Planet
     public function setLaserphalanxBuilding(int $laserphalanx_building): self
     {
         $this->laserphalanx_building = $laserphalanx_building;
+
+        return $this;
+    }
+
+    public function getPlanetType(): ?int
+    {
+        return $this->planet_type;
+    }
+
+    public function setPlanetType(int $planet_type): self
+    {
+        $this->planet_type = $planet_type;
+
+        return $this;
+    }
+
+    public function getPlantType(): ?PlanetType
+    {
+        return $this->plant_type;
+    }
+
+    public function setPlantType(PlanetType $plant_type): self
+    {
+        $this->plant_type = $plant_type;
 
         return $this;
     }

@@ -217,6 +217,20 @@ class PlanetRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getPlanetDataByPlayerUuid($uuid)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $query = new \Doctrine\DBAL\Query\QueryBuilder($conn);
+        $query->select('*')
+            ->from('planet', 'p')
+            ->innerJoin('p', 'planet_type', 'pt', 'p.type = pt.id')
+            ->where('p.user_uuid = :uuid')
+            ->setParameter('uuid', $uuid);
+        $query->executeQuery();
+        $execute = $query->execute();
+        return $execute->fetchAll();
+    }
+
 //    public function findOneBySomeField($value): ?Planet
 //    {
 //        return $this->createQueryBuilder('p')

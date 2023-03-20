@@ -54,8 +54,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?array $roles = null;
 
-    #[ORM\Column(type: 'boolean')]
-    private $isVerified = false;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $isVerified = false;
 
     public function getId(): ?int
     {
@@ -199,6 +199,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->is_verified;
     }
 
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
     public function setIsVerified(?int $is_verified): self
     {
         $this->is_verified = $is_verified;
@@ -245,11 +250,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return $this->email;
-    }
-
-    public function isVerified(): bool
-    {
-        return $this->isVerified;
     }
 
     public function eraseCredentials()

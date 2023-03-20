@@ -25,15 +25,16 @@ class MainController extends AbstractController
     {
         $userUuid = $this->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getAllPlayerPlanets($em, $userUuid);
+        $planets = $p->getPlanetDataByPlayerUuid($userUuid);
+        $selectedPlanet = array_search($slug, array_column($planets, 'slug'));
 
-        if ($slug === null) {
-            $slug = $planets[0]->getSlug();
+
+        if($slug === NULL) {
+            [$planets["selectedPlanet"]] = $planets[0];
         }
-        $planets["selectedPlanet"] = $this->getSelectedPlayerPlanet($em, $userUuid, $slug);
-
         return $this->render('main/index.html.twig', [
             'planets' => $planets,
+            'selectedPlanet' => $planets[$selectedPlanet],
             'user' => $this->getUser(),
             'slug' => $slug,
         ]);
