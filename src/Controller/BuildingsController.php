@@ -19,6 +19,7 @@ use App\Repository\PlanetRepository;
 use App\Repository\PlanetTypeRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,45 +31,28 @@ class BuildingsController extends AbstractController
         PlanetRepository     $p,
         PlanetTypeRepository $ptr,
         BuildingsRepository  $br,
+                             Security $security,
                              $slug = NULL,
     ): Response
     {
-        $userid = $this->getUser()->getUuid();
+        $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planet = $this->getAllPlayerPlanets($managerRegistry, $slug);
+        $planets = $this->getAllPlayerPlanets($managerRegistry, $user_uuid);
+        $firstPlanet = array_search($slug, array_column($planets, 'slug'));
+        $selectedPlanet = $planets[$firstPlanet];
 
-        $built = $p->getPlanetBuildings($userid, $planet["selectedPlanet"][0]->getSlug(), $managerRegistry);
-        $buildings = $this->BuildingMapping();
-        foreach ($buildings as $key => $value) {
-            $level = $p->getLevelByName($value, $planet["selectedPlanet"][0]->getSlug())[0]['level'] ?? 1;
-
-            //ToDo Check for dependencies
-
-            $price = $br->getBuildingPrice($key);
-            $planetType = $ptr->findBy(['type' => $planet["selectedPlanet"][0]->getType()]);
-            $planetTemp = ($planetType[0]->getTempMin() + $planetType[0]->getTempMax()) / 2;
-            $production = $this->getBuildingProduction($value, $level, $price, $planetTemp);
-            $built[$key] = [
-                'type' => $value,
-                'level' => $level,
-                'image' => $price[0]->getImage() ?? 'planets/6.jpg',
-                'price' => [
-                    'metal' => number_format($this->getMetalCosts($price, $level), 0, ',', '.'),
-                    'crystal' => number_format($this->getCrystalCosts($price, $level), 0, ',', '.'),
-                    'deuterium' => number_format($this->getDeuteriumCosts($price, $level) * 60 * 60, 0, ',', '.'),
-                ],
-                'production' => number_format($production['production'] * 60 * 60, 0, ',', '.') . ' pro Stunde',
-                'costEnergy' => $production['costEnergy']
-            ];
-
+        if ($slug === NULL) {
+            $selectedPlanet = $planets[0];
         }
-        unset($built[0]);
 
-        $planet["selectedPlanet"] = $planet["selectedPlanet"][0];
-        $planet["darkmatter"] = $p->getDarkmatter($userid)[0]['darkmatter'];
+        $built = $p->getPlanetBuildings($user_uuid, $selectedPlanet, $managerRegistry);
+        dd($built);
+        $buildings = $this->BuildingMapping();
+
 
         return $this->render('buildings/index.html.twig', [
-            'planets' => $planet,
+            'planets' => $planets,
+            'selectedPlanet' => $selectedPlanet,
             'user' => $this->getUser(),
             'slug' => $slug,
             'buildings' => $built ?? NULL,
