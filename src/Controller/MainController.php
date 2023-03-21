@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Repository\PlanetRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,15 +25,16 @@ class MainController extends AbstractController
         $userUuid = $this->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planets = $p->getPlanetDataByPlayerUuid($userUuid);
-        $selectedPlanet = array_search($slug, array_column($planets, 'slug'));
+        $firstPlanet = array_search($slug, array_column($planets, 'slug'));
+        $selectedPlanet = $planets[$firstPlanet];
 
-
-        if($slug === NULL) {
-            [$planets["selectedPlanet"]] = $planets[0];
+        if ($slug === NULL) {
+            $selectedPlanet = $planets[0];
         }
+
         return $this->render('main/index.html.twig', [
             'planets' => $planets,
-            'selectedPlanet' => $planets[$selectedPlanet],
+            'selectedPlanet' => $selectedPlanet,
             'user' => $this->getUser(),
             'slug' => $slug,
         ]);
