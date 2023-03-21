@@ -15,7 +15,6 @@ namespace App\Repository;
 
 use App\Entity\Planet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -111,8 +110,8 @@ class PlanetRepository extends ServiceEntityRepository
             return preg_match('/_building$/', $columnName);
         });
 
-        $em = new EntityManager($mr);
-        $conn = $em->getConnection();
+
+        $conn = $mr->getConnection();
         $query = new \Doctrine\DBAL\Query\QueryBuilder($conn);
         $query->select(implode(',', $buildingColumns))
             ->from('planet', 'p')
