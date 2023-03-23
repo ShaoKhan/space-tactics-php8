@@ -46,9 +46,8 @@ class BuildingsController extends AbstractController
         }
 
         $built = $p->getPlanetBuildings($user_uuid, $selectedPlanet, $managerRegistry);
-        dd($built);
-        $buildings = $this->BuildingMapping();
 
+        dd($built);
 
         return $this->render('buildings/index.html.twig', [
             'planets' => $planets,
@@ -57,6 +56,44 @@ class BuildingsController extends AbstractController
             'slug' => $slug,
             'buildings' => $built ?? NULL,
         ]);
+    }
+
+    public function getBuildingProduction(string $buildingName, int $level, array $factor, float $planetTemp): array
+    {
+        switch ($buildingName) {
+            case 'metal_building':
+                $prod = (30 * $level * pow((1.1), $level)) * (0.1 * $factor[0]->getFactor());
+                $costEnergy = -(10 * $level * pow((1.1), $level)) * (0.1 * $factor[0]->getFactor());
+                break;
+            case 'crystal_building':
+                $prod = (20 * $level * pow((1.1), $level)) * (0.1 * $factor[0]->getFactor());
+                $costEnergy = -(10 * $level * pow((1.1), $level)) * (0.1 * $factor[0]->getFactor());
+                break;
+            case 'deuterium_building':
+                $prod = (10 * $level * pow((1.1), $level) * (-0.002 * $planetTemp + 1.28) * (0.1 * $factor[0]->getFactor()));
+                $costEnergy = -(30 * $level * pow((1.1), $level)) * (0.1 * $factor[0]->getFactor());
+                break;
+            default:
+                $prod = 0.0;
+                $costEnergy = 0.0;
+                break;
+        }
+        return ['production' => $prod, 'costEnergy' => $costEnergy];
+    }
+
+    public function getMetalCosts($factor, $level)
+    {
+        return $factor[0]->getCostMetal() * pow($factor[0]->getFactor(), $level);
+    }
+
+    public function getCrystalCosts($factor, $level)
+    {
+        return $factor[0]->getCostCrystal() * pow($factor[0]->getFactor(), $level);
+    }
+
+    public function getDeuteriumCosts($factor, $level)
+    {
+        return $factor[0]->getCostDeuterium() * pow($factor[0]->getFactor(), $level);
     }
 
     private function BuildingMapping(): array
@@ -86,46 +123,6 @@ class BuildingsController extends AbstractController
         ];
 
         return $buildingMap;
-    }
-
-
-    public function getBuildingProduction(string $buildingName, int $level, array $factor, float $planetTemp): array
-    {
-        switch ($buildingName) {
-            case 'metal_building':
-                $prod = (30 * $level * pow((1.1), $level)) * (0.1 * $factor[0]->getFactor());
-                $costEnergy = -(10 * $level * pow((1.1), $level)) * (0.1 * $factor[0]->getFactor());
-                break;
-            case 'crystal_building':
-                $prod = (20 * $level * pow((1.1), $level)) * (0.1 * $factor[0]->getFactor());
-                $costEnergy = -(10 * $level * pow((1.1), $level)) * (0.1 * $factor[0]->getFactor());
-                break;
-            case 'deuterium_building':
-                $prod = (10 * $level * pow((1.1), $level) * (-0.002 * $planetTemp + 1.28) * (0.1 * $factor[0]->getFactor()));
-                $costEnergy = -(30 * $level * pow((1.1), $level)) * (0.1 * $factor[0]->getFactor());
-                break;
-            default:
-                $prod = 0.0;
-                $costEnergy = 0.0;
-                break;
-        }
-        return ['production' => $prod, 'costEnergy' => $costEnergy];
-    }
-
-
-    public function getMetalCosts($factor, $level)
-    {
-        return $factor[0]->getCostMetal() * pow($factor[0]->getFactor(), $level);
-    }
-
-    public function getCrystalCosts($factor, $level)
-    {
-        return $factor[0]->getCostCrystal() * pow($factor[0]->getFactor(), $level);
-    }
-
-    public function getDeuteriumCosts($factor, $level)
-    {
-        return $factor[0]->getCostDeuterium() * pow($factor[0]->getFactor(), $level);
     }
 
 }

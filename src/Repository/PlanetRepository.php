@@ -115,7 +115,9 @@ class PlanetRepository extends ServiceEntityRepository
         $query = new \Doctrine\DBAL\Query\QueryBuilder($conn);
         $query->select(implode(',', $buildingColumns))
             ->from('planet', 'p')
+            ->innerJoin('p', 'building', 'b', 'b.name = p.' . implode(' OR b.name = p.', $buildingColumns))
             ->where('p.user_uuid = :uuid')
+            ->andWhere('b.name = p.')
             ->andWhere('p.slug = :slug')
             ->setParameter('uuid', $uuid)
             ->setParameter('slug', $slug["slug"]);

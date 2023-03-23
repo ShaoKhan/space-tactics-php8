@@ -14,6 +14,8 @@
 namespace App\Entity;
 
 use App\Repository\PlanetRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -229,6 +231,14 @@ class Planet
 
     #[ORM\Column]
     private ?int $laserphalanx_building = null;
+
+    #[ORM\OneToMany(mappedBy: 'planet_id', targetEntity: PlanetBuilding::class)]
+    private Collection $planetBuildings;
+
+    public function __construct()
+    {
+        $this->planetBuildings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -1092,6 +1102,36 @@ class Planet
     public function setPlantType(PlanetType $plant_type): self
     {
         $this->plant_type = $plant_type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlanetBuilding>
+     */
+    public function getPlanetBuildings(): Collection
+    {
+        return $this->planetBuildings;
+    }
+
+    public function addPlanetBuilding(PlanetBuilding $planetBuilding): self
+    {
+        if (!$this->planetBuildings->contains($planetBuilding)) {
+            $this->planetBuildings->add($planetBuilding);
+            $planetBuilding->setPlanetId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlanetBuilding(PlanetBuilding $planetBuilding): self
+    {
+        if ($this->planetBuildings->removeElement($planetBuilding)) {
+            // set the owning side to null (unless already changed)
+            if ($planetBuilding->getPlanetId() === $this) {
+                $planetBuilding->setPlanetId(null);
+            }
+        }
 
         return $this;
     }

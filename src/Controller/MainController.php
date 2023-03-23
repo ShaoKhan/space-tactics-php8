@@ -27,8 +27,12 @@ class MainController extends AbstractController
         $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planets = $this->getAllPlayerPlanets($managerRegistry, $user_uuid);
+
         $firstPlanet = array_search($slug, array_column($planets, 'slug'));
         $selectedPlanet = $planets[$firstPlanet];
+
+
+
 
         if ($slug === NULL) {
             $selectedPlanet = $planets[0];

@@ -49,6 +49,10 @@ class Buildings
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
+    #[ORM\ManyToOne(inversedBy: 'building_id')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?PlanetBuilding $planetBuilding = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -194,6 +198,18 @@ class Buildings
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getPlanetBuilding(): ?PlanetBuilding
+    {
+        return $this->planetBuilding;
+    }
+
+    public function setPlanetBuilding(?PlanetBuilding $planetBuilding): self
+    {
+        $this->planetBuilding = $planetBuilding;
 
         return $this;
     }

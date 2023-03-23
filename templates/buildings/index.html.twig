@@ -26,7 +26,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <select name="planet" class="form-control planet-switcher-select">
-                                            {% for planet in planets.playerPlanets %}
+                                            {% for planet in planets %}
 
                                                 <option
                                                         value="{{ planet.slug }}"
@@ -34,7 +34,7 @@
                                                         {{ planet.slug == slug ? 'selected' : '' }}
                                                 >
                                                     {{ planet.name }}
-                                                    [{{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}]
+                                                    [{{ planet.system_x }}:{{ planet.system_y }}:{{ planet.system_z }}]
                                                 </option>
                                             {% endfor %}
                                         </select>
