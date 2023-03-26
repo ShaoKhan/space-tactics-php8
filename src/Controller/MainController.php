@@ -36,6 +36,7 @@ class MainController extends AbstractController
 
         if ($slug === NULL) {
             $selectedPlanet = $planets[0];
+            $slug = $selectedPlanet["slug"];
         }
 
         return $this->render('main/index.html.twig', [

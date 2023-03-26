@@ -53,6 +53,24 @@ class Buildings
     #[ORM\JoinColumn(nullable: false)]
     private ?PlanetBuilding $planetBuilding = null;
 
+    private float $production;
+
+    /**
+     * @return float|null
+     */
+    public function getProduction(): ?float
+    {
+        return $this->production;
+    }
+
+    /**
+     * @param float|null $production
+     */
+    public function setProduction(?float $production): void
+    {
+        $this->production = $production;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

@@ -100,9 +100,8 @@ class PlanetRepository extends ServiceEntityRepository
      *
      * @return array Buildings
      */
-    public function getPlanetBuildings($uuid, $slug, $mr): array
+    public function getPlanetBuildings($uuid, $selectedPlanet, ManagerRegistry $mr): array
     {
-
         //Select all building columns from planet table
         $metadata = $this->getClassMetadata(Planet::class);
         $columnNames = $metadata->getColumnNames();
@@ -113,14 +112,14 @@ class PlanetRepository extends ServiceEntityRepository
 
         $conn = $mr->getConnection();
         $query = new \Doctrine\DBAL\Query\QueryBuilder($conn);
-        $query->select(implode(',', $buildingColumns))
+        $query->select('p.slug, pb.*, b.*')
             ->from('planet', 'p')
-            ->innerJoin('p', 'building', 'b', 'b.name = p.' . implode(' OR b.name = p.', $buildingColumns))
+            ->innerJoin('p', 'planet_building', 'pb', 'pb.planet_slug = p.slug')
+            ->innerJoin('pb', 'buildings', 'b', 'b.id = pb.building_id')
             ->where('p.user_uuid = :uuid')
-            ->andWhere('b.name = p.')
             ->andWhere('p.slug = :slug')
             ->setParameter('uuid', $uuid)
-            ->setParameter('slug', $slug["slug"]);
+            ->setParameter('slug', $selectedPlanet["slug"]);
         $query->executeQuery();
         $execute = $query->execute();
         return $execute->fetchAll();

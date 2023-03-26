@@ -14,9 +14,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Buildings;
 use App\Repository\BuildingsRepository;
 use App\Repository\PlanetRepository;
 use App\Repository\PlanetTypeRepository;
+use App\Service\BuildingCalculationService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -27,12 +29,13 @@ class BuildingsController extends AbstractController
 {
     #[Route('/buildings/{slug?}', name: 'buildings')]
     public function index(
-        ManagerRegistry      $managerRegistry,
-        PlanetRepository     $p,
-        PlanetTypeRepository $ptr,
-        BuildingsRepository  $br,
-                             Security $security,
-                             $slug = NULL,
+        ManagerRegistry            $managerRegistry,
+        PlanetRepository           $p,
+        PlanetTypeRepository       $ptr,
+        BuildingsRepository        $br,
+        Security                   $security,
+        BuildingCalculationService $bcs,
+                                   $slug = NULL,
     ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
@@ -46,8 +49,15 @@ class BuildingsController extends AbstractController
         }
 
         $built = $p->getPlanetBuildings($user_uuid, $selectedPlanet, $managerRegistry);
+        $i=0;
+        foreach ($built as $building) {
 
-        dd($built);
+            $nextLevelProd = $bcs->calculateNextBuildingLevelProduction($building) * 3600;
+            $nextLevelEnergyCost = $bcs->calculateNextBuildingLevelEnergyCosts($building) * 3600;
+            $built[$i]['production'] = number_format($nextLevelProd,0,',','.');
+            $built[$i]['nextEnergyCosts'] = number_format($nextLevelEnergyCost,0,',','.');
+            $i++;
+        }
 
         return $this->render('buildings/index.html.twig', [
             'planets' => $planets,
