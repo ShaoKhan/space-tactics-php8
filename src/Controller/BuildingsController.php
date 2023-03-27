@@ -51,11 +51,15 @@ class BuildingsController extends AbstractController
         $built = $p->getPlanetBuildings($user_uuid, $selectedPlanet, $managerRegistry);
         $i=0;
         foreach ($built as $building) {
-
             $nextLevelProd = $bcs->calculateNextBuildingLevelProduction($building) * 3600;
+            $nextLevelBuildCost = $bcs->calculateNextBuildingCosts($building);
             $nextLevelEnergyCost = $bcs->calculateNextBuildingLevelEnergyCosts($building) * 3600;
+
+
+
             $built[$i]['production'] = number_format($nextLevelProd,0,',','.');
             $built[$i]['nextEnergyCosts'] = number_format($nextLevelEnergyCost,0,',','.');
+            $built[$i]['BuildCosts'] = $nextLevelBuildCost;
             $i++;
         }
 
