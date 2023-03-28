@@ -57,7 +57,8 @@
                                             </div>
                                             <div class="col-6 building-content-specs">
                                                 {% set nextLevel = building.building_level + 1 %}
-                                                <div>{{ 'production'|trans({},'ui') }}: {{ building.production }} / {{ 'hour'|trans({},'ui') }}</div>
+                                                <div>{{ 'production'|trans({},'ui') }}: {{ building.production }}
+                                                    / {{ 'hour'|trans({},'ui') }}</div>
                                                 <h4> {{ 'costs'|trans({},'ui') }} {{ 'stage'|trans({},'ui') }} {{ nextLevel }}
                                                     :</h4>
                                                 <div class="energy">{{ 'energy'|trans({},'resources') }}
