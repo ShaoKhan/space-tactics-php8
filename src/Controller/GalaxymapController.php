@@ -19,6 +19,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,15 +33,21 @@ class GalaxymapController extends AbstractController
         ManagerRegistry  $managerRegistry,
         PlanetRepository $p,
         UniRepository    $ur,
+        Security                   $security,
                          $slug = NULL,
 
     ): Response
     {
+        $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $userid = $this->getUser()->getUuid();
-        $planet = $this->getAllPlayerPlanets($managerRegistry, $slug);
-        $planet["selectedPlanet"] = $planet["selectedPlanet"][0];
-        $planet["darkmatter"] = $p->getDarkmatter($userid)[0]['darkmatter'];
+        $planets        = $this->getAllPlayerPlanets($managerRegistry, $user_uuid);
+        $firstPlanet    = array_search($slug, array_column($planets, 'slug'));
+        $selectedPlanet = $planets[$firstPlanet];
+
+        if($slug === NULL) {
+            $selectedPlanet = $planets[0];
+        }
+
         $uniDimensions = $ur->getUniDimensions()[0];
 
         if ($request->get('slug') !== NULL) {
@@ -65,7 +72,8 @@ class GalaxymapController extends AbstractController
         $coords = $p->getAllCoords();
 
         return $this->render('galaxymap/index.html.twig', [
-            'planets' => $planet,
+            'planets'        => $planets,
+            'selectedPlanet' => $selectedPlanet,
             'user' => $this->getUser(),
             'slug' => $slug,
             'dimensions' => $uniDimensions,
