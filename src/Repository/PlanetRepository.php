@@ -100,44 +100,33 @@ class PlanetRepository extends ServiceEntityRepository
      *
      * @return array Buildings
      */
-    public function getPlanetBuildings($uuid, $slug, $mr): array
+    public function getPlanetBuildings($uuid, $selectedPlanet, ManagerRegistry $mr): array
     {
+        //Select all building columns from planet table
+        $metadata = $this->getClassMetadata(Planet::class);
+        $columnNames = $metadata->getColumnNames();
+        $buildingColumns = array_filter($columnNames, function ($columnName) {
+            return preg_match('/_building$/', $columnName);
+        });
 
-        $br = new BuildingsRepository($mr);
-        $brqb = ($br->createQueryBuilder('b'));
-        $qb = $this->createQueryBuilder('p')
-            ->select(
-                '
-            p.metal_building, 
-            p.crystal_building,
-            p.deuterium_building,
-            p.solar_building,
-            p.nuclear_building,
-            p.robot_building,
-            p.nanite_building,
-            p.hangar_building,
-            p.metalstorage_building,
-            p.crystalstorage_building,
-            p.deuteriumstorage_building,
-            p.laboratory_building,
-            p.university_building,
-            p.alliancehangar_building,
-            p.missilesilo_building
-            ',
-            )
-            ->andWhere('p.user_uuid = :val')
+
+        $conn = $mr->getConnection();
+        $query = new \Doctrine\DBAL\Query\QueryBuilder($conn);
+        $query->select('p.slug, pb.*, b.*')
+            ->from('planet', 'p')
+            ->innerJoin('p', 'planet_building', 'pb', 'pb.planet_slug = p.slug')
+            ->innerJoin('pb', 'buildings', 'b', 'b.id = pb.building_id')
+            ->where('p.user_uuid = :uuid')
             ->andWhere('p.slug = :slug')
-            ->setParameter('val', $uuid)
-            ->setParameter('slug', $slug)
-            ->getQuery()
-            ->getResult();
-
-        return $qb;
+            ->setParameter('uuid', $uuid)
+            ->setParameter('slug', $selectedPlanet["slug"]);
+        $query->executeQuery();
+        $execute = $query->execute();
+        return $execute->fetchAll();
     }
 
     public function getPlanetNamesByUuid(string $uuid)
     {
-
         return $this->createQueryBuilder('p')
             #->select('p.name as name, p.slug as slug, p.system_x, p.system_y, p-system_z')
             ->andWhere('p.user_uuid = :val')
@@ -217,19 +206,23 @@ class PlanetRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getPlanetDataByPlayerUuid($uuid)
-    {
-        $conn = $this->getEntityManager()->getConnection();
-        $query = new \Doctrine\DBAL\Query\QueryBuilder($conn);
-        $query->select('*')
-            ->from('planet', 'p')
-            ->innerJoin('p', 'planet_type', 'pt', 'p.type = pt.id')
-            ->where('p.user_uuid = :uuid')
-            ->setParameter('uuid', $uuid);
-        $query->executeQuery();
-        $execute = $query->execute();
-        return $execute->fetchAll();
-    }
+    /**
+     * @deprecated
+     * is in AbstractController
+     */
+//    public function getPlanetDataByPlayerUuid($uuid)
+//    {
+//        $conn = $this->getEntityManager()->getConnection();
+//        $query = new \Doctrine\DBAL\Query\QueryBuilder($conn);
+//        $query->select('*')
+//            ->from('planet', 'p')
+//            ->innerJoin('p', 'planet_type', 'pt', 'p.type = pt.id')
+//            ->where('p.user_uuid = :uuid')
+//            ->setParameter('uuid', $uuid);
+//        $query->executeQuery();
+//        $execute = $query->execute();
+//        return $execute->fetchAll();
+//    }
 
 //    public function findOneBySomeField($value): ?Planet
 //    {

@@ -51,17 +51,14 @@
                                         </select>
                                     </div>
                                     <div>
-                                        Größe: {{ selectedPlanet.diameter|number_format(0,',','.') }} km
-                                        &Oslash;
+                                        Größe: {{ selectedPlanet.fields }}/{{ selectedPlanet.fields_max }} Felder &Oslash;
                                     </div>
                                     <div>
                                         Temperatur: {{ selectedPlanet.temp_min }}°C
                                         / {{ selectedPlanet.temp_max }}°C
                                     </div>
                                     <div>
-                                        Durchmesser: {{ selectedPlanet.fields }}
-                                        /{{ selectedPlanet.fields_max }}
-                                        Felder
+                                        Durchmesser: {{ selectedPlanet.diameter|number_format(0,',','.') }} km
                                     </div>
                                 </div>
                             </div>

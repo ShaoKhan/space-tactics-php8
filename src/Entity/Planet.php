@@ -14,6 +14,8 @@
 namespace App\Entity;
 
 use App\Repository\PlanetRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -69,48 +71,78 @@ class Planet
     private ?float $deuterium_max = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'metal_building', referencedColumnName: 'building_id')]
     private ?int $metal_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'crystal_building', referencedColumnName: 'building_id')]
     private ?int $crystal_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'deuterium_building', referencedColumnName: 'building_id')]
     private ?int $deuterium_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'metal_building', referencedColumnName: 'building_id')]
     private ?int $solar_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'nuclear_building', referencedColumnName: 'building_id')]
     private ?int $nuclear_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'robot_building', referencedColumnName: 'building_id')]
     private ?int $robot_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'nanite_building', referencedColumnName: 'building_id')]
     private ?int $nanite_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'hangar_building', referencedColumnName: 'building_id')]
     private ?int $hangar_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'metalstorage_building', referencedColumnName: 'building_id')]
     private ?int $metalstorage_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'crystalstorage_building', referencedColumnName: 'building_id')]
     private ?int $crystalstorage_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'deuteriumstorage_building', referencedColumnName: 'building_id')]
     private ?int $deuteriumstorage_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'metal_building', referencedColumnName: 'building_id')]
     private ?int $laboratory_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'university_building', referencedColumnName: 'building_id')]
     private ?int $university_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'alliancehangar_building', referencedColumnName: 'building_id')]
     private ?int $alliancehangar_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
+    #[ORM\OneToMany(mappedBy: "building_id", targetEntity: "App\Entity\PlanetBuilding")]
+    #[ORM\JoinColumn(name: 'missilesilo_building', referencedColumnName: 'building_id')]
     private ?int $missilesilo_building = NULL;
 
     #[ORM\Column(nullable: TRUE)]
@@ -229,6 +261,14 @@ class Planet
 
     #[ORM\Column]
     private ?int $laserphalanx_building = null;
+
+    #[ORM\OneToMany(mappedBy: 'planet_id', targetEntity: PlanetBuilding::class)]
+    private Collection $planetBuildings;
+
+    public function __construct()
+    {
+        $this->planetBuildings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -1092,6 +1132,36 @@ class Planet
     public function setPlantType(PlanetType $plant_type): self
     {
         $this->plant_type = $plant_type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlanetBuilding>
+     */
+    public function getPlanetBuildings(): Collection
+    {
+        return $this->planetBuildings;
+    }
+
+    public function addPlanetBuilding(PlanetBuilding $planetBuilding): self
+    {
+        if (!$this->planetBuildings->contains($planetBuilding)) {
+            $this->planetBuildings->add($planetBuilding);
+            $planetBuilding->setPlanetId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlanetBuilding(PlanetBuilding $planetBuilding): self
+    {
+        if ($this->planetBuildings->removeElement($planetBuilding)) {
+            // set the owning side to null (unless already changed)
+            if ($planetBuilding->getPlanetId() === $this) {
+                $planetBuilding->setPlanetId(null);
+            }
+        }
 
         return $this;
     }

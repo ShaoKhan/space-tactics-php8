@@ -27,13 +27,6 @@
       padding: 10px;
       border: 1px solid #2E3337;
 
-      &-content {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: flex-start;
-      }
-
       &-headline {
         background: rgba(255, 255, 255, 0.5);
         text-align: center;
@@ -44,14 +37,27 @@
           font-weight: bolder;
           text-decoration: none;
         }
-
       }
 
-      &-image {
-        img {
-          width: 100%;
-          height: auto;
+      &-content {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: flex-start;
+
+
+        &-image {
+          img {
+            width: 100%;
+            height: auto;
+          }
         }
+
+        &-specs {
+          margin-left: 10px;
+          line-height: 1.5em;
+        }
+
       }
     }
   }
@@ -67,4 +73,9 @@
   .deuterium {
     color: #be6dff;
   }
+
+  .energy {
+    color: #ff9c00;
+  }
 }
+
