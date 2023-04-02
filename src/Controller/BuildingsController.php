@@ -39,15 +39,9 @@ class BuildingsController extends AbstractController
     {
         $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets        = $this->getAllPlayerPlanets($managerRegistry, $user_uuid);
-        $firstPlanet    = array_search($slug, array_column($planets, 'slug'));
-        $selectedPlanet = $planets[$firstPlanet];
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 
-        if($slug === NULL) {
-            $selectedPlanet = $planets[0];
-        }
-
-        $built = $p->getPlanetBuildings($user_uuid, $selectedPlanet, $managerRegistry);
+        $built = $p->getPlanetBuildings($user_uuid, $planets[1], $managerRegistry);
         $i     = 0;
         foreach($built as $building) {
             $nextLevelProd       = $bcs->calculateNextBuildingLevelProduction($building) * 3600;
@@ -63,8 +57,8 @@ class BuildingsController extends AbstractController
 
         return $this->render(
             'buildings/index.html.twig', [
-            'planets'        => $planets,
-            'selectedPlanet' => $selectedPlanet,
+            'planets'        => $planets[0],
+            'selectedPlanet' => $planets[1],
             'user'           => $this->getUser(),
             'slug'           => $slug,
             'buildings'      => $built ?? NULL,

@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Space-Tactics Main{% endblock %}
+
+{% block body %}
+    <!-- Main Menu -->
+
+    {% include 'parts/ingame_mainmenu.html.twig' %}
+
+
+    <!-- Content -->
+    <section id="content" class="main">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    {% if app.user is not null %}
+                        {% include 'parts/sidebar.html.twig' %}
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-6 mt-1">
+                                <h3>Regeln</h3>
+                            </div>
+                        </div>
+                        <div class="container-fluid mt-3">
+                            <div class="col-lg-12">
+                                <h4>Accounts</h4>
+                                <p class="mb-0">
+                                    Dein Account ist immer an die E-Mail-Adresse gebunden, die du bei der Registrierung
+                                    angegeben hast.
+                                </p>
+                                <hr/>
+                                <h4>Multiaccounts</h4>
+                                <p class="mb-0">
+
+                                </p>
+                                <hr/>
+                                <h4>Bugusing</h4>
+                                <p class="mb-0">
+                                    Bugusing ist nicht erlaubt. Das bedeutet, dass du keine bekannten oder noch
+                                    unbekannten Bugs ausnutzen darfst, um Vorteile zu erlangen.<br/>
+                                    Wir freuen uns, wenn du Bugs im Forum meldest und erhältst eine Belohnung in Form
+                                    von <i>Dunkler Materie</i>.
+                                </p>
+                                <hr/>
+                                <h4>Pushen</h4>
+                                <p>
+                                    Pushen ist nicht erlaubt. Das bedeutet, "Große" dürfen den "Kleinen" nicht mit
+                                    Resourcen beliefern, ohne dafür eine Gegenleistung zu erhalten.
+                                </p>
+                                <hr/>
+                                <h4>Bashen</h4>
+                                <p class="mb-0">
+                                    Bashen ist nicht erlaubt. Es ist verboten einen Spieler auf einem Planeten mehr als
+                                    3-mal innerhalb von 24 Stunden zu angreifen.
+                                    Anders verhält es sich, wenn es vorher eine Kriegserklärung im Forum gab.
+                                    Ein solcher Krieg wird auch im Forum für beendet erklärt, damit die Spieler sich
+                                    hier informieren können.
+                                </p>
+                                <hr/>
+                                <h4>Netiquette</h4>
+                                <ul>
+                                    <li>Höflich bleiben.</li>
+                                    <li>Keine verbalen Angriffe</li>
+                                    <li>Kein Rassismus, keine Beleidigungen, keine pornografischen Bezüge</li>
+                                    <li>Keine weitergabe persönlicher Daten</li>
+                                    <li>Achte auf deine Rechtschreibung</li>
+                                    <li>Hier und da ein kleines <i>Danke</i> schadet nicht ;)</li>
+                                </ul>
+                                <hr/>
+
+                                <h4>Werbung</h4>
+                                <p class="mb-0">
+                                    Werbung für andere Spiele ist nicht erlaubt. Das betrifft auch das Verlinken von
+                                    anderen Spielen oder Foren.
+                                </p>
+                                <hr/>
+                                <h4>Abschließend</h4>
+                                <span class="mb-0">
+                                    Wir wünschen dir viel Spaß auf Space-Tactics und hoffen, dass du dich hier wohlfühlst.
+                                    Solltest du Fragen haben, kannst du dich jederzeit im Forum oder über unser Support-Formular melden.
+                                </span>
+                                <hr/>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    {% include 'parts/footer.html.twig' %}
+{% endblock %}
+
+
