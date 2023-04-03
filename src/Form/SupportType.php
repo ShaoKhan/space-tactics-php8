@@ -3,11 +3,13 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SupportType extends AbstractType
 {
@@ -21,9 +23,38 @@ class SupportType extends AbstractType
                         'class' => 'form-control mb-2',
                         'placeholder' => 'Betreff',
                     ],
+                    'constraints' => [
+                        new NotBlank(
+                            [
+                                'message' => 'Bitte geben Sie einen Betreff ein',
+                            ]
+                        ),
+                    ],
                 ]
             )
 
+            ->add('theme', ChoiceType::class
+                , [
+                    'label' => 'Thema',
+                    'attr' => [
+                        'class' => 'form-control mb-2',
+                        'placeholder' => 'Thema',
+                    ],
+                    'choices' => [
+                        'bitte wählen' => '',
+                        'ich habe einen Bug gefunden' => 'Bug',
+                        'ein Problem mit anderem Spieler' => 'Spieler',
+                        'Technische Probleme' => 'Technische Probleme',
+                        'Sonstiges' => 'Sonstiges',
+                    ],
+                    'constraints' => [
+                        new NotBlank(
+                            [
+                                'message' => 'Bitte wählen Sie ein Thema aus',
+                            ]
+                        ),
+                    ],
+                ])
 
             ->add('message', TextareaType::class
                 , [

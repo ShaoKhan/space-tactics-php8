@@ -16,8 +16,10 @@ namespace App\Controller;
 use App\Entity\Server;
 use App\Form\ServerType;
 use App\Repository\ServerRepository;
+use App\Repository\SupportRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -69,7 +71,7 @@ class AdminController extends AbstractController
     ): Response
     {
 
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(ServerType::class, new Server());
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
@@ -88,5 +90,30 @@ class AdminController extends AbstractController
         );
     }
 
+    #[Route('/admin_support', name: 'admin_support')]
+    public function adminSupport(
+        Security          $security,
+        SupportRepository $supportRepository,
+    ): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        $support              = $supportRepository->findAll();
+
+        return $this->render(
+            'admin/support/support.html.twig', [
+            'tickets' => $support,
+        ],
+        );
+    }
+
+    #[Route('/admin_support_delete/{id}', name: 'admin_support_delete')]
+    public function adminSupportDelete(
+        SupportRepository $supportRepository,
+                          $id,
+    ): Response
+    {
+        $supportRepository->remove($supportRepository->find($id), TRUE);
+        return $this->redirect('/admin_support');
+    }
 
 }
