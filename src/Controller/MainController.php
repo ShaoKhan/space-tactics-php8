@@ -21,8 +21,8 @@ class MainController extends AbstractController
         ManagerRegistry        $managerRegistry,
         PlanetRepository       $p,
         EntityManagerInterface $em,
-                               Security $security,
-                               $slug = NULL
+        Security               $security,
+                               $slug = NULL,
     ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
@@ -30,12 +30,14 @@ class MainController extends AbstractController
         $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 
 
-        return $this->render('main/index.html.twig', [
-            'planets' => $planets[0],
+        return $this->render(
+            'main/index.html.twig', [
+            'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
-            'user' => $this->getUser(),
-            'slug' => $slug,
-        ]);
+            'user'           => $this->getUser(),
+            'slug'           => $slug,
+        ],
+        );
     }
 
     #[Route('/statistics/{slug?}', name: 'statistics')]
@@ -44,9 +46,9 @@ class MainController extends AbstractController
         ManagerRegistry        $managerRegistry,
         PlanetRepository       $p,
         EntityManagerInterface $em,
-        Security $security,
-                               $slug = NULL
-    ):Response
+        Security               $security,
+                               $slug = NULL,
+    ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -55,11 +57,11 @@ class MainController extends AbstractController
         return $this->render(
             'main/statistics.html.twig',
             [
-                'planets' => $planets[0],
+                'planets'        => $planets[0],
                 'selectedPlanet' => $planets[1],
-                'user' => $this->getUser(),
-                'slug' => $slug,
-            ]
+                'user'           => $this->getUser(),
+                'slug'           => $slug,
+            ],
         );
     }
 
@@ -69,9 +71,9 @@ class MainController extends AbstractController
         ManagerRegistry        $managerRegistry,
         PlanetRepository       $p,
         EntityManagerInterface $em,
-        Security $security,
-                               $slug = NULL
-    ):Response
+        Security               $security,
+                               $slug = NULL,
+    ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -83,12 +85,12 @@ class MainController extends AbstractController
         return $this->render(
             'main/support.html.twig',
             [
-                'planets' => $planets[0],
+                'planets'        => $planets[0],
                 'selectedPlanet' => $planets[1],
-                'user' => $this->getUser(),
-                'slug' => $slug,
-                'form' => $form->createView(),
-            ]
+                'user'           => $this->getUser(),
+                'slug'           => $slug,
+                'form'           => $form->createView(),
+            ],
         );
     }
 
@@ -98,9 +100,9 @@ class MainController extends AbstractController
         ManagerRegistry        $managerRegistry,
         PlanetRepository       $p,
         EntityManagerInterface $em,
-        Security $security,
-                               $slug = NULL
-    ):Response
+        Security               $security,
+                               $slug = NULL,
+    ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -109,12 +111,38 @@ class MainController extends AbstractController
         return $this->render(
             'main/rules.html.twig',
             [
-                'planets' => $planets[0],
+                'planets'        => $planets[0],
                 'selectedPlanet' => $planets[1],
-                'user' => $this->getUser(),
-                'slug' => $slug,
-            ]
+                'user'           => $this->getUser(),
+                'slug'           => $slug,
+            ],
         );
     }
+
+    #[Route('/notices/{slug?}', name: 'notices')]
+    public function playerNotices(
+        Request                $request,
+        ManagerRegistry        $managerRegistry,
+        PlanetRepository       $p,
+        EntityManagerInterface $em,
+        Security               $security,
+                               $slug = NULL,
+    ): Response
+    {
+        $user_uuid = $security->getUser()->getUuid();
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+
+        return $this->render(
+            'main/notices.html.twig',
+            [
+                'planets'        => $planets[0],
+                'selectedPlanet' => $planets[1],
+                'user'           => $this->getUser(),
+                'slug'           => $slug,
+            ],
+        );
+    }
+
 
 }

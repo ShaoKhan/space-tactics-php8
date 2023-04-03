@@ -26,11 +26,11 @@ class ScienceController extends AbstractController
         $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
-
         $science = $sr->findScienceByUserUuid($user_uuid, $managerRegistry);
 
+
         if($slug === NULL) {
-            $selectedPlanet = $planets[0];
+            $selectedPlanet = $planets[1];
             $slug           = $selectedPlanet["slug"];
         }
 
