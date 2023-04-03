@@ -13,19 +13,18 @@
             <li><a href="{{ path('main', {'slug': slug}) }}">Home</a></li>
             <li><a href="{{ path('buildings', {'slug':slug}) }}">Gebäude</a></li>
             <li><a href="{{ path('science', {'slug': slug}) }}">Forschung</a></li>
-            <li><a href="#">Schiffswerft</a></li>
-            <li><a href="#">Verteidigung</a></li>
-            <li><a href="#">Offiziere</a></li>
-            <li><a href="#">Schrotthändler</a></li>
-            <li><a href="#">Flotte</a></li>
-            <li><a href="#">Produktion</a></li>
+            <li><a href="{{ path('shipyard', {'slug': slug}) }}">Schiffswerft</a></li>
+            <li><a href="{{ path('defense', {'slug': slug}) }}">Verteidigung</a></li>
+            <li><a href="{{ path('officers', {'slug': slug}) }}">Offiziere</a></li>
+            <li><a href="{{ path('scrapdealer', {'slug': slug}) }}">Schrotthändler</a></li>
+            <li><a href="{{ path('fleet', {'slug': slug}) }}">Flotte</a></li>
             <li><a href="{{ path('galaxymap', {'slug': slug}) }}">Galaxie</a></li>
-            <li><a href="#">Allianz</a></li>
-            <li><a href="#">Statistik</a></li>
-            <li><a href="#">Support</a></li>
+            <li><a href="{{ path('alliance', {'slug': slug}) }}">Allianz</a></li>
+            <li><a href="{{ path('statistics', {'slug': slug}) }}">Statistik</a></li>
+            <li><a href="{{ path('support', {'slug': slug}) }}">Support</a></li>
             <li><a href="{{ path('rules') }}">Regeln</a></li>
-            <li><a href="#">Simulation</a></li>
-            <li><a href="#">Notizen</a></li>
+            <li><a href="{{ path('simulations', {'slug': slug}) }}">Simulation</a></li>
+            <li><a href="{{ path('notices', {'slug': slug}) }}">Notizen</a></li>
             <li><a href="/forum">Forum</a></li>
         </ul>
     </section>

@@ -15,6 +15,7 @@ namespace App\Repository;
 
 use App\Entity\Planet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -102,16 +103,9 @@ class PlanetRepository extends ServiceEntityRepository
      */
     public function getPlanetBuildings($uuid, $selectedPlanet, ManagerRegistry $mr): array
     {
-        //Select all building columns from planet table
-        $metadata = $this->getClassMetadata(Planet::class);
-        $columnNames = $metadata->getColumnNames();
-        $buildingColumns = array_filter($columnNames, function ($columnName) {
-            return preg_match('/_building$/', $columnName);
-        });
-
 
         $conn = $mr->getConnection();
-        $query = new \Doctrine\DBAL\Query\QueryBuilder($conn);
+        $query = new QueryBuilder($conn);
         $query->select('p.slug, pb.*, b.*')
             ->from('planet', 'p')
             ->innerJoin('p', 'planet_building', 'pb', 'pb.planet_slug = p.slug')
@@ -138,30 +132,10 @@ class PlanetRepository extends ServiceEntityRepository
 
     public function getPlanetScience($uuid, $slug, ManagerRegistry $mr): array
     {
-
         $sr = new ScienceRepository($mr);
         $sr->createQueryBuilder('b');
         $qb = $this->createQueryBuilder('p')
-            ->select(
-                '
-            p.metal_building, 
-            p.crystal_building,
-            p.deuterium_building,
-            p.solar_building,
-            p.nuclear_building,
-            p.robot_building,
-            p.nanite_building,
-            p.hangar_building,
-            p.metalstorage_building,
-            p.crystalstorage_building,
-            p.deuteriumstorage_building,
-            p.laboratory_building,
-            p.university_building,
-            p.alliancehangar_building,
-            p.missilesilo_building
-            ',
-            )
-            ->andWhere('p.user_uuid = :val')
+            ->where('p.user_uuid = :val')
             ->andWhere('p.slug = :slug')
             ->setParameter('val', $uuid)
             ->setParameter('slug', $slug)

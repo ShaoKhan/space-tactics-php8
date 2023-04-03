@@ -36,9 +36,11 @@
                             >
                                 <div class="planetData">
                                     <div class="col-lg-8">
-                                        <select name="planet" class="form-control planet-switcher-select-main">
-                                            {% for planet in planets %}
 
+                                        <select name="planet" class="form-control planet-switcher-select-main">
+
+
+                                            {% for planet in planets %}
                                                 <option
                                                         value="{{ planet.slug }}"
                                                         style="color: #000;"

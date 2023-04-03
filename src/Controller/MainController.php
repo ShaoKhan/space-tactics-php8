@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\SupportType;
 use App\Repository\PlanetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,30 +21,128 @@ class MainController extends AbstractController
         ManagerRegistry        $managerRegistry,
         PlanetRepository       $p,
         EntityManagerInterface $em,
-                               Security $security,
-                               $slug = NULL
+        Security               $security,
+                               $slug = NULL,
     ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getAllPlayerPlanets($managerRegistry, $user_uuid);
-
-        $firstPlanet = array_search($slug, array_column($planets, 'slug'));
-        $selectedPlanet = $planets[$firstPlanet];
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 
 
-
-
-        if ($slug === NULL) {
-            $selectedPlanet = $planets[0];
-            $slug = $selectedPlanet["slug"];
-        }
-
-        return $this->render('main/index.html.twig', [
-            'planets' => $planets,
-            'selectedPlanet' => $selectedPlanet,
-            'user' => $this->getUser(),
-            'slug' => $slug,
-        ]);
+        return $this->render(
+            'main/index.html.twig', [
+            'planets'        => $planets[0],
+            'selectedPlanet' => $planets[1],
+            'user'           => $this->getUser(),
+            'slug'           => $slug,
+        ],
+        );
     }
+
+    #[Route('/statistics/{slug?}', name: 'statistics')]
+    public function statistics(
+        Request                $request,
+        ManagerRegistry        $managerRegistry,
+        PlanetRepository       $p,
+        EntityManagerInterface $em,
+        Security               $security,
+                               $slug = NULL,
+    ): Response
+    {
+        $user_uuid = $security->getUser()->getUuid();
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+
+        return $this->render(
+            'main/statistics.html.twig',
+            [
+                'planets'        => $planets[0],
+                'selectedPlanet' => $planets[1],
+                'user'           => $this->getUser(),
+                'slug'           => $slug,
+            ],
+        );
+    }
+
+    #[Route('/support/{slug?}', name: 'support')]
+    public function support(
+        Request                $request,
+        ManagerRegistry        $managerRegistry,
+        PlanetRepository       $p,
+        EntityManagerInterface $em,
+        Security               $security,
+                               $slug = NULL,
+    ): Response
+    {
+        $user_uuid = $security->getUser()->getUuid();
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+
+        $form = $this->createForm(SupportType::class);
+
+
+        return $this->render(
+            'main/support.html.twig',
+            [
+                'planets'        => $planets[0],
+                'selectedPlanet' => $planets[1],
+                'user'           => $this->getUser(),
+                'slug'           => $slug,
+                'form'           => $form->createView(),
+            ],
+        );
+    }
+
+    #[Route('/rules/{slug?}', name: 'rules')]
+    public function rules(
+        Request                $request,
+        ManagerRegistry        $managerRegistry,
+        PlanetRepository       $p,
+        EntityManagerInterface $em,
+        Security               $security,
+                               $slug = NULL,
+    ): Response
+    {
+        $user_uuid = $security->getUser()->getUuid();
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+
+        return $this->render(
+            'main/rules.html.twig',
+            [
+                'planets'        => $planets[0],
+                'selectedPlanet' => $planets[1],
+                'user'           => $this->getUser(),
+                'slug'           => $slug,
+            ],
+        );
+    }
+
+    #[Route('/notices/{slug?}', name: 'notices')]
+    public function playerNotices(
+        Request                $request,
+        ManagerRegistry        $managerRegistry,
+        PlanetRepository       $p,
+        EntityManagerInterface $em,
+        Security               $security,
+                               $slug = NULL,
+    ): Response
+    {
+        $user_uuid = $security->getUser()->getUuid();
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+
+        return $this->render(
+            'main/notices.html.twig',
+            [
+                'planets'        => $planets[0],
+                'selectedPlanet' => $planets[1],
+                'user'           => $this->getUser(),
+                'slug'           => $slug,
+            ],
+        );
+    }
+
+
 }

@@ -40,13 +40,7 @@ class GalaxymapController extends AbstractController
     {
         $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets        = $this->getAllPlayerPlanets($managerRegistry, $user_uuid);
-        $firstPlanet    = array_search($slug, array_column($planets, 'slug'));
-        $selectedPlanet = $planets[$firstPlanet];
-
-        if($slug === NULL) {
-            $selectedPlanet = $planets[0];
-        }
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 
         $uniDimensions = $ur->getUniDimensions()[0];
 
@@ -72,8 +66,8 @@ class GalaxymapController extends AbstractController
         $coords = $p->getAllCoords();
 
         return $this->render('galaxymap/index.html.twig', [
-            'planets'        => $planets,
-            'selectedPlanet' => $selectedPlanet,
+            'planets'        => $planets[0],
+            'selectedPlanet' => $planets[1],
             'user' => $this->getUser(),
             'slug' => $slug,
             'dimensions' => $uniDimensions,

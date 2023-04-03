@@ -15,13 +15,13 @@ namespace App\Controller;
 
 use App\Entity\Server;
 use App\Form\ServerType;
-use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\ServerRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class AdminController extends AbstractController
 {
@@ -37,56 +37,56 @@ class AdminController extends AbstractController
     public function index(): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        return $this->render('admin/index.html.twig', [
+        return $this->render(
+            'admin/index.html.twig', [
             'controller_name' => 'AdminController',
-        ]);
+        ],
+        );
     }
 
     #[Route('/admin_server', name: 'admin_server')]
     public function server(
-        ValidatorInterface $validator, Request $request,
-        ManagerRegistry    $doctrine,
-    ): Response {
+        ServerRepository $serverRepository,
+    ): Response
+    {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
-        $server       = new Server();
-        $errorsString = NULL;
-        $errors       = $validator->validate($server);
-        $servername   = [];
-        $form = NULL;
+        $server = $serverRepository->findAll();
 
-        $repo       = $doctrine->getRepository(Server::class);
-        $servername = $repo->findAll();
+        return $this->render(
+            'admin/server.html.twig',
+            [
+                'server' => $server,
+            ],
+        );
+    }
 
-        if($servername[0] === NULL) {
-            $form = $this->createForm(ServerType::class, $server, [
-                'action' => $this->generateUrl('admin_server'),
-            ]);
+    #[Route('/admin_server_add', name: 'admin_server_add')]
+    public function server_add(
+        Request                $request,
+        EntityManagerInterface $entityManager,
 
-            if(count($errors) > 0) {
-                $errorsString = (string)$errors;
-            }
+    ): Response
+    {
 
-            $form->handleRequest($request);
-            if($form->isSubmitted()) {
 
-                if($form->isValid()) {
-                    $entityManager = $doctrine->getManager();
-                    $entityManager->persist($form->getData());
-                    $entityManager->flush();
-                    $this->session->getFlashBag()->add('success', 'Dein Server wurde angelegt.');
-                } else {
-                    $this->session->getFlashBag()->add('error', 'Bei der Erstellung des Servers ist ein Fehler aufgetreten.');
-                }
-            }
+        $form = $this->createForm(ServerType::class, new Server());
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager->persist($form->getData());
+            $entityManager->flush();
+            $this->session->getFlashBag()->add('success', 'Dein Server wurde angelegt.');
+
+            $this->redirect('/admin_server');
         }
 
-        return $this->render('admin/server.html.twig', [
-            'controller_name' => 'AdminController',
-            'form'            => $form,
-            'errors'          => $errorsString,
-            'server'          => $servername,
-        ]);
+        return $this->render(
+            'admin/server_add.html.twig', [
+            'form' => $form->createView(),
+        ],
+        );
     }
+
 
 }
