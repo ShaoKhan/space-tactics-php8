@@ -43,8 +43,15 @@
                         <div class="container-fluid mt-3">
                             <div class="buildings">
                                 <div class="col-lg-5 alert alert-primary" role="alert">
-                                    Du benötigst Hilfe? Wende dich gern an unser Team, oder nutze das <a href="#">Forum</a>
+                                    Du benötigst Hilfe? Wende dich gern an unser Team, oder nutze das <a
+                                            href="#">Forum</a>
                                 </div>
+                                {% for notice in app.flashes('success') %}
+                                    <div class="col-lg-3 alert alert-success" role="alert">
+                                        {{ notice }}
+                                    </div>
+                                {% endfor %}
+
                                 <div class="col-12">
                                     {{ form_start(form) }}
                                     {{ form_widget(form) }}

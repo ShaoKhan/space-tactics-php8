@@ -18,8 +18,11 @@ use App\Form\ServerType;
 use App\Repository\ServerRepository;
 use App\Repository\SupportRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
+use Omines\DataTablesBundle\Column\DateTimeColumn;
+use Omines\DataTablesBundle\Column\TextColumn;
+use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -92,12 +95,12 @@ class AdminController extends AbstractController
 
     #[Route('/admin_support', name: 'admin_support')]
     public function adminSupport(
-        Security          $security,
         SupportRepository $supportRepository,
     ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $support              = $supportRepository->findAll();
+        $support = $supportRepository->findAll();
+
 
         return $this->render(
             'admin/support/support.html.twig', [

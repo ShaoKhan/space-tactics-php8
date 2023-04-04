@@ -1,5 +1,9 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/support.css') }}">
+{% endblock %}
+{% block javascript %}{% endblock %}
 {% block title %}Space-Tactics Main{% endblock %}
 
 {% block body %}
@@ -26,15 +30,19 @@
                                 <h3>{{  app.user.username }} </h3>
                             </div>
                         </div>
+
                         <div class="row">
+
+                            <div class="col-12">
+                                <div class="tickets"></div>
+                            </div>
                             <div class="col-12">
 
                                 {% if tickets is iterable %}
 
-                                    <table class="table table-striped">
+                                    <table class="table table-striped support">
                                         <thead>
                                         <tr>
-                                            <th scope="col">ID</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Email</th>
                                             <th scope="col">Subject</th>
@@ -46,8 +54,7 @@
                                         <tbody>
 
                                         {% for ticket in tickets %}
-                                            <tr>
-                                                <th scope="row">{{ ticket.id }}</th>
+                                            <tr class="ticket-{{ ticket.theme|lower }}">
                                                 <td>{{ ticket.username }}</td>
                                                 <td>{{ ticket.datum|date('d-m-Y') }}</td>
                                                 <td>{{ ticket.subject }}</td>
@@ -72,6 +79,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- Footer -->
     {% include 'parts/footer.html.twig' %}
