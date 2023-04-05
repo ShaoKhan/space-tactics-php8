@@ -27,7 +27,7 @@
                     <section>
                         <div class="row">
                             <div class="col-lg-7 col-md-12">
-                                <h3>{{  app.user.username }} </h3>
+                                <h3>{{ app.user.username }} </h3>
                             </div>
                         </div>
 
@@ -54,6 +54,8 @@
                                         <tbody>
 
                                         {% for ticket in tickets %}
+                                            {% set disabled = (ticket.closed == 1) ? 'disabled="disabled"' : '' %}
+                                            {% set closed = (ticket.closed == 1) ? 'Geschlossen' : 'Antworten' %}
                                             <tr class="ticket-{{ ticket.theme|lower }}">
                                                 <td>{{ ticket.username }}</td>
                                                 <td>{{ ticket.datum|date('d-m-Y') }}</td>
@@ -61,9 +63,8 @@
                                                 <td>{{ ticket.theme }}</td>
                                                 <td>{{ ticket.message }}</td>
                                                 <td>
-                                                    <a href="#" class="btn btn-info">Antworten</a>
-                                                    <a href="{{ path('admin_support_delete', {'id': ticket.id}) }}" class="btn btn-danger">Delete</a>
-
+                                                    <button href="#" {{ disabled }} class="btn btn-info" role="link">{{ closed }}</button>
+                                                    <button href="{{ path('admin_support_delete', {'id': ticket.id}) }}" class="btn btn-danger" role="link">Delete</button>
                                                 </td>
                                             </tr>
                                         {% endfor %}

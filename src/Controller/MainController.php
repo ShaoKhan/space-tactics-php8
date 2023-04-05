@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Support;
 use App\Form\SupportType;
 use App\Repository\PlanetRepository;
+use App\Repository\SupportRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,12 +20,7 @@ class MainController extends AbstractController
 
     #[Route('/main/{slug?}', name: 'main')]
     public function index(
-        Request                $request,
-        ManagerRegistry        $managerRegistry,
-        PlanetRepository       $p,
-        EntityManagerInterface $em,
-        Security               $security,
-                               $slug = NULL,
+        Request $request, ManagerRegistry $managerRegistry, PlanetRepository $p, EntityManagerInterface $em, Security $security, $slug = NULL,
     ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
@@ -34,22 +30,14 @@ class MainController extends AbstractController
 
         return $this->render(
             'main/index.html.twig', [
-            'planets'        => $planets[0],
-            'selectedPlanet' => $planets[1],
-            'user'           => $this->getUser(),
-            'slug'           => $slug,
+            'planets' => $planets[0], 'selectedPlanet' => $planets[1], 'user' => $this->getUser(), 'slug' => $slug,
         ],
         );
     }
 
     #[Route('/statistics/{slug?}', name: 'statistics')]
     public function statistics(
-        Request                $request,
-        ManagerRegistry        $managerRegistry,
-        PlanetRepository       $p,
-        EntityManagerInterface $em,
-        Security               $security,
-                               $slug = NULL,
+        Request $request, ManagerRegistry $managerRegistry, PlanetRepository $p, EntityManagerInterface $em, Security $security, $slug = NULL,
     ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
@@ -57,13 +45,9 @@ class MainController extends AbstractController
         $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 
         return $this->render(
-            'main/statistics.html.twig',
-            [
-                'planets'        => $planets[0],
-                'selectedPlanet' => $planets[1],
-                'user'           => $this->getUser(),
-                'slug'           => $slug,
-            ],
+            'main/statistics.html.twig', [
+            'planets' => $planets[0], 'selectedPlanet' => $planets[1], 'user' => $this->getUser(), 'slug' => $slug,
+        ],
         );
     }
 
@@ -75,12 +59,15 @@ class MainController extends AbstractController
         EntityManagerInterface $em,
         Security               $security,
         Session                $session,
+        SupportRepository      $supportRepository,
                                $slug = NULL,
     ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+
+        $tickets = $supportRepository->findBy(['uuid' => $user_uuid, 'closed' => 0 ]);
 
         $form = $this->createForm(SupportType::class, new Support());
         $form->handleRequest($request);
@@ -96,25 +83,15 @@ class MainController extends AbstractController
             $session->getFlashBag()->add('success', 'Dein Ticket wurde erstellt. Vielen Dank.');
         }
         return $this->render(
-            'main/support.html.twig',
-            [
-                'planets'        => $planets[0],
-                'selectedPlanet' => $planets[1],
-                'user'           => $this->getUser(),
-                'slug'           => $slug,
-                'form'           => $form->createView(),
-            ],
+            'main/support.html.twig', [
+            'planets' => $planets[0], 'selectedPlanet' => $planets[1], 'user' => $this->getUser(), 'slug' => $slug, 'form' => $form->createView(), 'tickets' => $tickets,
+        ],
         );
     }
 
     #[Route('/rules/{slug?}', name: 'rules')]
     public function rules(
-        Request                $request,
-        ManagerRegistry        $managerRegistry,
-        PlanetRepository       $p,
-        EntityManagerInterface $em,
-        Security               $security,
-                               $slug = NULL,
+        Request $request, ManagerRegistry $managerRegistry, PlanetRepository $p, EntityManagerInterface $em, Security $security, $slug = NULL,
     ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
@@ -122,24 +99,15 @@ class MainController extends AbstractController
         $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 
         return $this->render(
-            'main/rules.html.twig',
-            [
-                'planets'        => $planets[0],
-                'selectedPlanet' => $planets[1],
-                'user'           => $this->getUser(),
-                'slug'           => $slug,
-            ],
+            'main/rules.html.twig', [
+            'planets' => $planets[0], 'selectedPlanet' => $planets[1], 'user' => $this->getUser(), 'slug' => $slug,
+        ],
         );
     }
 
     #[Route('/notices/{slug?}', name: 'notices')]
     public function playerNotices(
-        Request                $request,
-        ManagerRegistry        $managerRegistry,
-        PlanetRepository       $p,
-        EntityManagerInterface $em,
-        Security               $security,
-                               $slug = NULL,
+        Request $request, ManagerRegistry $managerRegistry, PlanetRepository $p, EntityManagerInterface $em, Security $security, $slug = NULL,
     ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
@@ -147,15 +115,34 @@ class MainController extends AbstractController
         $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 
         return $this->render(
-            'main/notices.html.twig',
-            [
-                'planets'        => $planets[0],
-                'selectedPlanet' => $planets[1],
-                'user'           => $this->getUser(),
-                'slug'           => $slug,
-            ],
+            'main/notices.html.twig', [
+            'planets'        => $planets[0],
+            'selectedPlanet' => $planets[1],
+            'user'           => $this->getUser(),
+            'slug'           => $slug,
+        ],
         );
     }
 
+    #[Route('/support/ticket_close/{ticketId}/{slug?}', name: 'ticket_close')]
+    public function closeTicket(
+        int                    $ticketId,
+        SupportRepository      $supportRepository,
+        EntityManagerInterface $em,
+                               $slug = NULL,
+    ): Response
+    {
+        $ticket = $supportRepository->find($ticketId);
+        $ticket->setClosed(1);
+        $em->persist($ticket);
+        $em->flush();
+
+        return $this->redirectToRoute(
+            'support',
+            [
+                'slug' => $slug,
+            ],
+        );
+    }
 
 }
