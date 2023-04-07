@@ -27,17 +27,24 @@ class MainController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 
-
         return $this->render(
             'main/index.html.twig', [
-            'planets' => $planets[0], 'selectedPlanet' => $planets[1], 'user' => $this->getUser(), 'slug' => $slug,
+            'planets'        => $planets[0],
+            'selectedPlanet' => $planets[1],
+            'user'           => $this->getUser(),
+            'slug'           => $slug,
         ],
         );
     }
 
     #[Route('/statistics/{slug?}', name: 'statistics')]
     public function statistics(
-        Request $request, ManagerRegistry $managerRegistry, PlanetRepository $p, EntityManagerInterface $em, Security $security, $slug = NULL,
+        Request                $request,
+        ManagerRegistry        $managerRegistry,
+        PlanetRepository       $p,
+        EntityManagerInterface $em,
+        Security               $security,
+                               $slug = NULL,
     ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
@@ -67,7 +74,7 @@ class MainController extends AbstractController
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 
-        $tickets = $supportRepository->findBy(['uuid' => $user_uuid, 'closed' => 0 ]);
+        $tickets = $supportRepository->findBy(['uuid' => $user_uuid, 'closed' => 0]);
 
         $form = $this->createForm(SupportType::class, new Support());
         $form->handleRequest($request);

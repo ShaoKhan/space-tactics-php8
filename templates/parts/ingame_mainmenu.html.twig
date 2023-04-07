@@ -11,7 +11,7 @@
                     <nav id="nav">
                         <div class="col-lg-12">
                             {% if selectedPlanet is defined %}
-                                <a href="#">{{ 'messages'|trans({},'ui') }}</a>
+                                <a href="{{ path('messages', {'slug': slug}) }}">{{ 'messages'|trans({},'ui') }}</a>
                                 <a class="metal" href="#">{{ 'metal'|trans({},'resources') }}
                                     : {{ selectedPlanet.metal|number_format(0,',','.') }}</a>
                                 <a href="#">{{ 'crystal'|trans({},'resources') }}

@@ -9,18 +9,15 @@
  *
  * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 @import "vars";
 @import "imports";
 @import "bootstrap.scss";
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css");
 @import "main";
 @import "admin";
 @import "galaxy";
 @import "support";
-
-body{
-
-}
+@import "messages";
 
 .container-fluid{
   padding-left: 0;
