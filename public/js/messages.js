@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    $('.message-header').on('click',function () {
+    $('.message-header-subject').on('click',function () {
         let message_number =  $(this).data('id');
         let $toggleableElements = $('.message-text');
         $toggleableElements.each(function() {
@@ -11,8 +11,14 @@ $(document).ready(function () {
         $('.message-text.text-'+message_number).slideToggle();
     });
 
+    $('.answer-message').on('click',function () {
 
-    $('#myModal').on('shown.bs.modal', function () {
-        $('#myInput').trigger('focus')
-    })
+        let slug = $(this).parent().parent().data('slug');
+        let from = $(this).parent().parent().data('name');
+
+        $('#messageModal').find('.username').html(from);
+        $('#messageModal #messages_slug').val(slug);
+        $('#messageModal').modal('show');
+    });
+
 });

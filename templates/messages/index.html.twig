@@ -48,18 +48,27 @@
 
                                         {% set oddeven = i is odd %}
                                         <div class="message-{{ oddeven|default(0) }}">
-                                            <div class="message-header" data-id="{{ message.slug }}">
+                                            <div class="message-header"
+                                                 data-name="{{ message.fromName }}"
+                                                 data-from_uuid="{{ message.fromUuid }}"
+                                                 data-to_uuid="{{ message.toUuid }}"
+                                                 data-to_name="{{ message.toName }}"
+                                                 data-slug="{{ message.slug }}"
+
+                                            >
                                                 <div class="message-{{ message.messageType }}"></div>
-                                                <div class="message-header-subject">
+                                                <div class="message-header-subject" data-id="{{ message.slug }}">
                                                     <div>vom {{ message.sendDate|date('d.m.Y') }}
                                                         um {{ message.sendDate|date('H:i') }} Uhr |
                                                         Betreff: {{ message.subject }} von {{ message.fromName }}
                                                     </div>
                                                 </div>
                                                 <div class="message-header-options">
+                                                    {% if message.messageType is not 1 %}
                                                     <div class="answer-message">
-                                                        <i class="bi-pencil"></i>
+                                                        <i class="bi-pencil" ></i>
                                                     </div>
+                                                    {% endif %}
                                                     <div class="delete-message" data-message-id="{{ message.id }}">
                                                         <i class="bi-trash3"></i>
                                                     </div>
@@ -79,29 +88,22 @@
         </div>
     </section>
 
-
-    <div class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Antwort an <span class="username"></span></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title" id="messageModalLabel">Antwort an <span class="username"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     {{ form_start(form) }}
                     {{ form_widget(form) }}
                     {{ form_end(form) }}
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Absenden</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+                <div class="modal-footer"></div>
             </div>
         </div>
     </div>
-
     {% include 'parts/footer.html.twig' %}
 {% endblock %}
 
