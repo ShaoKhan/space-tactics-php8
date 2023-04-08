@@ -6,6 +6,7 @@ use App\Entity\Support;
 use App\Form\SupportType;
 use App\Repository\PlanetRepository;
 use App\Repository\SupportRepository;
+use App\Service\CheckMessagesService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,9 +19,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class MainController extends AbstractController
 {
 
+    public function __construct(
+        CheckMessagesService $checkMessagesService,
+        Security             $security,
+        ManagerRegistry      $managerRegistry,
+    )
+    {
+        parent::__construct($checkMessagesService, $security, $managerRegistry);
+    }
+
     #[Route('/main/{slug?}', name: 'main')]
     public function index(
-        Request $request, ManagerRegistry $managerRegistry, PlanetRepository $p, EntityManagerInterface $em, Security $security, $slug = NULL,
+        ManagerRegistry        $managerRegistry,
+        Security               $security,
+                               $slug = NULL,
     ): Response
     {
         $user_uuid = $security->getUser()->getUuid();
@@ -32,6 +44,7 @@ class MainController extends AbstractController
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
             'user'           => $this->getUser(),
+            'messages'       => $this->messages,
             'slug'           => $slug,
         ],
         );
@@ -53,7 +66,11 @@ class MainController extends AbstractController
 
         return $this->render(
             'main/statistics.html.twig', [
-            'planets' => $planets[0], 'selectedPlanet' => $planets[1], 'user' => $this->getUser(), 'slug' => $slug,
+            'planets'        => $planets[0],
+            'selectedPlanet' => $planets[1],
+            'user'           => $this->getUser(),
+            'messages'       => $this->messages,
+            'slug'           => $slug,
         ],
         );
     }
@@ -91,7 +108,13 @@ class MainController extends AbstractController
         }
         return $this->render(
             'main/support.html.twig', [
-            'planets' => $planets[0], 'selectedPlanet' => $planets[1], 'user' => $this->getUser(), 'slug' => $slug, 'form' => $form->createView(), 'tickets' => $tickets,
+            'planets'        => $planets[0],
+            'selectedPlanet' => $planets[1],
+            'user'           => $this->getUser(),
+            'messages'       => $this->messages,
+            'form'           => $form->createView(),
+            'tickets'        => $tickets,
+            'slug'           => $slug,
         ],
         );
     }
@@ -107,7 +130,11 @@ class MainController extends AbstractController
 
         return $this->render(
             'main/rules.html.twig', [
-            'planets' => $planets[0], 'selectedPlanet' => $planets[1], 'user' => $this->getUser(), 'slug' => $slug,
+            'planets' => $planets[0],
+            'selectedPlanet' => $planets[1],
+            'user' => $this->getUser(),
+            'messages'       => $this->messages,
+            'slug' => $slug,
         ],
         );
     }
@@ -126,6 +153,7 @@ class MainController extends AbstractController
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
             'user'           => $this->getUser(),
+            'messages'       => $this->messages,
             'slug'           => $slug,
         ],
         );

@@ -42,7 +42,11 @@ class UserRepository extends ServiceEntityRepository
         }
     }
 
-    public function addFriend($srcID, $targetId, ManagerRegistry $registry)
+    public function addFriend(
+        $srcID,
+        $targetId,
+        ManagerRegistry $registry
+    ):void
     {
         $buddy = new Buddylist();
         $buddyRepo = new BuddylistRepository($registry);

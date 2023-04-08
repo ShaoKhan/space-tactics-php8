@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Space-Tactics Main{% endblock %}
+
+{% block body %}
+    <!-- Main Menu -->
+
+    {% include 'parts/ingame_mainmenu.html.twig' %}
+
+
+    <!-- Content -->
+    <section id="content" class="main">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    {% if app.user is not null %}
+                        {% include 'parts/sidebar.html.twig' %}
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-6 mt-1">
+                                <h3>Deine Nachrichtenzentrale, {{ user.username }} </h3>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <select name="planet" class="form-control planet-switcher-select">
+                                    {% for planet in planets %}
+
+                                        <option
+                                                value="{{ planet.slug }}"
+                                                style="color: #000;"
+                                                {{ planet.slug == slug ? 'selected' : '' }}
+                                        >
+                                            {{ planet.name }}
+                                            [{{ planet.system_x }}:{{ planet.system_y }}:{{ planet.system_z }}]
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="container-fluid mt-3">
+                            <div class="buildings">
+                                {% if messages is iterable %}
+                                    {% for i, message in messages %}
+
+                                        {% set oddeven = i is odd %}
+                                        <div class="message-{{ oddeven|default(0) }}">
+                                            <div class="message-header" data-id="{{ message.slug }}">
+                                                <div class="message-{{ message.messageType }}"></div>
+                                                <div class="message-header-subject">
+                                                    <div>vom {{ message.sendDate|date('d.m.Y') }}
+                                                        um {{ message.sendDate|date('H:i') }} Uhr |
+                                                        Betreff: {{ message.subject }} von {{ message.fromName }}
+                                                    </div>
+                                                </div>
+                                                <div class="message-header-options">
+                                                    <div class="answer-message">
+                                                        <i class="bi-pencil"></i>
+                                                    </div>
+                                                    <div class="delete-message" data-message-id="{{ message.id }}">
+                                                        <i class="bi-trash3"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="message-text text-{{ message.slug }}">
+                                                {{ message.message }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Antwort an <span class="username"></span></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Absenden</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include 'parts/footer.html.twig' %}
+{% endblock %}
+
+

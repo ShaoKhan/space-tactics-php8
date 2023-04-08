@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Messages;
 use App\Form\MessagesType;
 use App\Repository\MessagesRepository;
+use App\Service\CheckMessagesService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -13,6 +14,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MessagesController extends AbstractController
 {
+
+    public function __construct(
+        CheckMessagesService $checkMessagesService,
+        Security             $security,
+        ManagerRegistry      $managerRegistry,
+    )
+    {
+        parent::__construct($checkMessagesService, $security, $managerRegistry);
+    }
+
+
     #[Route('/messages/{slug?}', name: 'messages')]
     public function index(
         Security           $security,

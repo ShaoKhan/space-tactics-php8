@@ -18,6 +18,7 @@ use App\Repository\BuildingsRepository;
 use App\Repository\PlanetRepository;
 use App\Repository\PlanetTypeRepository;
 use App\Service\BuildingCalculationService;
+use App\Service\CheckMessagesService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -26,6 +27,16 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BuildingsController extends AbstractController
 {
+
+    public function __construct(
+        CheckMessagesService $checkMessagesService,
+        Security             $security,
+        ManagerRegistry      $managerRegistry,
+    )
+    {
+        parent::__construct($checkMessagesService, $security, $managerRegistry);
+    }
+
     #[Route('/buildings/{slug?}', name: 'buildings')]
     public function index(
         ManagerRegistry            $managerRegistry,
@@ -60,6 +71,7 @@ class BuildingsController extends AbstractController
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
             'user'           => $this->getUser(),
+            'messages' => $this->messages,
             'slug'           => $slug,
             'buildings'      => $built ?? NULL,
         ],

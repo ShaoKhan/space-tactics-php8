@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Planet;
 use App\Repository\PlanetRepository;
 use App\Repository\ScienceRepository;
+use App\Service\CheckMessagesService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -13,13 +13,22 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ScienceController extends AbstractController
 {
+
+    public function __construct(
+        CheckMessagesService $checkMessagesService,
+        Security             $security,
+        ManagerRegistry      $managerRegistry,
+    )
+    {
+        parent::__construct($checkMessagesService, $security, $managerRegistry);
+    }
+
     #[Route('/science/{slug?}', name: 'science')]
     public function index(
-        ManagerRegistry  $managerRegistry,
-        PlanetRepository $p,
+        ManagerRegistry   $managerRegistry,
         ScienceRepository $sr,
-        Security         $security,
-                         $slug = NULL,
+        Security          $security,
+                          $slug = NULL,
     ): Response
     {
 
@@ -40,8 +49,9 @@ class ScienceController extends AbstractController
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
             'user'           => $this->getUser(),
-            'slug'           => $slug,
+            'messages'       => $this->messages,
             'science'        => $science ?? NULL,
+            'slug'           => $slug,
         ],
         );
     }
