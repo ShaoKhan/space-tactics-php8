@@ -5,7 +5,10 @@ namespace App\Controller;
 use App\Entity\Uni;
 use App\Form\UniType;
 use App\Repository\UniRepository;
+use App\Service\CheckMessagesService;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,6 +16,16 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/uni')]
 class UniController extends AbstractController
 {
+
+    public function __construct(
+        CheckMessagesService $checkMessagesService,
+        Security             $security,
+        ManagerRegistry      $managerRegistry,
+    )
+    {
+        parent::__construct($checkMessagesService, $security, $managerRegistry);
+    }
+
     #[Route('/', name: 'uni_index', methods: ['GET'])]
     public function index(UniRepository $uniRepository): Response
     {

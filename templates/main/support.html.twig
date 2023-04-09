@@ -22,7 +22,8 @@
                     <section>
                         <div class="row">
                             <div class="col-lg-6 mt-1">
-                                <h3>Willkommen zurück {{ user.username }} </h3>
+                                <h3>Du benötigst Hilfe, {{ user.username }} ? Schreib uns fix an.</h3>
+                                <span>Schau bitte auch im <a href="#" target="_blank">Forum</a>, vielleicht ist dein Anliegen dort bereits bekannt.</span>
                             </div>
                             <div class="col-lg-6">
                                 <select name="planet" class="form-control planet-switcher-select">
@@ -40,11 +41,40 @@
                                 </select>
                             </div>
                         </div>
+
                         <div class="container-fluid mt-3">
                             <div class="buildings">
-                                <div class="col-lg-5 alert alert-primary" role="alert">
-                                    Du benötigst Hilfe? Wende dich gern an unser Team, oder nutze das <a href="#">Forum</a>
+                                {% for notice in app.flashes('success') %}
+                                    <div class="col-lg-3 alert alert-success" role="alert">
+                                        {{ notice }}
+                                    </div>
+                                {% endfor %}
+
+                                <div class="col-12">
+                                    {% for ticket in tickets %}
+                                        <div class="ticket" data-ticket="{{ ticket.id }}">
+                                            <div class="ticket-headline">
+                                                <div class="ticket-headline-badge ticket-headline-{{ ticket.theme|lower }}"></div>
+                                                <div class="ticket-subject">
+                                                    {{ ticket.subject }} vom ( {{ ticket.datum|date('d.m.Y H:i') }} )
+                                                </div>
+                                                <div class="ticket-options">
+                                                    <form action="{{ path('ticket_close', {ticketId: ticket.id, slug: slug}) }}"
+                                                          method="post">
+                                                        <button type="submit" class="btn btn-sm btn-danger">Schließen
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="message ticket-body-{{ ticket.id }}">
+                                                <p>{{ ticket.message }}</p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <hr/>
                                 </div>
+
+
                                 <div class="col-12">
                                     {{ form_start(form) }}
                                     {{ form_widget(form) }}

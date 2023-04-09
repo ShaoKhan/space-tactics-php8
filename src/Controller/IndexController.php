@@ -8,6 +8,7 @@ use App\Form\Type\UserType;
 use App\Repository\PlanetRepository;
 use App\Repository\UniRepository;
 use App\Security\EmailVerifier;
+use App\Service\CheckMessagesService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,9 +28,13 @@ class IndexController extends AbstractController
 {
     private Session $session;
 
-
-    public function __construct()
+    public function __construct(
+        CheckMessagesService $checkMessagesService,
+        Security             $security,
+        ManagerRegistry      $managerRegistry,
+    )
     {
+        parent::__construct($checkMessagesService, $security, $managerRegistry);
         $this->session = new Session();
     }
 

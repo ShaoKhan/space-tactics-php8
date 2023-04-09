@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/support.css') }}">
+{% endblock %}
+{% block javascript %}{% endblock %}
+{% block title %}Space-Tactics Main{% endblock %}
+
+{% block body %}
+    <!-- Main Menu -->
+    {% include 'admin/parts/mainmenu.html.twig' %}
+
+
+    <!-- Content -->
+    <section id="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    <!-- Sidebar -->
+                    {% if app.user is not null %}
+                        {% include 'admin/parts/sidebar.html.twig' %}
+                    {% endif %}
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-7 col-md-12">
+                                <h3>{{ app.user.username }} </h3>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-12">
+                                <div class="tickets"></div>
+                            </div>
+                            <div class="col-12">
+
+                                {% if tickets is iterable %}
+
+                                    <table class="table table-striped support">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Subject</th>
+                                            <th scope="col">Message</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for ticket in tickets %}
+                                            {% set disabled = (ticket.closed == 1) ? 'disabled="disabled"' : '' %}
+                                            {% set closed = (ticket.closed == 1) ? 'Geschlossen' : 'Antworten' %}
+                                            <tr class="ticket-{{ ticket.theme|lower }}">
+                                                <td>{{ ticket.username }}</td>
+                                                <td>{{ ticket.datum|date('d-m-Y') }}</td>
+                                                <td>{{ ticket.subject }}</td>
+                                                <td>{{ ticket.theme }}</td>
+                                                <td>{{ ticket.message }}</td>
+                                                <td>
+                                                    <button href="#" {{ disabled }} class="btn btn-info" role="link">{{ closed }}</button>
+                                                    <button href="{{ path('admin_support_delete', {'id': ticket.id}) }}" class="btn btn-danger" role="link">Delete</button>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <h3>No Support Messages</h3>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    {% include 'parts/footer.html.twig' %}
+{% endblock %}
+
+

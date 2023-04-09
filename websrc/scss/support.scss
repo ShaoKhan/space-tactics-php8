@@ -1,0 +1,64 @@
+.ticket-{
+  &bug{
+    background-color: rgba(145, 3, 4, 0.3);
+  }
+
+  &spieler{
+    background-color: rgba(233, 139, 12, 0.3);
+  }
+
+  &sonstiges{
+    background-color: rgba(28, 94, 233, 0.3);
+  }
+}
+
+.ticket{
+
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  margin-bottom: 2px;
+  padding: 5px 10px;
+  background: rgba(42, 48, 52, 0.5);
+  color: $white;
+
+  &-headline{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 500;
+
+    &-badge{
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    &-bug{
+      background-color: $ticket-bug;
+    }
+
+    &-spieler{
+      background-color: $ticket-spieler;
+    }
+
+    &-sonstiges{
+      background-color: $ticket-sonstiges;
+    }
+
+    &-subject{
+      font-weight: bolder;
+    }
+
+  }
+
+  &-options{
+    margin-right: 0;
+    margin-left: auto;
+  }
+
+  .message{
+    display: none;
+  }
+}
+

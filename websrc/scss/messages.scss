@@ -1,0 +1,88 @@
+.message{
+
+  &-0{
+    background: $gray-100;
+  }
+
+  &-header{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    cursor: pointer;
+
+    .message{
+      &-1{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: $red;
+        margin: 6px 0 0 5px;
+
+      }
+
+      &-2{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: $blue;
+        margin: 6px 0 0 5px;
+
+      }
+
+      &-3{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: $green;
+        margin: 6px 0 0 5px;
+
+      }
+
+      &-4{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: $yellow;
+        margin: 6px 0 0 5px;
+
+      }
+
+      &-5{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: $indigo;
+        margin: 6px 0 0 5px;
+
+      }
+
+      &-6{
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: $cyan;
+        margin: 6px 0 0 5px;
+
+      }
+    }
+
+    &-options{
+      display: inline-flex;
+      margin-left: auto;
+      div{
+        padding: 0 0 0 10px;
+      }
+
+    }
+
+    &-subject{
+      margin-left: 10px;
+    }
+
+  }
+
+  &-text{
+    display: none;
+  }
+}
