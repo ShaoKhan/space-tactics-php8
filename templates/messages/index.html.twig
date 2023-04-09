@@ -64,11 +64,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="message-header-options">
-                                                    {% if message.messageType is not 1 %}
-                                                    <div class="answer-message">
-                                                        <i class="bi-pencil" ></i>
-                                                    </div>
+                                                    {% if message.messageType is not same as 1 %}
+                                                        <div class="answer-message">
+                                                            <i class="bi-pencil"></i>
+                                                        </div>
                                                     {% endif %}
+
                                                     <div class="delete-message" data-message-id="{{ message.id }}">
                                                         <i class="bi-trash3"></i>
                                                     </div>
