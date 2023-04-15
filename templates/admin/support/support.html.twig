@@ -63,8 +63,13 @@
                                                 <td>{{ ticket.theme }}</td>
                                                 <td>{{ ticket.message }}</td>
                                                 <td>
-                                                    <button href="#" {{ disabled }} class="btn btn-info" role="link">{{ closed }}</button>
-                                                    <button href="{{ path('admin_support_delete', {'id': ticket.id}) }}" class="btn btn-danger" role="link">Delete</button>
+                                                    <button href="#" {{ disabled }}
+                                                            class="btn btn-info"
+                                                            role="link">{{ closed }}
+                                                    </button>
+                                                    <a href="{{ path('admin_support_delete', {'slug': ticket.slug}) }}" title="Löschen">
+                                                        <i class="bi-trash3"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         {% endfor %}

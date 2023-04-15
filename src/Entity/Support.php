@@ -47,6 +47,9 @@ class Support
     #[ORM\Column(length: 255, nullable: false)]
     private ?string $username = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -180,6 +183,18 @@ class Support
     public function setUsername(?string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
