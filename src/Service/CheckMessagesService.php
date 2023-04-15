@@ -14,7 +14,7 @@ class CheckMessagesService
     )
     {
         $messagesRepo = new MessagesRepository($managerRegistry);
-        return $messagesRepo->findBy(['to_uuid' => $security->getUser()->getUuid()]);
+        return $messagesRepo->findBy(['to_uuid' => $security->getUser()->getUuid(), 'deleted' => FALSE]);
     }
 
     public function checkSupportMessages()

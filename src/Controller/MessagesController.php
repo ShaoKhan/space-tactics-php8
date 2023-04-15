@@ -81,5 +81,20 @@ class MessagesController extends AbstractController
         );
     }
 
-    private function slugify($getSubject) {}
+    #[Route('/messages/delete/{slug}', name: 'message_delete')]
+    public function message_delete(
+        $slug,
+        MessagesRepository $messagesRepository,
+        EntityManagerInterface $em,
+    ):Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $message = $messagesRepository->findOneBy(['slug' => $slug]);
+        $message->setDeleted(TRUE);
+        $em->persist($message);
+        $em->flush();
+
+        return $this->redirectToRoute('messages');
+    }
+
 }

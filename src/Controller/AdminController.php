@@ -99,7 +99,7 @@ class AdminController extends AbstractController
     ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        $support = $supportRepository->findAll();
+        $support = $supportRepository->findBy(['closed' => 0]);
 
 
         return $this->render(
@@ -109,13 +109,19 @@ class AdminController extends AbstractController
         );
     }
 
-    #[Route('/admin_support_delete/{id}', name: 'admin_support_delete')]
+    #[Route('/admin_support_delete/{slug}', name: 'admin_support_delete')]
     public function adminSupportDelete(
-        SupportRepository $supportRepository,
-                          $id,
+        SupportRepository      $supportRepository,
+        EntityManagerInterface $em,
+                               $slug,
     ): Response
     {
-        $supportRepository->remove($supportRepository->find($id), TRUE);
+        #$supportRepository->remove($supportRepository->find($slug), TRUE);
+        $ticket = $supportRepository->findOneBy(['slug' => $slug]);
+        $ticket->setClosed(1);
+        $em->persist($ticket);
+        $em->flush();
+
         return $this->redirect('/admin_support');
     }
 
