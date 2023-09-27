@@ -1,6 +1,7 @@
 {% block mainmenu %}
     <section id="header">
         <div class="container">
+
             <div class="row">
                 <div class="col-12">
                     <h1>
@@ -8,10 +9,12 @@
                             <img src="{{ asset('img/logo.png') }}" alt="Space-Tactics Logo">
                         </a>
                     </h1>
+
                     <nav id="nav">
                         <div class="col-lg-12">
-                            {% if selectedPlanet is defined %}
-                                <a href="{{ path('messages', {'slug': slug}) }}" class="position-relative">
+
+                            {% if selectedPlanet is not null %}
+                                <a href="{{ path('messages', {'slug': selectedPlanet.slug}) }}" class="position-relative">
                                     {{ 'messages'|trans({},'ui') }}
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                         {{ messages|length|default(null) }}

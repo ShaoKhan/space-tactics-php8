@@ -19,6 +19,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class MainController extends AbstractController
 {
 
+    use Traits\MessagesTrait;
+    use Traits\PlanetsTrait;
+
     public function __construct(
         CheckMessagesService $checkMessagesService,
         Security             $security,
@@ -26,25 +29,28 @@ class MainController extends AbstractController
     )
     {
         parent::__construct($checkMessagesService, $security, $managerRegistry);
+
     }
 
     #[Route('/main/{slug?}', name: 'main')]
     public function index(
-        ManagerRegistry        $managerRegistry,
-        Security               $security,
-                               $slug = NULL,
+        ManagerRegistry $managerRegistry,
+        Security        $security,
+        Request         $request,
+                        $slug = null,
     ): Response
     {
-        $user_uuid = $security->getUser()->getUuid();
+
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
 
         return $this->render(
             'main/index.html.twig', [
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
+            'planetData'     => $planets[2],
             'user'           => $this->getUser(),
-            'messages'       => $this->messages,
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
         ],
         );
@@ -68,8 +74,9 @@ class MainController extends AbstractController
             'main/statistics.html.twig', [
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
+            'planetData'     => $planets[2],
             'user'           => $this->getUser(),
-            'messages'       => $this->messages,
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
         ],
         );
@@ -111,7 +118,7 @@ class MainController extends AbstractController
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
             'user'           => $this->getUser(),
-            'messages'       => $this->messages,
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'form'           => $form->createView(),
             'tickets'        => $tickets,
             'slug'           => $slug,
@@ -130,11 +137,11 @@ class MainController extends AbstractController
 
         return $this->render(
             'main/rules.html.twig', [
-            'planets' => $planets[0],
+            'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
-            'user' => $this->getUser(),
-            'messages'       => $this->messages,
-            'slug' => $slug,
+            'user'           => $this->getUser(),
+            'messages'       => $this->getMessages($security, $managerRegistry),
+            'slug'           => $slug,
         ],
         );
     }
@@ -153,7 +160,7 @@ class MainController extends AbstractController
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
             'user'           => $this->getUser(),
-            'messages'       => $this->messages,
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
         ],
         );
@@ -179,5 +186,6 @@ class MainController extends AbstractController
             ],
         );
     }
+
 
 }

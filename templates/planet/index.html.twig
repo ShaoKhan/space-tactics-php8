@@ -1,20 +1,61 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PlanetController!{% endblock %}
+{% block title %}Space-Tactics Main{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <!-- Main Menu -->
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    {% include 'parts/ingame_mainmenu.html.twig' %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'D:/xampp81/htdocs/space-tactics-php8/src/Controller/PlanetController.php'|file_link(0) }}">src/Controller/PlanetController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'D:/xampp81/htdocs/space-tactics-php8/templates/planet/index.html.twig'|file_link(0) }}">templates/planet/index.html.twig</a></code></li>
-    </ul>
-</div>
+
+    <!-- Content -->
+    <section id="content" class="main">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    {% if app.user is not null %}
+                        {% include 'parts/sidebar.html.twig' %}
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <div class="row">
+                            <div class="col-lg-6 mt-1">
+                                <h3>Willkommen zurück {{ user.username }} </h3>
+                            </div>
+                            <div class="col-lg-6">
+                                <select name="planet" class="form-control planet-switcher-select">
+                                    {% for planet in planets %}
+
+                                        <option
+                                                value="{{ planet.slug }}"
+                                                style="color: #000;"
+                                                {{ planet.slug == slug ? 'selected' : '' }}
+                                        >
+                                            {{ planet.name }}
+                                            {{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="container-fluid mt-3">
+                            <div class="buildings">
+
+                                <div class="col-lg-5 alert alert-primary" role="alert">
+                                    Mit deiner Flotte brichst du in die unendlichen Weiten des Universums auf.
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'parts/footer.html.twig' %}
 {% endblock %}
+
+

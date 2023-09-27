@@ -2,29 +2,23 @@
 
 namespace App\Controller;
 
-use App\Service\CheckMessagesService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DefenseController extends AbstractController
 {
-
-    public function __construct(
-        CheckMessagesService $checkMessagesService,
-        Security             $security,
-        ManagerRegistry      $managerRegistry,
-    )
-    {
-        parent::__construct($checkMessagesService, $security, $managerRegistry);
-    }
+    use Traits\MessagesTrait;
+    use Traits\PlanetsTrait;
 
     #[Route('/defense/{slug?}', name: 'defense')]
     public function index(
         ManagerRegistry $managerRegistry,
         Security        $security,
+        Request         $request,
                         $slug = NULL,
     ): Response
     {
@@ -36,8 +30,9 @@ class DefenseController extends AbstractController
             'defense/index.html.twig', [
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
+            'planetData'     => $planets[2],
             'user'           => $this->getUser(),
-            'messages'       => $this->messages,
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
         ],
         );

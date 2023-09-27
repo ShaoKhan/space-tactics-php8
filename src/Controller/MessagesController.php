@@ -17,6 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class MessagesController extends AbstractController
 {
 
+    use Traits\MessagesTrait;
+    use Traits\PlanetsTrait;
+
     public function __construct(
         CheckMessagesService $checkMessagesService,
         Security             $security,
@@ -74,7 +77,7 @@ class MessagesController extends AbstractController
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
             'user'           => $this->getUser(),
-            'messages'       => $this->messages,
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'form'           => $form->createView(),
             'slug'           => $slug,
         ],

@@ -11,15 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AllianceController extends AbstractController
 {
-
-    public function __construct(
-        CheckMessagesService $checkMessagesService,
-        Security             $security,
-        ManagerRegistry      $managerRegistry,
-    )
-    {
-        parent::__construct($checkMessagesService, $security, $managerRegistry);
-    }
+    use Traits\MessagesTrait;
+    use Traits\PlanetsTrait;
 
     #[Route('/alliance/{slug?}', name: 'alliance')]
     public function index(
@@ -36,8 +29,9 @@ class AllianceController extends AbstractController
             'alliance/index.html.twig', [
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
+            'planetData'     => $planets[2],
             'user'           => $this->getUser(),
-            'messages'       => $this->messages,
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
         ],
         );

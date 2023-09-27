@@ -7,7 +7,6 @@
 
     {% include 'parts/ingame_mainmenu.html.twig' %}
 
-
     <!-- Content -->
     <section id="content" class="main">
         <div class="container-fluid">
@@ -32,14 +31,11 @@
                                 <div class="col-lg-12 fleet mb-3"><strong>Flotte</strong>:</div>
                             </div>
                             <div class="col-lg-7 col-md-12"
-                                 style="background: url({{ asset('img/'~selectedPlanet.image) }}); height: 510px;"
+                                 style="background: url({{ asset('img/'~planetData.image) }}); height: 510px; max-width: 730px; width: 100%;"
                             >
                                 <div class="planetData">
                                     <div class="col-lg-8">
-
                                         <select name="planet" class="form-control planet-switcher-select-main">
-
-
                                             {% for planet in planets %}
                                                 <option
                                                         value="{{ planet.slug }}"
@@ -47,20 +43,21 @@
                                                         {{ planet.slug == slug ? 'selected' : '' }}
                                                 >
                                                     {{ planet.name }}
-                                                    [{{ planet.system_x }}:{{ planet.system_y }}:{{ planet.system_z }}]
-                                               </option>
+                                                    {{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}
+                                                </option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                     <div>
-                                        Größe: {{ selectedPlanet.fields }}/{{ selectedPlanet.fields_max }} Felder &Oslash;
+                                        Größe: {{ planetData.fields }}/{{ planetData.fieldsMax }} Felder
+                                        &Oslash;
                                     </div>
                                     <div>
-                                        Temperatur: {{ selectedPlanet.temp_min }}°C
-                                        / {{ selectedPlanet.temp_max }}°C
+                                        Temperatur: {{ planetData.tempMin }}°C
+                                        / {{ planetData.tempMax }}°C
                                     </div>
                                     <div>
-                                        Durchmesser: {{ selectedPlanet.diameter|number_format(0,',','.') }} km
+                                        Durchmesser: {{ planetData.diameter|number_format(0,',','.') }} km
                                     </div>
                                 </div>
                             </div>
@@ -68,6 +65,8 @@
 
                     </section>
                 </div>
+
+
             </div>
         </div>
     </section>

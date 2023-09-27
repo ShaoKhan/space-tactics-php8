@@ -14,7 +14,6 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Mime\Address;
@@ -26,7 +25,12 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class IndexController extends AbstractController
 {
-    private Session $session;
+
+    use Traits\MessagesTrait;
+    use Traits\PlanetsTrait;
+
+    private Session  $session;
+    private Security $security;
 
     public function __construct(
         CheckMessagesService $checkMessagesService,
@@ -35,26 +39,44 @@ class IndexController extends AbstractController
     )
     {
         parent::__construct($checkMessagesService, $security, $managerRegistry);
-        $this->session = new Session();
+
     }
 
-    #[Route('/', name: 'index')]
+    #[Route('/{slug?}', name: 'index')]
     public function index(
         TranslatorInterface $trans,
-        PlanetRepository    $pr,
-    ) {
+        ManagerRegistry     $managerRegistry,
+        Security            $security,
+        Request             $request,
+                            $slug = null,
+    ): Response
+    {
+
+
         if($this->getUser() !== NULL) {
-            $planet = $pr->findBy(['user_uuid' => $this->getUser()->getUuid()]);
-            if($planet !== NULL) {
-                return $this->redirectToRoute('main');
-            }
+            $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+
+            return $this->render(
+                'main/index.html.twig', [
+                'planets'        => $planets[0],
+                'selectedPlanet' => $planets[1],
+                'planetData'     => $planets[2],
+                'user'           => $this->getUser(),
+                'messages'       => $this->getMessages($security, $managerRegistry),
+                'slug'           => $slug,
+            ],
+            );
         }
+
 
         $msg = $trans->trans('index.welcome');
 
-        return $this->render('index.html.twig', [
-            'msg' => $msg,
-        ]);
+        return $this->render(
+            'index.html.twig', [
+            'msg'  => $msg,
+            'slug' => $slug,
+        ],
+        );
     }
 
     #[Route('/news', name: 'news')]
@@ -96,20 +118,23 @@ class IndexController extends AbstractController
         PlanetRepository            $planetRepository,
         UniRepository               $uniRepository,
 
-    ): Response {
+    ): Response
+    {
         $user = new User();
 
-        $form = $this->createForm(UserType::class, $user, [
+        $form = $this->createForm(
+            UserType::class, $user, [
             'action' => $this->generateUrl('register'),
-        ]);
+        ],
+        );
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
 
             $planetController = new PlanetController();
-            $userData         = $form->getData();
-            $email            = $doctrine->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
-            $uuid             = $this->generateUuid();
+            $userData = $form->getData();
+            $email = $doctrine->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+            $uuid = '09342viuqt3489zt557854hgnue';
 
             if($email) {
                 $this->session->getFlashBag()->add('error', 'Diese E-Mail-Adresse ist bereits vergeben.');
@@ -128,12 +153,18 @@ class IndexController extends AbstractController
             $entityManager->flush();
 
             $planetData = $planetController->initialPlanetData($planetRepository, $uniRepository);
-            $planet     = new Planet();
+
+
+            $sys_x = $planetData['system_x'] !== "" ? $planetData['system_x'] : "1";
+            $sys_y = $planetData['system_y'] !== "" ? $planetData['system_y'] : "1";
+            $sys_z = $planetData['system_z'] !== "" ? $planetData['system_z'] : "1";
+
+            $planet = new Planet();
             $planet->setUserUuid($uuid);
             $planet->setUniverse($user->getUni());
-            $planet->setSystemX($planetData['system_x']);
-            $planet->setSystemY($planetData['system_y']);
-            $planet->setSystemZ($planetData['system_z']);
+            $planet->setSystemX($sys_x);
+            $planet->setSystemY($sys_y);
+            $planet->setSystemZ($sys_z);
             $planet->setName($planetData['name']);
             $planet->setType($planetData['type']);
             $planet->setMetal(10000);
@@ -154,10 +185,12 @@ class IndexController extends AbstractController
                     ->to($userData->getEmail())
                     ->subject('Dein Account wurde erstellt')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
-                    ->context([
-                                  'username'   => $user->getUsername(),
-                                  'planetname' => $planetData['name'],
-                              ]),
+                    ->context(
+                        [
+                            'username'   => $user->getUsername(),
+                            'planetname' => $planetData['name'],
+                        ],
+                    ),
 
             );
 
@@ -165,9 +198,21 @@ class IndexController extends AbstractController
 
         }
 
-        return $this->render('register.html.twig', [
+        return $this->render(
+            'register.html.twig', [
             'form' => $form->createView(),
-        ]);
+        ],
+        );
+    }
+
+    public function generateUuid()
+    {
+        if(function_exists('com_create_guid') === true)
+            return trim(com_create_guid(), '{}');
+        $data = PHP_MAJOR_VERSION < 7 ? openssl_random_pseudo_bytes(16) : random_bytes(16);
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);    // Set version to 0100
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);    // Set bits 6-7 to 10
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
     #[Route('/verify/email', name: 'verify_email')]
@@ -178,8 +223,7 @@ class IndexController extends AbstractController
         // validate email confirmation link, sets User::isVerified=true and persists
         try {
             $this->emailVerifier->handleEmailConfirmation($request, $this->getUser());
-        }
-        catch(VerifyEmailExceptionInterface $exception) {
+        } catch(VerifyEmailExceptionInterface $exception) {
             $this->addFlash('verify_email_error', $translator->trans($exception->getReason(), [], 'VerifyEmailBundle'));
 
             return $this->redirectToRoute('register');
@@ -191,15 +235,19 @@ class IndexController extends AbstractController
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-                                   'data_class' => User::class,
-                               ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => User::class,
+            ],
+        );
     }
 
     #[Route('/logout', name: 'logout')]
     public function logout(Security $security)
     {
-        $response = $security->logout(FALSE);
+        $this->security->logout();
+        $this->session->invalidate();
+        $this->setUser(NULL);
         return $this->redirectToRoute('index');
     }
 }

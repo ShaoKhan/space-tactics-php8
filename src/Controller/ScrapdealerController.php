@@ -6,11 +6,15 @@ use App\Service\CheckMessagesService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ScrapdealerController extends AbstractController
 {
+
+    use Traits\MessagesTrait;
+    use Traits\PlanetsTrait;
 
     public function __construct(
         CheckMessagesService $checkMessagesService,
@@ -23,6 +27,7 @@ class ScrapdealerController extends AbstractController
 
     #[Route('/scrapdealer/{slug?}', name: 'scrapdealer')]
     public function index(
+        RequestStack    $requestStack,
         ManagerRegistry $managerRegistry,
         Security        $security,
                         $slug = NULL,
@@ -36,8 +41,9 @@ class ScrapdealerController extends AbstractController
             'scrapdealer/index.html.twig', [
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
+            'planetData'     => $planets[2],
             'user'           => $this->getUser(),
-            'messages'       => $this->messages,
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
         ],
         );

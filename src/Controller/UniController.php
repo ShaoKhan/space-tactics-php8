@@ -17,6 +17,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class UniController extends AbstractController
 {
 
+    use Traits\MessagesTrait;
+    use Traits\PlanetsTrait;
+
     public function __construct(
         CheckMessagesService $checkMessagesService,
         Security             $security,

@@ -28,9 +28,9 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class PlanetRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $planet)
+    public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($planet, Planet::class);
+        parent::__construct($registry, Planet::class);
     }
 
     public function save(Planet $entity, bool $flush = FALSE): void
@@ -106,14 +106,24 @@ class PlanetRepository extends ServiceEntityRepository
 
         $conn = $mr->getConnection();
         $query = new QueryBuilder($conn);
-        $query->select('p.slug, pb.*, b.*')
+        /*$query->select('p.slug, pb.*, b.*')
             ->from('planet', 'p')
             ->innerJoin('p', 'planet_building', 'pb', 'pb.planet_slug = p.slug')
             ->innerJoin('pb', 'buildings', 'b', 'b.id = pb.building_id')
             ->where('p.user_uuid = :uuid')
             ->andWhere('p.slug = :slug')
             ->setParameter('uuid', $uuid)
-            ->setParameter('slug', $selectedPlanet["slug"]);
+            ->setParameter('slug', $selectedPlanet->getSlug());*/
+
+        $query->select('p.*, pb.*, b.*')
+            ->from('planet', 'p')
+            ->innerJoin('p', 'planet_building', 'pb', 'pb.planet_id = p.id')
+            ->innerJoin('pb', 'buildings', 'b', 'b.id = pb.building_id')
+            ->where('p.user_uuid = :uuid')
+            ->andWhere('p.slug = :slug')
+            ->setParameter('uuid', $uuid)
+            ->setParameter('slug', $selectedPlanet->getSlug());
+
         $query->executeQuery();
         $execute = $query->execute();
         return $execute->fetchAll();

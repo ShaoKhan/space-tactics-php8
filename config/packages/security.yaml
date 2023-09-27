@@ -32,6 +32,7 @@ security:
                 password_parameter: password
             logout:
                 path: app_sign_out
+
     role_hierarchy:
         ROLE_ADMIN: [ROLE_MODERATOR,ROLE_USER]
         ROLE_MODERATOR: ROLE_USER

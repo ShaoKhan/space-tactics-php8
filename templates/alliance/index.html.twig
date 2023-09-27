@@ -34,7 +34,7 @@
                                                 {{ planet.slug == slug ? 'selected' : '' }}
                                         >
                                             {{ planet.name }}
-                                            [{{ planet.system_x }}:{{ planet.system_y }}:{{ planet.system_z }}]
+                                            {{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}
                                         </option>
                                     {% endfor %}
                                 </select>

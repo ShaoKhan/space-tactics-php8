@@ -28,15 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GalaxymapController extends AbstractController
 {
-
-    public function __construct(
-        CheckMessagesService $checkMessagesService,
-        Security             $security,
-        ManagerRegistry      $managerRegistry,
-    )
-    {
-        parent::__construct($checkMessagesService, $security, $managerRegistry);
-    }
+    use Traits\MessagesTrait;
+    use Traits\PlanetsTrait;
 
     #[Route('/galaxymap/{slug?}', name: 'galaxymap')]
     public function index(
@@ -80,9 +73,10 @@ class GalaxymapController extends AbstractController
             'galaxymap/index.html.twig', [
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
+            'planetData'     => $planets[2],
             'user'           => $this->getUser(),
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'dimensions'     => $uniDimensions,
-            'messages'       => $this->messages,
             'coords'         => $coords,
             'slug'           => $slug,
         ],

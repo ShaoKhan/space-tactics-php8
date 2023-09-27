@@ -6,11 +6,15 @@ use App\Service\CheckMessagesService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SimulationsController extends AbstractController
 {
+
+    use Traits\MessagesTrait;
+    use Traits\PlanetsTrait;
 
     public function __construct(
         CheckMessagesService $checkMessagesService,
@@ -23,6 +27,7 @@ class SimulationsController extends AbstractController
 
     #[Route('/simulations/{slug?}', name: 'simulations')]
     public function index(
+        Request         $request,
         ManagerRegistry $managerRegistry,
         Security        $security,
                         $slug = NULL,
@@ -37,8 +42,9 @@ class SimulationsController extends AbstractController
             'simulations/index.html.twig', [
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
+            'planetData'     => $planets[2],
             'user'           => $this->getUser(),
-            'messages'       => $this->messages,
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
         ],
         );

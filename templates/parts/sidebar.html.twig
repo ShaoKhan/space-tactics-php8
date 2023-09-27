@@ -8,23 +8,24 @@
                     <span class="hint"><a href="{{ path('admin') }}">Admin</a></span>
                 {%  endif %}
             </h2>
+
         </header>
         <ul class="link-list">
-            <li><a href="{{ path('main', {'slug': slug}) }}">Home</a></li>
-            <li><a href="{{ path('buildings', {'slug':slug}) }}">Gebäude</a></li>
-            <li><a href="{{ path('science', {'slug': slug}) }}">Forschung</a></li>
-            <li><a href="{{ path('shipyard', {'slug': slug}) }}">Schiffswerft</a></li>
-            <li><a href="{{ path('defense', {'slug': slug}) }}">Verteidigung</a></li>
-            <li><a href="{{ path('officers', {'slug': slug}) }}">Offiziere</a></li>
-            <li><a href="{{ path('scrapdealer', {'slug': slug}) }}">Schrotthändler</a></li>
-            <li><a href="{{ path('fleet', {'slug': slug}) }}">Flotte</a></li>
-            <li><a href="{{ path('galaxymap', {'slug': slug}) }}">Galaxie</a></li>
-            <li><a href="{{ path('alliance', {'slug': slug}) }}">Allianz</a></li>
-            <li><a href="{{ path('statistics', {'slug': slug}) }}">Statistik</a></li>
-            <li><a href="{{ path('support', {'slug': slug}) }}">Support</a></li>
-            <li><a href="{{ path('rules') }}">Regeln</a></li>
-            <li><a href="{{ path('simulations', {'slug': slug}) }}">Simulation</a></li>
-            <li><a href="{{ path('notices', {'slug': slug}) }}">Notizen</a></li>
+            <li><a href="{{ path('main', {'slug': selectedPlanet.slug}) }}">Home</a></li>
+            <li><a href="{{ path('buildings', {'slug':selectedPlanet.slug}) }}">Gebäude</a></li>
+            <li><a href="{{ path('science', {'slug': selectedPlanet.slug}) }}">Forschung</a></li>
+            <li><a href="{{ path('shipyard', {'slug': selectedPlanet.slug}) }}">Schiffswerft</a></li>
+            <li><a href="{{ path('defense', {'slug': selectedPlanet.slug}) }}">Verteidigung</a></li>
+            <li><a href="{{ path('officers', {'slug': selectedPlanet.slug}) }}">Offiziere</a></li>
+            <li><a href="{{ path('scrapdealer', {'slug': selectedPlanet.slug}) }}">Schrotthändler</a></li>
+            <li><a href="{{ path('fleet', {'slug': selectedPlanet.slug}) }}">Flotte</a></li>
+            <li><a href="{{ path('galaxymap', {'slug': selectedPlanet.slug}) }}">Galaxie</a></li>
+            <li><a href="{{ path('alliance', {'slug': selectedPlanet.slug}) }}">Allianz</a></li>
+            <li><a href="{{ path('statistics', {'slug': selectedPlanet.slug}) }}">Statistik</a></li>
+            <li><a href="{{ path('support', {'slug': selectedPlanet.slug}) }}">Support</a></li>
+            <li><a href="{{ path('rules', {'slug': selectedPlanet.slug}) }}">Regeln</a></li>
+            <li><a href="{{ path('simulations', {'slug': selectedPlanet.slug}) }}">Simulation</a></li>
+            <li><a href="{{ path('notices', {'slug': selectedPlanet.slug}) }}">Notizen</a></li>
             <li><a href="/forum">Forum</a></li>
         </ul>
     </section>

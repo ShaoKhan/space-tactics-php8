@@ -14,66 +14,65 @@ declare(strict_types = 1);
 
 namespace App\Controller;
 
-use App\Repository\BuildingsRepository;
 use App\Repository\PlanetRepository;
 use App\Repository\PlanetTypeRepository;
 use App\Service\BuildingCalculationService;
-use App\Service\CheckMessagesService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BuildingsController extends AbstractController
 {
 
-    public function __construct(
-        CheckMessagesService $checkMessagesService,
-        Security             $security,
-        ManagerRegistry      $managerRegistry,
-    )
-    {
-        parent::__construct($checkMessagesService, $security, $managerRegistry);
-    }
+    use Traits\MessagesTrait;
+    use Traits\PlanetsTrait;
 
     #[Route('/buildings/{slug?}', name: 'buildings')]
     public function index(
+        Request                    $request,
         ManagerRegistry            $managerRegistry,
         PlanetRepository           $p,
-        PlanetTypeRepository       $ptr,
-        BuildingsRepository        $br,
         Security                   $security,
+        PlanetTypeRepository       $planetTypeRepository,
         BuildingCalculationService $bcs,
                                    $slug = NULL,
     ): Response
     {
-        $user_uuid = $security->getUser()->getUuid();
-        $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 
-        $built = $p->getPlanetBuildings($user_uuid, $planets[1], $managerRegistry);
-        $i     = 0;
+        //ToDo: populate tables
+
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $built = $p->getPlanetBuildings($this->user_uuid, $planets[1], $managerRegistry);
+        $i = 0;
+
         foreach($built as $building) {
-            $nextLevelProd       = $bcs->calculateNextBuildingLevelProduction($building) * 3600;
-            $nextLevelBuildCost  = $bcs->calculateNextBuildingCosts($building);
+            $nextLevelProd = $bcs->calculateNextBuildingLevelProduction($building) * 3600;
+            $nextLevelBuildCost = $bcs->calculateNextBuildingCosts($building);
             $nextLevelEnergyCost = $bcs->calculateNextBuildingLevelEnergyCosts($building) * 3600;
 
 
-            $built[$i]['production']      = number_format($nextLevelProd, 0, ',', '.');
+            $built[$i]['production'] = number_format($nextLevelProd, 0, ',', '.');
             $built[$i]['nextEnergyCosts'] = number_format($nextLevelEnergyCost, 0, ',', '.');
-            $built[$i]['BuildCosts']      = $nextLevelBuildCost;
+            $built[$i]['BuildCosts'] = $nextLevelBuildCost;
             $i++;
         }
+
+
+
 
         return $this->render(
             'buildings/index.html.twig', [
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
+            'planetData'     => $planets[2],
             'user'           => $this->getUser(),
-            'messages' => $this->messages,
+            'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
-            'buildings'      => $built ?? NULL,
+            #'buildings' => $built ?? NULL,
         ],
         );
     }
