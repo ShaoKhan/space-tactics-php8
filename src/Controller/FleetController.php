@@ -2,14 +2,15 @@
 
 namespace App\Controller;
 
+use App\Repository\PlanetRepository;
+use App\Service\BuildingCalculationService;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FleetController extends AbstractController
+class FleetController extends CustomAbstractController
 {
     use Traits\MessagesTrait;
     use Traits\PlanetsTrait;
@@ -17,15 +18,17 @@ class FleetController extends AbstractController
     #[Route('/fleet/{slug?}', name: 'fleet')]
     public function index(
         ManagerRegistry $managerRegistry,
+        PlanetRepository           $p,
+        BuildingCalculationService $bcs,
         Security        $security,
         Request         $request,
                         $slug = NULL,
     ): Response
     {
-
-        $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $res = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
 
         return $this->render(
             'fleet/index.html.twig', [
@@ -35,6 +38,7 @@ class FleetController extends AbstractController
             'user'           => $this->getUser(),
             'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
+            'production'     => $prodActual,
         ],
         );
     }

@@ -9,30 +9,55 @@
                             <img src="{{ asset('img/logo.png') }}" alt="Space-Tactics Logo">
                         </a>
                     </h1>
-
                     <nav id="nav">
                         <div class="col-lg-12">
 
                             {% if selectedPlanet is not null %}
-                                <a href="{{ path('messages', {'slug': selectedPlanet.slug}) }}" class="position-relative">
+                                <a href="{{ path('messages', {'slug': selectedPlanet.slug}) }}"
+                                   class="position-relative">
                                     {{ 'messages'|trans({},'ui') }}
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                         {{ messages|length|default(null) }}
                                         <span class="visually-hidden">ungelesene Nachrichten</span>
                                     </span>
                                 </a>
-                                <a class="metal" href="#">{{ 'metal'|trans({},'resources') }}
-                                    : {{ selectedPlanet.metal|number_format(0,',','.') }}</a>
-                                <a href="#">{{ 'crystal'|trans({},'resources') }}
-                                    : {{ selectedPlanet.crystal|number_format(0,',','.') }}</a>
-                                <a href="#">{{ 'deuterium'|trans({},'resources') }}
-                                    : {{ selectedPlanet.deuterium|number_format(0,',','.') }}</a>
-                                <a href="#">{{ 'darkmatter'|trans({},'resources') }}
+                                <a href="#">
+                                    <span>{{ 'metal'|trans({},'resources') }}</span> :
+                                    <span
+                                            class="res_metal"
+                                            data-res-count="{{ selectedPlanet.metal }}"
+                                            data-res-prod="{{ production.0 }}"
+                                    >
+                                        {{ selectedPlanet.metal|number_format(0,',','.') }}
+                                    </span>
+                                </a>
+                                <a href="#">
+                                    <span>{{ 'crystal'|trans({},'resources') }}</span> :
+                                    <span
+                                            class="res_crystal"
+                                            data-res-count="{{ selectedPlanet.crystal }}"
+                                            data-res-prod="{{ production.1 }}"
+                                    >
+                                        {{ selectedPlanet.crystal|number_format(0,',','.') }}
+                                    </span>
+                                </a>
+                                <a href="#">
+                                    <span>{{ 'deuterium'|trans({},'resources') }}</span> :
+                                    <span
+                                            class="res_deuterium"
+                                            data-res-count="{{ selectedPlanet.deuterium }}"
+                                            data-res-prod="{{ production.2 }}"
+                                    >
+                                        {{ selectedPlanet.deuterium|number_format(0,',','.') }}
+                                    </span>
+                                </a>
+                                <a class="res_darkmatter" href="#">{{ 'darkmatter'|trans({},'resources') }}
                                     : {{ selectedPlanet.darkmatter|number_format(0,',','.') }}</a>
                             {% else %}
                                 <h3>In einer Zeitschleife gefangen landest du mitten im Nirgendwo.</h3>
                             {% endif %}
                             {% if app.user is not null %}
+
                                 <a href="{{ path('logout') }}" class="text-danger">Logout</a>
                             {% endif %}
                         </div>

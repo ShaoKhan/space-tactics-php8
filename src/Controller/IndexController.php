@@ -8,10 +8,9 @@ use App\Form\Type\UserType;
 use App\Repository\PlanetRepository;
 use App\Repository\UniRepository;
 use App\Security\EmailVerifier;
-use App\Service\CheckMessagesService;
+use App\Service\BuildingCalculationService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,10 +19,12 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
-class IndexController extends AbstractController
+class IndexController extends CustomAbstractController
 {
 
     use Traits\MessagesTrait;
@@ -31,51 +32,64 @@ class IndexController extends AbstractController
 
     private Session  $session;
     private Security $security;
+    private          $emailVerifier;
 
-    public function __construct(
-        CheckMessagesService $checkMessagesService,
-        Security             $security,
-        ManagerRegistry      $managerRegistry,
-    )
-    {
-        parent::__construct($checkMessagesService, $security, $managerRegistry);
 
-    }
-
-    #[Route('/{slug?}', name: 'index')]
+    #[Route('/{slug?}', name: 'index', defaults: ['slug' => null])]
     public function index(
-        TranslatorInterface $trans,
-        ManagerRegistry     $managerRegistry,
-        Security            $security,
-        Request             $request,
-                            $slug = null,
+        TranslatorInterface           $trans,
+        ManagerRegistry               $managerRegistry,
+        PlanetRepository              $planetRepository,
+        BuildingCalculationService    $buildingCalculationService,
+        Security                      $security,
+        Request                       $request,
+        ?string                       $slug = null,
+        #[CurrentUser] ?UserInterface $user = null,
     ): Response
     {
+        if($user !== null) {
+            $planets = $this->getPlanetsByPlayer($managerRegistry, $user->getUuid(), $slug);
 
+            // Validate the slug using a regex pattern
+            $validSlugPattern = '/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}[a-f0-9]$/';
+            if($slug === null || !preg_match($validSlugPattern, $slug)) {
+                $slug = $planets[1]->getSlug();
+            }
 
-        if($this->getUser() !== NULL) {
-            $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+            // Retrieve planet data
+            $planet = $planetRepository->findOneBy(['user_uuid' => $user->getUuid(), 'slug' => $slug]);
 
+            // Calculate production
+            $production = $buildingCalculationService->calculateActualBuildingProduction(
+                $planet->getMetalBuilding(),
+                $planet->getCrystalBuilding(),
+                $planet->getDeuteriumBuilding(),
+                $managerRegistry,
+            );
+
+            // Render the template for authenticated users
             return $this->render(
-                'main/index.html.twig', [
-                'planets'        => $planets[0],
-                'selectedPlanet' => $planets[1],
-                'planetData'     => $planets[2],
-                'user'           => $this->getUser(),
-                'messages'       => $this->getMessages($security, $managerRegistry),
-                'slug'           => $slug,
-            ],
+                'main/index.html.twig',
+                [
+                    'planets'        => $planets[0],
+                    'selectedPlanet' => $planets[1],
+                    'planetData'     => $planets[2],
+                    'user'           => $user,
+                    'messages'       => $this->getMessages($security, $managerRegistry),
+                    'slug'           => $slug,
+                    'production'     => $production,
+                ],
             );
         }
 
-
+        // Render the template for unauthenticated users
         $msg = $trans->trans('index.welcome');
-
         return $this->render(
-            'index.html.twig', [
-            'msg'  => $msg,
-            'slug' => $slug,
-        ],
+            'index.html.twig',
+            [
+                'msg'  => $msg,
+                'slug' => $slug,
+            ],
         );
     }
 
@@ -132,9 +146,9 @@ class IndexController extends AbstractController
         if($form->isSubmitted() && $form->isValid()) {
 
             $planetController = new PlanetController();
-            $userData = $form->getData();
-            $email = $doctrine->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
-            $uuid = '09342viuqt3489zt557854hgnue';
+            $userData         = $form->getData();
+            $email            = $doctrine->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+            $uuid             = '09342viuqt3489zt557854hgnue';
 
             if($email) {
                 $this->session->getFlashBag()->add('error', 'Diese E-Mail-Adresse ist bereits vergeben.');
@@ -209,7 +223,7 @@ class IndexController extends AbstractController
     {
         if(function_exists('com_create_guid') === true)
             return trim(com_create_guid(), '{}');
-        $data = PHP_MAJOR_VERSION < 7 ? openssl_random_pseudo_bytes(16) : random_bytes(16);
+        $data    = PHP_MAJOR_VERSION < 7 ? openssl_random_pseudo_bytes(16) : random_bytes(16);
         $data[6] = chr(ord($data[6]) & 0x0f | 0x40);    // Set version to 0100
         $data[8] = chr(ord($data[8]) & 0x3f | 0x80);    // Set bits 6-7 to 10
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
@@ -242,12 +256,20 @@ class IndexController extends AbstractController
         );
     }
 
-    #[Route('/logout', name: 'logout')]
-    public function logout(Security $security)
+    #[Route('logout/{slug?}', name: 'logout')]
+    public function logout(
+        Security         $security,
+        Session          $session,
+        PlanetRepository $planetRepository,
+        Planet           $planet,
+                         $slug = null,
+    ): Response
     {
-        $this->security->logout();
-        $this->session->invalidate();
-        $this->setUser(NULL);
-        return $this->redirectToRoute('index');
+
+
+        #$session = new Session();
+        #$session->invalidate();
+        #$security->logout(false);
+        return $this->render('logout.html.twig');
     }
 }

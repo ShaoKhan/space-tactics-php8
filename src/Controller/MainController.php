@@ -6,43 +6,44 @@ use App\Entity\Support;
 use App\Form\SupportType;
 use App\Repository\PlanetRepository;
 use App\Repository\SupportRepository;
-use App\Service\CheckMessagesService;
+use App\Service\BuildingCalculationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MainController extends AbstractController
+class MainController extends CustomAbstractController
 {
 
     use Traits\MessagesTrait;
     use Traits\PlanetsTrait;
 
-    public function __construct(
-        CheckMessagesService $checkMessagesService,
-        Security             $security,
-        ManagerRegistry      $managerRegistry,
-    )
-    {
-        parent::__construct($checkMessagesService, $security, $managerRegistry);
-
-    }
-
     #[Route('/main/{slug?}', name: 'main')]
     public function index(
-        ManagerRegistry $managerRegistry,
-        Security        $security,
-        Request         $request,
-                        $slug = null,
+        ManagerRegistry            $managerRegistry,
+        Security                   $security,
+        PlanetRepository           $p,
+        BuildingCalculationService $bcs,
+        Request                    $request,
+                                   $slug,
     ): Response
     {
-
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+
+        if($slug === NULL) {
+            $slug = $planets[1]->getSlug();
+        }
+
+        $res        = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+
+        //ToDo get last saved datetime and update resources accordingly since last visit and now
+        
+
+        $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
 
         return $this->render(
             'main/index.html.twig', [
@@ -52,6 +53,7 @@ class MainController extends AbstractController
             'user'           => $this->getUser(),
             'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
+            'production'     => $prodActual,
         ],
         );
     }
@@ -126,14 +128,12 @@ class MainController extends AbstractController
         );
     }
 
-    #[Route('/rules/{slug?}', name: 'rules')]
+    /*#[Route('/rules/{slug?}', name: 'rules')]
     public function rules(
         Request $request, ManagerRegistry $managerRegistry, PlanetRepository $p, EntityManagerInterface $em, Security $security, $slug = NULL,
     ): Response
     {
-        $user_uuid = $security->getUser()->getUuid();
-        $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
 
         return $this->render(
             'main/rules.html.twig', [
@@ -144,7 +144,7 @@ class MainController extends AbstractController
             'slug'           => $slug,
         ],
         );
-    }
+    }*/
 
     #[Route('/notices/{slug?}', name: 'notices')]
     public function playerNotices(

@@ -13,38 +13,41 @@
 
 namespace App\Controller;
 
+use App\Entity\Planet;
 use App\Repository\PlanetRepository;
 use App\Repository\UniRepository;
 use App\Repository\UserRepository;
-use App\Service\CheckMessagesService;
+use App\Service\BuildingCalculationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class GalaxymapController extends AbstractController
+class GalaxymapController extends CustomAbstractController
 {
     use Traits\MessagesTrait;
     use Traits\PlanetsTrait;
 
     #[Route('/galaxymap/{slug?}', name: 'galaxymap')]
     public function index(
-        Request          $request,
-        ManagerRegistry  $managerRegistry,
-        PlanetRepository $p,
-        UniRepository    $ur,
-        Security         $security,
-                         $slug = NULL,
+        Request                    $request,
+        ManagerRegistry            $managerRegistry,
+        PlanetRepository           $p,
+        BuildingCalculationService $bcs,
+        UniRepository              $ur,
+        Security                   $security,
+                                   $slug = NULL,
 
     ): Response
     {
-        $user_uuid = $security->getUser()->getUuid();
+
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $res = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
 
         $uniDimensions = $ur->getUniDimensions()[0];
 
@@ -54,17 +57,20 @@ class GalaxymapController extends AbstractController
 
         if($uniDimensions["galaxy_width"] <= 50 && $uniDimensions["galaxy_height"] <= 50) {
             $uniDimensions['itemsize'] = 27;
-            $uniDimensions['break']    = 50;
+            $uniDimensions['break'] = 50;
 
-        } elseif($uniDimensions["galaxy_width"] <= 100 && $uniDimensions["galaxy_height"] <= 100) {
+        }
+        elseif($uniDimensions["galaxy_width"] <= 100 && $uniDimensions["galaxy_height"] <= 100) {
             $uniDimensions['itemsize'] = 13;
-            $uniDimensions['break']    = 100;
-        } elseif($uniDimensions["galaxy_width"] <= 200 && $uniDimensions["galaxy_height"] <= 200) {
+            $uniDimensions['break'] = 100;
+        }
+        elseif($uniDimensions["galaxy_width"] <= 200 && $uniDimensions["galaxy_height"] <= 200) {
             $uniDimensions['itemsize'] = 6.7;
-            $uniDimensions['break']    = 200;
-        } else {
+            $uniDimensions['break'] = 200;
+        }
+        else {
             $uniDimensions['itemsize'] = 0;
-            $uniDimensions['break']    = 0;
+            $uniDimensions['break'] = 0;
         }
 
         $coords = $p->getAllCoords();
@@ -79,6 +85,7 @@ class GalaxymapController extends AbstractController
             'dimensions'     => $uniDimensions,
             'coords'         => $coords,
             'slug'           => $slug,
+            'production'     => $prodActual,
         ],
         );
     }
@@ -99,7 +106,7 @@ class GalaxymapController extends AbstractController
                     'status'  => 'Error',
                     'message' => 'no xmlHttpRequest',
                 ],
-                400
+                400,
             );
         }
 
@@ -116,20 +123,20 @@ class GalaxymapController extends AbstractController
             );
 
             $planets = [];
-            foreach($planet as $p) {
+            foreach($planet as $playerPlanet) {
 
                 $user = $ur->findOneBy(
                     [
-                        'uuid' => $p->getUserUuid(),
+                        'uuid' => $playerPlanet->getUserUuid(),
                     ],
                 );
 
                 $planets[] = [
                     'id'    => $user->getUuid(),
-                    'name'  => $p->getName(),
+                    'name'  => $playerPlanet->getName(),
                     'user'  => $user->getUsername(),
-                    'z'     => $p->getSystemZ(),
-                    'pslug' => $p->getSlug(),
+                    'z'     => $playerPlanet->getSystemZ(),
+                    'pslug' => $playerPlanet->getSlug(),
                 ];
             }
 
@@ -141,7 +148,7 @@ class GalaxymapController extends AbstractController
                         'user'    => $p->getUserUuid(),
                         'message' => $planets,
                     ],
-                    200
+                    200,
                 );
             }
         }
@@ -151,7 +158,7 @@ class GalaxymapController extends AbstractController
                 'status'  => 'Error',
                 'message' => 'empty request',
             ],
-            400
+            400,
         );
 
     }
@@ -175,15 +182,16 @@ class GalaxymapController extends AbstractController
                     'status'  => 'success',
                     'message' => 'Friend added',
                 ],
-                200
+                200,
             );
-        } else {
+        }
+        else {
             return new JsonResponse(
                 [
                     'status'  => 'Error',
                     'message' => 'Friend not added',
                 ],
-                400
+                400,
             );
         }
     }

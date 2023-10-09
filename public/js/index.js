@@ -12,6 +12,8 @@
 
 import './jquery.min.js';
 import './bootstrap.bundle.min.js';
+import './globale.js';
+import './ressourceCounter.js';
 import './changePlanet.js';
 import './galaxymap.js';
 import './support.js';

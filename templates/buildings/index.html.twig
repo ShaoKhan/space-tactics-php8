@@ -44,41 +44,42 @@
                         </div>
                         <div class="container-fluid mt-3">
                             <div class="buildings">
-
-                                {% for building in buildings %}
-                                    <div class="building">
-                                        <div class="building-headline">
-                                            <span>{{ building.name|trans({}, 'buildings') }}</span> |
-                                            <a href="#" title="{{ 'recycle'|trans({},'buildings') }}">x</a>
-                                        </div>
-                                        <div class="building-content">
-                                            <div class="col-6 building-content-image">
-                                                <img src="/{{ building.image }}" alt="Planet image"/>
+                                {% if  buildings is not empty %}
+                                    {% for building in buildings %}
+                                        <div class="building">
+                                            <div class="building-headline">
+                                                <span>{{ building.name|trans({}, 'buildings') }}</span> |
+                                                <a href="#" title="{{ 'recycle'|trans({},'buildings') }}">x</a>
                                             </div>
-                                            <div class="col-6 building-content-specs">
-                                                {% set nextLevel = building.building_level + 1 %}
-                                                <div>{{ 'production'|trans({},'ui') }}: {{ building.production }}
-                                                    / {{ 'hour'|trans({},'ui') }}</div>
-                                                <h4> {{ 'costs'|trans({},'ui') }} {{ 'stage'|trans({},'ui') }} {{ nextLevel }}
-                                                    :</h4>
-                                                <div class="energy">{{ 'energy'|trans({},'resources') }}
-                                                    : {{ building.nextEnergyCosts }}</div>
-                                                <div class="metal">{{ 'metal'|trans({},'resources') }}
-                                                    : {{ building.BuildCosts.metal }}</div>
-                                                <div class="crystal">{{ 'crystal'|trans({},'resources') }}
-                                                    : {{ building.BuildCosts.crystal }}</div>
-                                                <div class="deuterium">{{ 'deuterium'|trans({},'resources') }}
-                                                    : {{ building.BuildCosts.deuterium }}</div>
+                                            <div class="building-content">
+                                                <div class="col-6 building-content-image">
+                                                    <img src="/{{ building.image }}" alt="Planet image"/>
+                                                </div>
+                                                <div class="col-6 building-content-specs">
+                                                    {% set nextLevel = building.building_level + 1 %}
+                                                    <div>{{ 'production'|trans({},'ui') }}: {{ building.production }}
+                                                        / {{ 'hour'|trans({},'ui') }}</div>
+                                                    <h4> {{ 'costs'|trans({},'ui') }} {{ 'stage'|trans({},'ui') }} {{ nextLevel }}
+                                                        :</h4>
+                                                    <div class="energy">{{ 'energy'|trans({},'resources') }}
+                                                        : {{ building.nextEnergyCosts }}</div>
+                                                    <div class="metal">{{ 'metal'|trans({},'resources') }}
+                                                        : {{ building.BuildCosts.metal }}</div>
+                                                    <div class="crystal">{{ 'crystal'|trans({},'resources') }}
+                                                        : {{ building.BuildCosts.crystal }}</div>
+                                                    <div class="deuterium">{{ 'deuterium'|trans({},'resources') }}
+                                                        : {{ building.BuildCosts.deuterium }}</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 building-button mt-1">
+                                                <button type="button"
+                                                        class="btn btn-light">
+                                                    {{ 'upgrade_to'|trans({},'buildings') }} {{ nextLevel }}
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="col-12 building-button mt-1">
-                                            <button type="button"
-                                                    class="btn btn-light">
-                                                {{ 'upgrade_to'|trans({},'buildings') }} {{ nextLevel }}
-                                            </button>
-                                        </div>
-                                    </div>
-                                {% endfor %}
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                         </div>
                     </section>

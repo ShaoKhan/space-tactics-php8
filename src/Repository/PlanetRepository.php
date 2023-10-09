@@ -15,6 +15,7 @@ namespace App\Repository;
 
 use App\Entity\Planet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -96,24 +97,17 @@ class PlanetRepository extends ServiceEntityRepository
 
     /**
      * @param                 $uuid
-     * @param                 $slug
+     * @param                 $selectedPlanet
      * @param ManagerRegistry $mr
      *
-     * @return array Buildings
+     * @return mixed[]|\mixed[][]
+     * @throws Exception
      */
     public function getPlanetBuildings($uuid, $selectedPlanet, ManagerRegistry $mr): array
     {
 
         $conn = $mr->getConnection();
         $query = new QueryBuilder($conn);
-        /*$query->select('p.slug, pb.*, b.*')
-            ->from('planet', 'p')
-            ->innerJoin('p', 'planet_building', 'pb', 'pb.planet_slug = p.slug')
-            ->innerJoin('pb', 'buildings', 'b', 'b.id = pb.building_id')
-            ->where('p.user_uuid = :uuid')
-            ->andWhere('p.slug = :slug')
-            ->setParameter('uuid', $uuid)
-            ->setParameter('slug', $selectedPlanet->getSlug());*/
 
         $query->select('p.*, pb.*, b.*')
             ->from('planet', 'p')
@@ -142,7 +136,7 @@ class PlanetRepository extends ServiceEntityRepository
 
     public function getPlanetScience($uuid, $slug, ManagerRegistry $mr): array
     {
-        $sr = new ScienceRepository($mr);
+        $sr = new SciencesRepository($mr);
         $sr->createQueryBuilder('b');
         $qb = $this->createQueryBuilder('p')
             ->where('p.user_uuid = :val')

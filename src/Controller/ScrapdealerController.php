@@ -2,40 +2,35 @@
 
 namespace App\Controller;
 
-use App\Service\CheckMessagesService;
+use App\Repository\PlanetRepository;
+use App\Service\BuildingCalculationService;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ScrapdealerController extends AbstractController
+class ScrapdealerController extends CustomAbstractController
 {
 
     use Traits\MessagesTrait;
     use Traits\PlanetsTrait;
 
-    public function __construct(
-        CheckMessagesService $checkMessagesService,
-        Security             $security,
-        ManagerRegistry      $managerRegistry,
-    )
-    {
-        parent::__construct($checkMessagesService, $security, $managerRegistry);
-    }
-
     #[Route('/scrapdealer/{slug?}', name: 'scrapdealer')]
     public function index(
-        RequestStack    $requestStack,
-        ManagerRegistry $managerRegistry,
-        Security        $security,
-                        $slug = NULL,
+        RequestStack               $requestStack,
+        ManagerRegistry            $managerRegistry,
+        PlanetRepository           $p,
+        BuildingCalculationService $bcs,
+        Security                   $security,
+                                   $slug = NULL,
     ): Response
     {
-        $user_uuid = $security->getUser()->getUuid();
+
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $res = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
 
         return $this->render(
             'scrapdealer/index.html.twig', [
@@ -45,6 +40,7 @@ class ScrapdealerController extends AbstractController
             'user'           => $this->getUser(),
             'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
+            'production'     => $prodActual,
         ],
         );
     }

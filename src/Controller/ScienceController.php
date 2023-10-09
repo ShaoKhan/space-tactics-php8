@@ -3,16 +3,15 @@
 namespace App\Controller;
 
 use App\Repository\PlanetRepository;
-use App\Repository\ScienceRepository;
-use App\Service\CheckMessagesService;
+use App\Repository\SciencesRepository;
+use App\Service\BuildingCalculationService;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ScienceController extends AbstractController
+class ScienceController extends CustomAbstractController
 {
 
     use Traits\MessagesTrait;
@@ -20,24 +19,22 @@ class ScienceController extends AbstractController
 
     #[Route('/science/{slug?}', name: 'science')]
     public function index(
-        ManagerRegistry   $managerRegistry,
-        ScienceRepository $sr,
-        Security          $security,
-        Request $request,
-                          $slug = NULL,
+        ManagerRegistry            $managerRegistry,
+        PlanetRepository           $p,
+        BuildingCalculationService $bcs,
+        SciencesRepository          $sr,
+        Security                   $security,
+        Request                    $request,
+                                   $slug = NULL,
     ): Response
     {
 
-        $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
-        $science = $sr->findScienceByUserUuid($user_uuid, $managerRegistry);
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $res = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
 
-        if($slug === NULL) {
-            $selectedPlanet = $planets[1];
-            $slug = $selectedPlanet["slug"];
-        }
-
+        $science = $sr->findScienceByUserUuid($this->user_uuid, $managerRegistry);
 
         return $this->render(
             'science/index.html.twig', [
@@ -48,6 +45,7 @@ class ScienceController extends AbstractController
             'messages'       => $this->getMessages($security, $managerRegistry),
             'science'        => $science ?? NULL,
             'slug'           => $slug,
+            'production'     => $prodActual,
         ],
         );
     }

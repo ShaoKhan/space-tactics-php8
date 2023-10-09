@@ -6,7 +6,7 @@ use App\Repository\MessagesRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class CheckMessagesService
+class CheckMessagesService extends \Symfony\Bundle\SecurityBundle\Security
 {
     public function checkMessages(
         Security $security,

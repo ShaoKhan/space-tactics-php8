@@ -5,29 +5,20 @@ namespace App\Controller;
 use App\Entity\Messages;
 use App\Form\MessagesType;
 use App\Repository\MessagesRepository;
-use App\Service\CheckMessagesService;
+use App\Repository\PlanetRepository;
+use App\Service\BuildingCalculationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MessagesController extends AbstractController
+class MessagesController extends CustomAbstractController
 {
 
     use Traits\MessagesTrait;
     use Traits\PlanetsTrait;
-
-    public function __construct(
-        CheckMessagesService $checkMessagesService,
-        Security             $security,
-        ManagerRegistry      $managerRegistry,
-    )
-    {
-        parent::__construct($checkMessagesService, $security, $managerRegistry);
-    }
 
 
     #[Route('/messages/{slug?}', name: 'messages')]
@@ -35,6 +26,8 @@ class MessagesController extends AbstractController
         Request                $request,
         Security               $security,
         ManagerRegistry        $managerRegistry,
+        PlanetRepository           $p,
+        BuildingCalculationService $bcs,
         MessagesRepository     $messagesRepository,
         EntityManagerInterface $em,
                                $slug = NULL,
@@ -44,8 +37,11 @@ class MessagesController extends AbstractController
         $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
-        $form    = $this->createForm(MessagesType::class, new Messages());
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $res = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
+
+        $form = $this->createForm(MessagesType::class, new Messages());
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
@@ -80,6 +76,7 @@ class MessagesController extends AbstractController
             'messages'       => $this->getMessages($security, $managerRegistry),
             'form'           => $form->createView(),
             'slug'           => $slug,
+            'production'     => $prodActual,
         ],
         );
     }
@@ -89,7 +86,7 @@ class MessagesController extends AbstractController
         $slug,
         MessagesRepository $messagesRepository,
         EntityManagerInterface $em,
-    ):Response
+    ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
         $message = $messagesRepository->findOneBy(['slug' => $slug]);

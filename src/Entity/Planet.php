@@ -265,6 +265,9 @@ class Planet
     #[ORM\OneToMany(mappedBy: 'planet_id', targetEntity: PlanetBuilding::class)]
     private Collection $planetBuildings;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $last_update = null;
+
     public function __construct()
     {
         $this->planetBuildings = new ArrayCollection();
@@ -1162,6 +1165,18 @@ class Planet
                 $planetBuilding->setPlanetId(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLastUpdate(): ?\DateTimeInterface
+    {
+        return $this->last_update;
+    }
+
+    public function setLastUpdate(?\DateTimeInterface $last_update): static
+    {
+        $this->last_update = $last_update;
 
         return $this;
     }

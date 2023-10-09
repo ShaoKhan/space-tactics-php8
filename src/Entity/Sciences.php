@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\ScienceRepository;
+use App\Repository\SciencesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ScienceRepository::class)]
-class Science
+#[ORM\Entity(repositoryClass: SciencesRepository::class)]
+class Sciences
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -15,6 +15,12 @@ class Science
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
+
+    #[ORM\Column]
+    private ?int $science_class = null;
+
+    #[ORM\Column]
+    private ?int $one_per_planet = null;
 
     #[ORM\Column]
     private ?int $factor = null;
@@ -34,8 +40,7 @@ class Science
     #[ORM\Column]
     private ?int $cost_dark_matter = null;
 
-    #[ORM\Column]
-    private ?int $cost_energy = null;
+    public function __construct() {}
 
     public function getId(): ?int
     {
@@ -47,9 +52,33 @@ class Science
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getScienceClass(): ?int
+    {
+        return $this->science_class;
+    }
+
+    public function setScienceClass(int $science_class): static
+    {
+        $this->science_class = $science_class;
+
+        return $this;
+    }
+
+    public function getOnePerPlanet(): ?int
+    {
+        return $this->one_per_planet;
+    }
+
+    public function setOnePerPlanet(int $one_per_planet): static
+    {
+        $this->one_per_planet = $one_per_planet;
 
         return $this;
     }
@@ -59,7 +88,7 @@ class Science
         return $this->factor;
     }
 
-    public function setFactor(int $factor): self
+    public function setFactor(int $factor): static
     {
         $this->factor = $factor;
 
@@ -71,7 +100,7 @@ class Science
         return $this->level_max;
     }
 
-    public function setLevelMax(int $level_max): self
+    public function setLevelMax(int $level_max): static
     {
         $this->level_max = $level_max;
 
@@ -83,7 +112,7 @@ class Science
         return $this->cost_metal;
     }
 
-    public function setCostMetal(int $cost_metal): self
+    public function setCostMetal(int $cost_metal): static
     {
         $this->cost_metal = $cost_metal;
 
@@ -95,7 +124,7 @@ class Science
         return $this->cost_crystal;
     }
 
-    public function setCostCrystal(int $cost_crystal): self
+    public function setCostCrystal(int $cost_crystal): static
     {
         $this->cost_crystal = $cost_crystal;
 
@@ -107,7 +136,7 @@ class Science
         return $this->cost_deuterium;
     }
 
-    public function setCostDeuterium(int $cost_deuterium): self
+    public function setCostDeuterium(int $cost_deuterium): static
     {
         $this->cost_deuterium = $cost_deuterium;
 
@@ -119,22 +148,11 @@ class Science
         return $this->cost_dark_matter;
     }
 
-    public function setCostDarkMatter(int $cost_dark_matter): self
+    public function setCostDarkMatter(int $cost_dark_matter): static
     {
         $this->cost_dark_matter = $cost_dark_matter;
 
         return $this;
     }
 
-    public function getCostEnergy(): ?int
-    {
-        return $this->cost_energy;
-    }
-
-    public function setCostEnergy(int $cost_energy): self
-    {
-        $this->cost_energy = $cost_energy;
-
-        return $this;
-    }
 }

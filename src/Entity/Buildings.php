@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BuildingsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: BuildingsRepository::class)]
@@ -49,11 +51,13 @@ class Buildings
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[ORM\ManyToOne(inversedBy: 'building_id')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?PlanetBuilding $planetBuilding = null;
-
     private float $production;
+
+    #[ORM\Column]
+    private ?int $building_class = null;
+
+    #[ORM\Column]
+    private ?bool $onePerPlanet = null;
 
     /**
      * @return float|null
@@ -220,14 +224,26 @@ class Buildings
         return $this;
     }
 
-    public function getPlanetBuilding(): ?PlanetBuilding
+    public function getBuildingClass(): ?int
     {
-        return $this->planetBuilding;
+        return $this->building_class;
     }
 
-    public function setPlanetBuilding(?PlanetBuilding $planetBuilding): self
+    public function setBuildingClass(int $building_class): static
     {
-        $this->planetBuilding = $planetBuilding;
+        $this->building_class = $building_class;
+
+        return $this;
+    }
+
+    public function isOnePerPlanet(): ?bool
+    {
+        return $this->onePerPlanet;
+    }
+
+    public function setOnePerPlanet(bool $onePerPlanet): static
+    {
+        $this->onePerPlanet = $onePerPlanet;
 
         return $this;
     }

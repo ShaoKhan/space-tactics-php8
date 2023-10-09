@@ -4,3 +4,5 @@ controllers:
         namespace: App\Controller
     type: annotation
 
+logout:
+    path: /logout

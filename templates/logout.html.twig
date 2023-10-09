@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    <!-- Main Menu -->
+    {% include 'parts/mainmenu.html.twig' %}
+
+    <!-- Content -->
+    <section id="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-2 col-md-12">
+                    <!-- Sidebar -->
+                </div>
+                <div class="col-lg-10 col-md-12">
+                    <section>
+                        <header>
+                            <h3>Denke daran, bald wieder einzuloggen, sonst verlierst du Resourcen oder gar deine Flotte.</h3>
+                        </header>
+                        <div class="col-lg-7 col-md-12">
+                            {% include('parts/login_form.html.twig') %}
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    {% include 'parts/footer.html.twig' %}
+
+    </div>
+
+{% endblock %}
