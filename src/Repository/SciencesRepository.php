@@ -45,4 +45,19 @@ class SciencesRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+    public function findByPlanetAndPlayer($playerId, $planetId)
+    {
+        return $this->createQueryBuilder('s')
+                    ->join('s.planetScience', 'ps')
+                    ->join('ps.planet_slug', 'p')
+                    ->andWhere('p.user_uuid = :playerId')
+                    ->andWhere('p.id = :planetId')
+                    ->setParameter('playerId', $playerId)
+                    ->setParameter('planetId', $planetId)
+                    ->getQuery()
+                    ->getResult();
+
+    }
 }

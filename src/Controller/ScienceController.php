@@ -22,7 +22,7 @@ class ScienceController extends CustomAbstractController
         ManagerRegistry            $managerRegistry,
         PlanetRepository           $p,
         BuildingCalculationService $bcs,
-        SciencesRepository          $sr,
+        SciencesRepository         $sr,
         Security                   $security,
         Request                    $request,
                                    $slug = NULL,
@@ -31,10 +31,17 @@ class ScienceController extends CustomAbstractController
 
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
-        $res = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+
+        if($slug === NULL) {
+            $slug = $planets[1]->getSlug();
+        }
+        $res        = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
         $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
 
-        $science = $sr->findScienceByUserUuid($this->user_uuid, $managerRegistry);
+        //science
+        #$sc = $sr->findByPlanetAndPlayer($this->user_uuid, $slug);
+        $sc = $sr->findAll();
+
 
         return $this->render(
             'science/index.html.twig', [
@@ -43,9 +50,9 @@ class ScienceController extends CustomAbstractController
             'planetData'     => $planets[2],
             'user'           => $this->getUser(),
             'messages'       => $this->getMessages($security, $managerRegistry),
-            'science'        => $science ?? NULL,
             'slug'           => $slug,
             'production'     => $prodActual,
+            'science'             => $sc,
         ],
         );
     }
