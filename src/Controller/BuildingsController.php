@@ -15,8 +15,11 @@ declare(strict_types = 1);
 namespace App\Controller;
 
 use App\Entity\Planet;
+use App\Repository\BuildingsRepository;
+use App\Repository\PlanetBuildingRepository;
 use App\Repository\PlanetRepository;
 use App\Service\BuildingCalculationService;
+use App\Service\BuildingDependencyChecker;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -31,37 +34,41 @@ class BuildingsController extends CustomAbstractController
     use Traits\MessagesTrait;
     use Traits\PlanetsTrait;
 
+
     #[Route('/buildings/{slug?}', name: 'buildings')]
     public function index(
-        Request                    $request,
         ManagerRegistry            $managerRegistry,
         PlanetRepository           $p,
+        PlanetBuildingRepository   $pb,
+        BuildingsRepository        $br,
         BuildingCalculationService $bcs,
         Security                   $security,
+        BuildingDependencyChecker  $buildingDependencyChecker,
                                    $slug = NULL,
     ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $planets    = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
-        $res        = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
-        $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
+        $planets        = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $planet         = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $actualPlanetId = $planets[1]->getId();
+        $buildings      = $br->findAll(); //buildings repository
 
-        $built = $p->getPlanetBuildings($this->user_uuid, $planets[1], $managerRegistry);
-        $i     = 0;
-        foreach($built as $building) {
-            $nextLevelProd       = $bcs->calculateNextBuildingLevelProduction($building) * 3600;
-            $nextLevelBuildCost  = $bcs->calculateNextBuildingCosts($building);
-            $nextLevelEnergyCost = $bcs->calculateNextBuildingLevelEnergyCosts($building) * 3600;
+        foreach($buildings as $building) {
+            $planetBuildings = $pb->findBy(['planet_id' => $actualPlanetId, 'building_id' => $building->getId()]);
 
-
-            $built[$i]['production']      = number_format($nextLevelProd, 0, ',', '.');
-            $built[$i]['nextEnergyCosts'] = number_format($nextLevelEnergyCost, 0, ',', '.');
-            $built[$i]['BuildCosts']      = $nextLevelBuildCost;
-            $i++;
+            if(!empty($building)) {
+            #if(!empty($planetBuildings)) {
+                $building->setIsBuildable($buildingDependencyChecker->canConstructBuilding($building->getId(), $this->getUser(), $actualPlanetId));
+                $building->nextLevelProd       = $bcs->calculateNextBuildingLevelProduction($building->getId(), $actualPlanetId, $managerRegistry) * 3600;
+                $building->nextLevelBuildCost  = $bcs->calculateNextBuildingCosts($building->getId(), $actualPlanetId, $managerRegistry);
+                $building->nextLevelEnergyCost = $bcs->calculateNextBuildingLevelEnergyCosts($building->getId(), $actualPlanetId, $managerRegistry) * 3600;
+                if($planetBuildings) {
+                    $building->level = $planetBuildings[0]?->getBuildingLevel();
+                }
+            }
         }
-
-
+        $prodActual = $bcs->calculateActualBuildingProduction($planet->getMetalBuilding(), $planet->getCrystalBuilding(), $planet->getDeuteriumBuilding(), $managerRegistry);
         return $this->render(
             'buildings/index.html.twig', [
             'planets'        => $planets[0],
@@ -70,7 +77,7 @@ class BuildingsController extends CustomAbstractController
             'user'           => $this->getUser(),
             'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
-            'buildings'      => $built ?? NULL,
+            'buildings'      => $buildings,
             'production'     => $prodActual,
         ],
         );

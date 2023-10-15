@@ -15,10 +15,12 @@ class PlanetBuilding
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: FALSE)]
+    #[ORM\ManyToOne(targetEntity: Planet::class)]
+    #[ORM\JoinColumn(name: 'planet_id', referencedColumnName: 'id', nullable: FALSE)]
     private ?Planet $planet_id;
 
-    #[ORM\Column(nullable: FALSE)]
+    #[ORM\ManyToOne(targetEntity: Buildings::class)]
+    #[ORM\JoinColumn(name: 'building_id', referencedColumnName: 'id', nullable: FALSE)]
     private ?Buildings $building_id;
 
     #[ORM\Column]

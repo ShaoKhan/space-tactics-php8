@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Planet;
 use App\Entity\PlanetBuilding;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,7 +28,7 @@ class PlanetBuildingRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($entity);
 
-        if ($flush) {
+        if($flush) {
             $this->getEntityManager()->flush();
         }
     }
@@ -34,33 +37,48 @@ class PlanetBuildingRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->remove($entity);
 
-        if ($flush) {
+        if($flush) {
             $this->getEntityManager()->flush();
         }
     }
 
-//    /**
-//     * @return PlanetBuilding[] Returns an array of PlanetBuilding objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function getPlanetBuildingsByPlanetId(EntityManagerInterface $entityManager, int $planetId)
+    {
+        $query = $entityManager->createQuery(
+            '
+    SELECT pb, b.name AS buildingName
+    FROM App\Entity\PlanetBuilding pb
+    JOIN pb.building_id b
+    WHERE pb.planet_id = :planetId
+',
+        );
 
-//    public function findOneBySomeField($value): ?PlanetBuilding
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $query->setParameter('planetId', $planetId);
+        return $query->getResult();
+    }
+
+    //    /**
+    //     * @return PlanetBuilding[] Returns an array of PlanetBuilding objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('p')
+    //            ->andWhere('p.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('p.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?PlanetBuilding
+    //    {
+    //        return $this->createQueryBuilder('p')
+    //            ->andWhere('p.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

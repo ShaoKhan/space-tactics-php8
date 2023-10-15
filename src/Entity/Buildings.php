@@ -59,6 +59,9 @@ class Buildings
     #[ORM\Column]
     private ?bool $onePerPlanet = null;
 
+    #[ORM\Column]
+    private ?bool $isBuildable = null;
+
     /**
      * @return float|null
      */
@@ -244,6 +247,18 @@ class Buildings
     public function setOnePerPlanet(bool $onePerPlanet): static
     {
         $this->onePerPlanet = $onePerPlanet;
+
+        return $this;
+    }
+
+    public function isIsBuildable(): ?bool
+    {
+        return $this->isBuildable;
+    }
+
+    public function setIsBuildable(bool $isBuildable): static
+    {
+        $this->isBuildable = $isBuildable;
 
         return $this;
     }
