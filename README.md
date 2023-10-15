@@ -5,10 +5,9 @@ Try to work on the base of the 2moons browsergame with the new php version with 
 -- I'll tried to refactor the old code, but i think it takes too much time, so i give symfony a chance :)
 - symfony is new to me, so dont be rude, if something wont fit to you.
 
-- if you've been interested to support this project with code or ui/uxskills, you are very welcome.
+- if you've been interested to support this project with code or ui/ux skills, you are very welcome.
 
 # tech specs
-- developing on mylocal machine
 - php 8.1
 - phpstorm
 - symfony 6.2
