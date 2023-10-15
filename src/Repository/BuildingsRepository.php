@@ -14,6 +14,7 @@
 namespace App\Repository;
 
 use App\Entity\Buildings;
+use App\Entity\Planet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
@@ -77,6 +78,22 @@ class BuildingsRepository extends ServiceEntityRepository
             ->setParameter('buildingId', $buildingId)
             ->getQuery()
             ->getResult();
+    }
+
+    public function getPlanetBuildings($userUuid, $planetSlug)
+    {
+        $res = $this->createQueryBuilder('b')
+            ->select(Planet::class, 'p')
+            ->leftJoin('p.planet', 'p')
+
+            ->andWhere('b.user_uuid = :userId')
+            ->andWhere('b.slug = :planetSlug')
+            ->setParameter('userId', $userUuid)
+            ->setParameter('planetSlug', $planetSlug)
+            ->getQuery()
+            ->getResult();
+
+
     }
 
 //    /**
