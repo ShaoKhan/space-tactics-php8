@@ -20,7 +20,8 @@
                         <a href="{{ path('pillory') }}">Pranger</a>
                         <a href="{{ path('imprint') }}">Impressum</a>
                         {% if app.user is not null %}
-                            <a href="{{ path('logout') }}" class="text-danger">Logout</a>
+
+                            <a href="{{ path('app_logout') }}" class="text-danger">Logout</a>
                         {% endif %}
                     </nav>
 

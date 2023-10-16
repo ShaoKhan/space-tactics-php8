@@ -57,8 +57,7 @@
                                 <h3>In einer Zeitschleife gefangen landest du mitten im Nirgendwo.</h3>
                             {% endif %}
                             {% if app.user is not null %}
-
-                                <a href="{{ path('logout') }}" class="text-danger">Logout</a>
+                                <a href="{{ path('app_logout') }}" class="text-danger">Logout</a>
                             {% endif %}
                         </div>
                     </nav>
