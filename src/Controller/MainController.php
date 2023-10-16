@@ -39,10 +39,6 @@ class MainController extends CustomAbstractController
         }
 
         $res        = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
-
-        //ToDo get last saved datetime and update resources accordingly since last visit and now
-        
-
         $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
 
         return $this->render(

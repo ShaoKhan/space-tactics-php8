@@ -57,6 +57,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $isVerified = false;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $login_on = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $logout_on = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -255,5 +261,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getLoginOn(): ?\DateTimeInterface
+    {
+        return $this->login_on;
+    }
+
+    public function setLoginOn(?\DateTimeInterface $login_on): static
+    {
+        $this->login_on = $login_on;
+
+        return $this;
+    }
+
+    public function getLogoutOn(): ?\DateTimeInterface
+    {
+        return $this->logout_on;
+    }
+
+    public function setLogoutOn(?\DateTimeInterface $logout_on): static
+    {
+        $this->logout_on = $logout_on;
+
+        return $this;
     }
 }
