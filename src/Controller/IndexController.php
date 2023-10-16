@@ -11,17 +11,17 @@ use App\Security\EmailVerifier;
 use App\Service\BuildingCalculationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -38,18 +38,25 @@ class IndexController extends CustomAbstractController
     private Session  $session;
     private Security $security;
     private          $emailVerifier;
+    private          $user_uuid;
 
+    public function __construct()
+    {
+        $this->user_uuid = null;
+    }
 
     #[Route('/{slug?}', name: 'index', defaults: ['slug' => null])]
     public function index(
-        ManagerRegistry               $managerRegistry,
-        PlanetRepository              $planetRepository,
-        BuildingCalculationService    $buildingCalculationService,
-        Security                      $security,
-                                      $slug = null,
-        #[CurrentUser] ?UserInterface $user = null,
+        ManagerRegistry              $managerRegistry,
+        PlanetRepository             $planetRepository,
+        BuildingCalculationService   $buildingCalculationService,
+        Security                     $security,
+        RouterInterface              $router,
+                                     $slug = null,
+        #[CurrentUser] UserInterface $user = null,
     ): Response
     {
+
         if($user !== null) {
             $planets = $this->getPlanetsByPlayer($managerRegistry, $user->getUuid(), $slug);
 
@@ -84,6 +91,7 @@ class IndexController extends CustomAbstractController
                 ],
             );
         }
+
         return $this->render(
             'index.html.twig',
         );
@@ -254,23 +262,4 @@ class IndexController extends CustomAbstractController
         );
     }
 
-    #[Route('index/logout', name: 'logout')]
-    public function logout(
-        AuthorizationCheckerInterface $authorizationChecker,
-        SessionInterface              $session,
-        EntityManagerInterface        $entityManager,
-    ): Response
-    {
-        if($authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
-            /** @var User $user */
-            $user = $this->getUser();
-            $user->setLogoutOn(new \DateTime());
-            $entityManager->persist($user);
-            $entityManager->flush();
-            $session->invalidate();
-            return $this->render('logout.html.twig');
-        }
-
-        return $this->redirectToRoute('index');
-    }
 }

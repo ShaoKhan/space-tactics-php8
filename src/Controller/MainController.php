@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Support;
+use App\Entity\User;
 use App\Form\SupportType;
 use App\Repository\PlanetRepository;
 use App\Repository\SupportRepository;
@@ -11,9 +12,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class MainController extends CustomAbstractController
 {
@@ -53,6 +56,9 @@ class MainController extends CustomAbstractController
         ],
         );
     }
+
+    #[Route('/app_logout', name: 'app_logout')]
+    public function logoutAction() {}
 
     #[Route('/statistics/{slug?}', name: 'statistics')]
     public function statistics(
@@ -182,6 +188,29 @@ class MainController extends CustomAbstractController
             ],
         );
     }
+
+//    #[Route ('/logout', name: 'logout')]
+//    public function tester(
+//        AuthorizationCheckerInterface $authorizationChecker,
+//        EntityManagerInterface        $entityManager,
+//        RequestStack                  $requestStack,
+//    ): Response
+//    {
+//        if($authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
+//            /** @var User $user */
+//            $user = $this->getUser();
+//            $user->setLogoutOn(new \DateTime());
+//            $entityManager->persist($user);
+//            $entityManager->flush();
+//
+//            $requestStack->getSession()->invalidate();
+//        }
+//
+//        return $this->render(
+//            'logout.html.twig', [
+//        ],
+//        );
+//    }
 
 
 }
