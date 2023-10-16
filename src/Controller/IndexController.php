@@ -9,19 +9,23 @@ use App\Repository\PlanetRepository;
 use App\Repository\UniRepository;
 use App\Security\EmailVerifier;
 use App\Service\BuildingCalculationService;
-use Symfony\Component\Uid\Uuid;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
@@ -38,13 +42,11 @@ class IndexController extends CustomAbstractController
 
     #[Route('/{slug?}', name: 'index', defaults: ['slug' => null])]
     public function index(
-        TranslatorInterface           $trans,
         ManagerRegistry               $managerRegistry,
         PlanetRepository              $planetRepository,
         BuildingCalculationService    $buildingCalculationService,
         Security                      $security,
-        Request                       $request,
-        ?string                       $slug = null,
+                                      $slug = null,
         #[CurrentUser] ?UserInterface $user = null,
     ): Response
     {
@@ -82,15 +84,8 @@ class IndexController extends CustomAbstractController
                 ],
             );
         }
-
-        // Render the template for unauthenticated users
-        $msg = $trans->trans('index.welcome');
         return $this->render(
             'index.html.twig',
-            [
-                'msg'  => $msg,
-                'slug' => $slug,
-            ],
         );
     }
 
@@ -259,20 +254,23 @@ class IndexController extends CustomAbstractController
         );
     }
 
-    #[Route('logout/{slug?}', name: 'logout')]
+    #[Route('index/logout', name: 'logout')]
     public function logout(
-        Security         $security,
-        Session          $session,
-        PlanetRepository $planetRepository,
-        Planet           $planet,
-                         $slug = null,
+        AuthorizationCheckerInterface $authorizationChecker,
+        SessionInterface              $session,
+        EntityManagerInterface        $entityManager,
     ): Response
     {
+        if($authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
+            /** @var User $user */
+            $user = $this->getUser();
+            $user->setLogoutOn(new \DateTime());
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $session->invalidate();
+            return $this->render('logout.html.twig');
+        }
 
-
-        #$session = new Session();
-        #$session->invalidate();
-        #$security->logout(false);
-        return $this->render('logout.html.twig');
+        return $this->redirectToRoute('index');
     }
 }
