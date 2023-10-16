@@ -27,8 +27,8 @@ security:
         username_parameter: email
         password_parameter: password
         success_handler: App\EventListener\LoginListener
-      logout:
-        path: /logout
+#      logout:
+#        path: /app_logout
         #target: index
         #invalidate_session: true
         #delete_cookies:

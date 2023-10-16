@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -58,7 +59,29 @@ class MainController extends CustomAbstractController
     }
 
     #[Route('/app_logout', name: 'app_logout')]
-    public function logoutAction() {}
+    public function logoutAction(
+        AuthorizationCheckerInterface $authorizationChecker,
+        SessionInterface              $session,
+        EntityManagerInterface        $entityManager,
+        RequestStack                  $requestStack,
+    ): Response
+    {
+
+        if($authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
+            // Custom logout logic, if needed
+            /** @var User $user */
+            $user = $this->getUser();
+            $user->setLogoutOn(new \DateTime());
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $requestStack->getSession()->invalidate();
+        }
+
+        $session->invalidate();
+
+        return $this->render('logout.html.twig');
+
+    }
 
     #[Route('/statistics/{slug?}', name: 'statistics')]
     public function statistics(
@@ -188,29 +211,6 @@ class MainController extends CustomAbstractController
             ],
         );
     }
-
-//    #[Route ('/logout', name: 'logout')]
-//    public function tester(
-//        AuthorizationCheckerInterface $authorizationChecker,
-//        EntityManagerInterface        $entityManager,
-//        RequestStack                  $requestStack,
-//    ): Response
-//    {
-//        if($authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
-//            /** @var User $user */
-//            $user = $this->getUser();
-//            $user->setLogoutOn(new \DateTime());
-//            $entityManager->persist($user);
-//            $entityManager->flush();
-//
-//            $requestStack->getSession()->invalidate();
-//        }
-//
-//        return $this->render(
-//            'logout.html.twig', [
-//        ],
-//        );
-//    }
 
 
 }

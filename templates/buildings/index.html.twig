@@ -68,11 +68,7 @@
                                                         {% endif %}
                                                     </div>
                                                     <div class="col-6 building-content-specs">
-                                                        <div>{{ 'production'|trans({},'ui') }}
-                                                            : {{ buildingdata.nextLevelProd|number_format(0, ',', '.') }}
-                                                            / {{ 'hour'|trans({},'ui') }}</div>
-                                                        <h4> {{ 'costs'|trans({},'ui') }} {{ 'stage'|trans({},'ui') }}
-                                                            :</h4>
+                                                        <h4> {{ 'costs'|trans({},'ui') }} {{ 'stage'|trans({},'ui') }} {{ nextlevel }}:</h4>
                                                         <div class="energy">{{ 'energy'|trans({},'resources') }}
                                                             : {{ buildingdata.nextLevelEnergyCost|number_format(0, ',', '.') }}</div>
                                                         <div class="metal">{{ 'metal'|trans({},'resources') }}
@@ -81,6 +77,8 @@
                                                             : {{ buildingdata.nextLevelBuildCost.crystal|number_format(0, ',', '.') }}</div>
                                                         <div class="deuterium">{{ 'deuterium'|trans({},'resources') }}
                                                             : {{ buildingdata.nextLevelBuildCost.deuterium|number_format(0, ',', '.') }}</div>
+                                                        <h4>{{ 'production'|trans({},'ui') }} {{ nextlevel }}:</h4>
+                                                        <div>{{ buildingdata.nextLevelProd|number_format(0, ',', '.') }} / {{ 'hour'|trans({},'ui') }}</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 building-button mt-1">

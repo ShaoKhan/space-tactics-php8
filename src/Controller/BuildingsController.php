@@ -58,7 +58,6 @@ class BuildingsController extends CustomAbstractController
             $planetBuildings = $pb->findBy(['planet_id' => $actualPlanetId, 'building_id' => $building->getId()]);
 
             if(!empty($building)) {
-            #if(!empty($planetBuildings)) {
                 $building->setIsBuildable($buildingDependencyChecker->canConstructBuilding($building->getId(), $this->getUser(), $actualPlanetId));
                 $building->nextLevelProd       = $bcs->calculateNextBuildingLevelProduction($building->getId(), $actualPlanetId, $managerRegistry) * 3600;
                 $building->nextLevelBuildCost  = $bcs->calculateNextBuildingCosts($building->getId(), $actualPlanetId, $managerRegistry);

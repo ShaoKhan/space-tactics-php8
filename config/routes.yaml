@@ -3,7 +3,3 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: annotation
-
-app_logout:
-    path: /logout
-    controller: App\Controller\MainController::logoutAction

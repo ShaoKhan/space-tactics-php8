@@ -9,20 +9,16 @@ use App\Repository\PlanetRepository;
 use App\Repository\UniRepository;
 use App\Security\EmailVerifier;
 use App\Service\BuildingCalculationService;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Uid\Uuid;
@@ -45,19 +41,19 @@ class IndexController extends CustomAbstractController
         $this->user_uuid = null;
     }
 
-    #[Route('/{slug?}', name: 'index', defaults: ['slug' => null])]
+    #[Route('index/{slug?}', name: 'index', defaults: ['slug' => null])]
     public function index(
         ManagerRegistry              $managerRegistry,
         PlanetRepository             $planetRepository,
         BuildingCalculationService   $buildingCalculationService,
         Security                     $security,
-        RouterInterface              $router,
                                      $slug = null,
         #[CurrentUser] UserInterface $user = null,
     ): Response
     {
 
         if($user !== null) {
+
             $planets = $this->getPlanetsByPlayer($managerRegistry, $user->getUuid(), $slug);
 
             // Validate the slug using a regex pattern
@@ -189,7 +185,7 @@ class IndexController extends CustomAbstractController
             $planet->setCrystal(7500);
             $planet->setDeuterium(5000);
             $planet->setDarkmatter(500);
-            $planet->setSlug($this->generateUuid());
+            $planet->setSlug(Uuid::v4());
             $planetManager = $doctrine->getManager();
             $planetManager->persist($planet);
             $planetManager->flush();
@@ -221,18 +217,6 @@ class IndexController extends CustomAbstractController
             'form' => $form->createView(),
         ],
         );
-    }
-
-    public function generateUuid()
-    {
-        if(function_exists('com_create_guid') === true)
-            return trim(com_create_guid(), '{}');
-        $data    = PHP_MAJOR_VERSION < 7 ? openssl_random_pseudo_bytes(16) : random_bytes(16);
-        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);    // Set version to 0100
-        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);    // Set bits 6-7 to 10
-
-        return Uuid::v4();
-        #return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
     #[Route('/verify/email', name: 'verify_email')]
