@@ -64,6 +64,7 @@ class MainController extends CustomAbstractController
         SessionInterface              $session,
         EntityManagerInterface        $entityManager,
         RequestStack                  $requestStack,
+        Security                      $security,
     ): Response
     {
 
@@ -75,8 +76,9 @@ class MainController extends CustomAbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             $requestStack->getSession()->invalidate();
-        }
 
+        }
+        $response = $security->logout();
         $session->invalidate();
 
         return $this->render('logout.html.twig');

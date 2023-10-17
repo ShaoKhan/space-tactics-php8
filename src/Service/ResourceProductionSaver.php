@@ -15,10 +15,10 @@ class ResourceProductionSaver
 
     public function saveResourceProduction($data): array
     {
-        // Your resource production save logic here
-        // Access POST data from $data
 
-        // Example response
+
+
+
         return ['message' => 'Resource production saved successfully'];
     }
 }

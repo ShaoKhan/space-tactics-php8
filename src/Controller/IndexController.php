@@ -41,8 +41,8 @@ class IndexController extends CustomAbstractController
         $this->user_uuid = null;
     }
 
-    #[Route('index/{slug?}', name: 'index', defaults: ['slug' => null])]
-    public function index(
+    #[Route('/', name: 'index')]
+    public function indexAction(
         ManagerRegistry              $managerRegistry,
         PlanetRepository             $planetRepository,
         BuildingCalculationService   $buildingCalculationService,
@@ -244,6 +244,12 @@ class IndexController extends CustomAbstractController
                 'data_class' => User::class,
             ],
         );
+    }
+
+    #[Route('/bye', name: 'bye')]
+    public function bye()
+    {
+        return $this->render('logout.html.twig');
     }
 
 }

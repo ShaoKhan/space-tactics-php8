@@ -13,6 +13,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Uid\Uuid;
 
 class MessagesController extends CustomAbstractController
 {
@@ -61,7 +62,7 @@ class MessagesController extends CustomAbstractController
             $messageTo->setWasRead(FALSE);
             $messageTo->setAnswered(FALSE);
             $messageTo->setDeleted(FALSE);
-            $messageTo->setSlug($this->generateUuid());
+            $messageTo->setSlug(Uuid::v4());
 
             $em->persist($messageTo);
             $em->flush();

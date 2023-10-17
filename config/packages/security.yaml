@@ -27,13 +27,10 @@ security:
         username_parameter: email
         password_parameter: password
         success_handler: App\EventListener\LoginListener
-#      logout:
-#        path: /app_logout
-        #target: index
-        #invalidate_session: true
-        #delete_cookies:
-        #  REMEMBERME: { path: null, domain: null }
-        #  PHPSESSID: { path: null, domain: null }
+
+      logout:
+        path: app_logout
+        target: bye
 
   role_hierarchy:
     ROLE_ADMIN: [ ROLE_MODERATOR,ROLE_USER ]
@@ -42,7 +39,7 @@ security:
       #provider: users_in_memory
 
       # activate different ways to authenticate
-      # https://symfony.com/doc/current/security.html#the-firewall
+    # https://symfony.com/doc/current/security.html#the-firewall
 
     # https://symfony.com/doc/current/security/impersonating_user.html
     # switch_user: true
