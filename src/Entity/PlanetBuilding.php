@@ -26,6 +26,12 @@ class PlanetBuilding
     #[ORM\Column]
     private ?int $building_level = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $planet_slug = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $building_slug = null;
+
     public function __construct()
     {
         $this->building_id = new ArrayCollection();
@@ -86,6 +92,30 @@ class PlanetBuilding
     public function setBuildingLevel(int $building_level): self
     {
         $this->building_level = $building_level;
+
+        return $this;
+    }
+
+    public function getPlanetSlug(): ?string
+    {
+        return $this->planet_slug;
+    }
+
+    public function setPlanetSlug(string $planet_slug): static
+    {
+        $this->planet_slug = $planet_slug;
+
+        return $this;
+    }
+
+    public function getBuildingSlug(): ?string
+    {
+        return $this->building_slug;
+    }
+
+    public function setBuildingSlug(string $building_slug): static
+    {
+        $this->building_slug = $building_slug;
 
         return $this;
     }

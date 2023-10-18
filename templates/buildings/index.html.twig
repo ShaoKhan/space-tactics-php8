@@ -4,6 +4,7 @@
     {{ parent() }}
     <link href="{{ asset('css/buildings.css') }}" rel="stylesheet"/>
 {% endblock %}
+
 {% block title %}Space-Tactics Main{% endblock %}
 {% block body %}
 
@@ -43,8 +44,30 @@
                             </div>
                         </div>
                         <div class="container-fluid mt-3">
-                            <div class="buildings">
 
+
+                            {% if buildlist|length > 0 %}
+                                <div id="buildQueue">
+                                    {% for queuedBuilding in buildlist %}
+                                        {% set remainingTime = queuedBuilding.timeLeft - "now"|date("U") %}
+                                        <div class="row">
+                                            <div class="col-1">{{ queuedBuilding.name|trans({}, 'buildings') }}</div>
+                                            <div class="col-11">
+                                                <div class="queueItem">
+                                                    <div class="countdown-progress" id="{{ queuedBuilding.name }}"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+
+                            <div class="alert alert-success" style="display: none"></div>
+                            <div class="alert alert-danger" style="display: none"></div>
+
+                            <div class="buildings">
                                 {% if buildings is not empty %}
                                     {% for name, buildingdata in buildings %}
                                         {% if buildingdata.isBuildable == true %}
@@ -56,6 +79,7 @@
 
                                             <div class="building">
                                                 <div class="building-headline">
+
                                                     <span>{{ buildingdata.name|trans({}, 'buildings') }}</span> |
                                                     <a href="#" title="{{ 'recycle'|trans({},'buildings') }}">x</a>
                                                 </div>
@@ -68,7 +92,8 @@
                                                         {% endif %}
                                                     </div>
                                                     <div class="col-6 building-content-specs">
-                                                        <h4> {{ 'costs'|trans({},'ui') }} {{ 'stage'|trans({},'ui') }} {{ nextlevel }}:</h4>
+                                                        <h4> {{ 'costs'|trans({},'ui') }} {{ 'stage'|trans({},'ui') }} {{ nextlevel }}
+                                                            :</h4>
                                                         <div class="energy">{{ 'energy'|trans({},'resources') }}
                                                             : {{ buildingdata.nextLevelEnergyCost|number_format(0, ',', '.') }}</div>
                                                         <div class="metal">{{ 'metal'|trans({},'resources') }}
@@ -78,23 +103,21 @@
                                                         <div class="deuterium">{{ 'deuterium'|trans({},'resources') }}
                                                             : {{ buildingdata.nextLevelBuildCost.deuterium|number_format(0, ',', '.') }}</div>
                                                         <h4>{{ 'production'|trans({},'ui') }} {{ nextlevel }}:</h4>
-                                                        <div>{{ buildingdata.nextLevelProd|number_format(0, ',', '.') }} / {{ 'hour'|trans({},'ui') }}</div>
+                                                        <div>{{ buildingdata.nextLevelProd|number_format(0, ',', '.') }}
+                                                            / {{ 'hour'|trans({},'ui') }}</div>
                                                     </div>
                                                 </div>
                                                 <div class="col-12 building-button mt-1">
                                                     <button type="button"
-                                                            class="btn btn-light">
+                                                            class="btn btn-light start-construction"
+                                                            data-values="{{ buildingdata.slug }}"
+                                                    >
                                                         {{ 'upgrade_to'|trans({},'buildings') }} {{ nextlevel }}
                                                     </button>
                                                 </div>
                                             </div>
-
                                         {% endif %}
-
-
                                     {% endfor %}
-
-
                                 {% endif %}
                             </div>
                         </div>
@@ -103,5 +126,55 @@
             </div>
         </div>
     </section>
+
+    <script>
+
+        let buildlist = {{ buildlist|json_encode|raw }};
+
+        function formatTime(seconds) {
+            const days = Math.floor(seconds / (60 * 60 * 24));
+            seconds -= days * (60 * 60 * 24);
+            const hours = Math.floor(seconds / (60 * 60));
+            seconds -= hours * (60 * 60);
+            const minutes = Math.floor(seconds / 60);
+            seconds -= minutes * 60;
+
+            // Calculate leading zeros for hours, minutes, and seconds
+            const leadingHours = hours < 10 ? '0' : '';
+            const leadingMinutes = minutes < 10 ? '0' : '';
+            const leadingSeconds = seconds < 10 ? '0' : '';
+
+            let formattedTime = '';
+            if (days > 0) {
+                formattedTime += `${days} Tage `;
+            }
+            formattedTime += `${leadingHours}${hours}:`;
+            formattedTime += `${leadingMinutes}${minutes}:`;
+            formattedTime += `${leadingSeconds}${seconds}`;
+
+            return formattedTime;
+        }
+
+        function updateProgressBar() {
+            const currentTime = Math.floor(Date.now() / 1000);
+
+            buildlist.forEach((queuedBuilding) => {
+                const progressBar = document.getElementById(queuedBuilding.name);
+                if (progressBar) {
+                    const startTime = Math.floor(new Date(queuedBuilding.start).getTime() / 1000);
+                    const endTime = Math.floor(new Date(queuedBuilding.end).getTime() / 1000);
+                    const totalDuration = endTime - startTime;
+                    const progress = Math.min((currentTime - startTime) / totalDuration, 1);
+                    progressBar.style.width = (progress * 100) + '%';
+                    const remainingTime = totalDuration - (currentTime - startTime);
+                    const formattedTime = formatTime(remainingTime);
+                    progressBar.textContent = formattedTime;
+                }
+            });
+        }
+
+        setInterval(updateProgressBar, 1000);
+    </script>
+
     {% include 'parts/footer.html.twig' %}
 {% endblock %}
