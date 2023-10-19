@@ -12397,6 +12397,12 @@ section:last-child,
     padding: 20px 30px;
   }
 }
+#logo img {
+  width: auto;
+  height: 125px;
+  margin: 10px 0;
+}
+
 .hint {
   font-size: 0.5em;
 }
@@ -12615,13 +12621,13 @@ section:last-child,
 #buildQueue .row > * {
   padding: 0;
 }
-#buildQueue .queueItem {
+#buildQueue #queueItem {
   background-color: #d2d2d2;
   border: 1px solid #eaeaea;
   height: 30px;
   width: 100%;
 }
-#buildQueue .queueItem .queueItemName {
+#buildQueue #queueItem .queueItemName {
   padding: 0;
   margin: -2px 8px;
 }

@@ -15,6 +15,9 @@ namespace App\Controller;
 
 use App\Entity\Server;
 use App\Form\ServerType;
+use App\Repository\BuildingsQueueRepository;
+use App\Repository\PlanetBuildingRepository;
+use App\Repository\PlanetRepository;
 use App\Repository\ServerRepository;
 use App\Repository\SupportRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,6 +26,7 @@ use Omines\DataTablesBundle\Column\DateTimeColumn;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -123,6 +127,35 @@ class AdminController extends AbstractController
         $em->flush();
 
         return $this->redirect('/admin_support');
+    }
+
+    #[Route('/cron_construction', name: 'cronjob_construction')]
+    public function buildingQueue(
+        BuildingsQueueRepository $buildingsQueueRepository,
+        PlanetBuildingRepository $planetBuildingRepository,
+        EntityManagerInterface   $em,
+    ): JsonResponse
+    {
+        $date          = new \DateTime();
+        $buildingQueue = $buildingsQueueRepository->findAll();
+
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        foreach($buildingQueue as $key => $building) {
+            if($building->getEndBuild() <= $date) {
+
+                $planet   = $building->getPlanet();
+                $building = $building->getBuilding();
+
+                $planetBuildings = $planetBuildingRepository->findOneBy(['planet_id' => $planet->getId(), 'building_id' => $building->getId()]);
+                $planetBuildings->setBuildingLevel($planetBuildings->getBuildingLevel() + 1);
+                $em->remove($buildingQueue[$key]);
+                $em->persist($planetBuildings);
+                $em->flush();
+            }
+        }
+
+        return new JsonResponse(['status' => 'success']);
+
     }
 
 }

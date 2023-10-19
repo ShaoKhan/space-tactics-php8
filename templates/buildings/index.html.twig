@@ -44,8 +44,6 @@
                             </div>
                         </div>
                         <div class="container-fluid mt-3">
-
-
                             {% if buildlist|length > 0 %}
                                 <div id="buildQueue">
                                     {% for queuedBuilding in buildlist %}
@@ -53,16 +51,15 @@
                                         <div class="row">
                                             <div class="col-1">{{ queuedBuilding.name|trans({}, 'buildings') }}</div>
                                             <div class="col-11">
-                                                <div class="queueItem">
-                                                    <div class="countdown-progress" id="{{ queuedBuilding.name }}"></div>
+                                                <div id="queueItem" class="queueItem_{{ queuedBuilding.buildingId }}">
+                                                    <div class="countdown-progress"
+                                                         id="{{ queuedBuilding.name }}"></div>
                                                 </div>
                                             </div>
                                         </div>
-
                                     {% endfor %}
                                 </div>
                             {% endif %}
-
 
                             <div class="alert alert-success" style="display: none"></div>
                             <div class="alert alert-danger" style="display: none"></div>
@@ -139,7 +136,6 @@
             const minutes = Math.floor(seconds / 60);
             seconds -= minutes * 60;
 
-            // Calculate leading zeros for hours, minutes, and seconds
             const leadingHours = hours < 10 ? '0' : '';
             const leadingMinutes = minutes < 10 ? '0' : '';
             const leadingSeconds = seconds < 10 ? '0' : '';
@@ -158,17 +154,28 @@
         function updateProgressBar() {
             const currentTime = Math.floor(Date.now() / 1000);
 
-            buildlist.forEach((queuedBuilding) => {
+            buildlist.forEach((queuedBuilding, index) => {
                 const progressBar = document.getElementById(queuedBuilding.name);
+
                 if (progressBar) {
                     const startTime = Math.floor(new Date(queuedBuilding.start).getTime() / 1000);
                     const endTime = Math.floor(new Date(queuedBuilding.end).getTime() / 1000);
+                    const actTime = Math.floor(new Date().getTime() / 1000);
                     const totalDuration = endTime - startTime;
                     const progress = Math.min((currentTime - startTime) / totalDuration, 1);
-                    progressBar.style.width = (progress * 100) + '%';
                     const remainingTime = totalDuration - (currentTime - startTime);
-                    const formattedTime = formatTime(remainingTime);
-                    progressBar.textContent = formattedTime;
+
+                    progressBar.style.width = (progress * 100) + '%';
+                    progressBar.textContent = formatTime(remainingTime);
+
+                    if (actTime >= endTime) {
+                        buildlist.splice(index, 1);
+                        (buildlist.length === 0) ? $('#buildQueue').remove() : $(progressBar.closest('.row')).remove();
+
+                        $.ajax({
+                            url: "//cron_construction",
+                        });
+                    }
                 }
             });
         }

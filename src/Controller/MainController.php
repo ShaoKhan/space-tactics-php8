@@ -5,9 +5,12 @@ namespace App\Controller;
 use App\Entity\Support;
 use App\Entity\User;
 use App\Form\SupportType;
+use App\Repository\BuildingsQueueRepository;
 use App\Repository\PlanetRepository;
 use App\Repository\SupportRepository;
 use App\Service\BuildingCalculationService;
+use Doctrine\DBAL\Logging\DebugStack;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -31,8 +34,10 @@ class MainController extends CustomAbstractController
         Security                   $security,
         PlanetRepository           $p,
         BuildingCalculationService $bcs,
+        BuildingsQueueRepository   $bqr,
         Request                    $request,
                                    $slug,
+        EntityManagerInterface     $em,
     ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -44,6 +49,13 @@ class MainController extends CustomAbstractController
 
         $res        = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
         $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
+        $now        = new \DateTime();
+        $nowString  = $now->format('Y-m-d H:i:s');
+
+        //ToDo
+        // 1. get all buildings in queue
+
+
 
         return $this->render(
             'main/index.html.twig', [

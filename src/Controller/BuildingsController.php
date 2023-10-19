@@ -61,7 +61,7 @@ class BuildingsController extends CustomAbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $uni = $uniRepository->findOneBy(['id' => 1]);
+        $uni            = $uniRepository->findOneBy(['id' => 1]);
         $planets        = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
         $planet         = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
         $actualPlanetId = $planets[1]->getId();
@@ -77,14 +77,13 @@ class BuildingsController extends CustomAbstractController
 
             if($timeDifferenceInSeconds >= 0) {
                 $buildlist[] = [
+                    'buildingId' => $buildQueue->getBuilding()->getSlug(),
                     'name'     => $buildQueue->getBuilding()->getName(),
                     'start'    => $buildQueue->getStartBuild()->format('Y-m-d H:i:s'),
                     'end'      => $buildQueue->getEndBuild()->format('Y-m-d H:i:s'),
                     'timeLeft' => $timeDifferenceInSeconds,
                 ];
             }
-
-
         }
 
         foreach($buildings as $building) {
@@ -176,7 +175,7 @@ class BuildingsController extends CustomAbstractController
         UniRepository              $uniRepository,
         EntityManagerInterface     $em,
 
-    ): JsonResponse|null
+    ): Response
     {
 
         //check if resources are available [done]
@@ -197,6 +196,10 @@ class BuildingsController extends CustomAbstractController
         $planet             = $planetRepository->findOneBy(['slug' => $planetId]);
         $uni                = $uniRepository->findOneBy(['id' => 1]);
 
+        $metalOnPlanet     = $planet->getMetal();
+        $crystalOnPlanet   = $planet->getCrystal();
+        $deuteriumOnPlanet = $planet->getDeuterium();
+
         //build once ?
         if($buildingData->isOnePerPlanet() && $actualBuildingData->getBuildingLevel() >= 1) {
             $errorMessages[] = $translator->trans('only_one_per_planet', [], 'buildings');
@@ -205,7 +208,7 @@ class BuildingsController extends CustomAbstractController
 
         //enough resources ?
         $buildCosts = $bcs->calculateNextBuildingCosts($buildingData->getId(), $planet->getId(), $managerRegistry);
-        if(($planet->getMetal() < $buildCosts["metal"]) || ($planet->getCrystal() < $buildCosts["crystal"]) || ($planet->getDeuterium() < $buildCosts["deuterium"])) {
+        if(($metalOnPlanet < $buildCosts["metal"]) || ($crystalOnPlanet < $buildCosts["crystal"]) || ($deuteriumOnPlanet < $buildCosts["deuterium"])) {
             $errorMessages[] = $translator->trans('not_enough_resources', [], 'buildings');
             $status          = false;
         }
@@ -218,7 +221,6 @@ class BuildingsController extends CustomAbstractController
         }
 
         //check if building is already in queue
-
         foreach($queue as $building) {
             if($building->getBuilding()->getId() === $actualBuildingData->getId()) {
                 $errorMessages[] = $translator->trans('already_in_queue', [], 'buildings');
@@ -226,8 +228,16 @@ class BuildingsController extends CustomAbstractController
             }
         }
 
+
         if($status !== false) {
-            //build time (from old Space-Tactics)
+
+            //calculate new resources
+            $newMetal     = $metalOnPlanet - $buildCosts["metal"];
+            $newCrystal   = $crystalOnPlanet - $buildCosts["crystal"];
+            $newDeuterium = $deuteriumOnPlanet - $buildCosts["deuterium"];
+            $planet->setMetal($newMetal)->setCrystal($newCrystal)->setDeuterium($newDeuterium);
+
+            //calculate build time
             $start        = new DateTime();
             $secondsToAdd = (int)(($buildCosts["metal"] + $buildCosts["crystal"] + $buildCosts["deuterium"]) / ($uni->getGameSpeed() * (1 + $planet->getRobotBuilding())) * pow(0.5, $planet->getNaniteBuilding()) * (1 + $uni->getMinBuildTime()) / 60);
             $end          = (clone $start)->add(new DateInterval('PT' . $secondsToAdd . 'S'));
@@ -239,6 +249,7 @@ class BuildingsController extends CustomAbstractController
             $buildingQueue->setEndBuild($end);
             $buildingQueue->setUserSlug($planet->getUserUuid());
             $em->persist($buildingQueue);
+            $em->persist($planet);
             $em->flush();
 
             $successMessages[] = 'Das Gebäude wurde in die Warteschlange eingereiht.';
@@ -249,6 +260,8 @@ class BuildingsController extends CustomAbstractController
             [
                 'successMessages' => $successMessages,
                 'errorMessages'   => $errorMessages,
+                'building'        => $translator->trans($buildingData->getName(),[], 'buildings'),
+                'end'             => $end,
             ],
         );
     }

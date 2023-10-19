@@ -14,24 +14,26 @@ $(document).ready(function () {
             success: function (response) {
                 let successMessages = response.successMessages;
                 let errorMessages = response.errorMessages;
+                let building = response.building;
+
                 function displayMessages(messages, element) {
                     if (messages.length > 0) {
                         let messageElement = $(element);
                         let ul = $('<ul>');
 
                         messageElement.css('display', 'block');
-                        messages.forEach(function (message) {
+                        messages.foreach = (message) => {
                             ul.append($('<li>').text(message));
-                        });
+                        }
                         messageElement.html(ul);
                     }
+                    location.reload();
                 }
 
                 displayMessages(successMessages, '.alert-success');
                 displayMessages(errorMessages, '.alert-danger');
             },
             error: function (xhr, status, error) {
-                // Handle error here
                 console.error(error);
             }
         });
