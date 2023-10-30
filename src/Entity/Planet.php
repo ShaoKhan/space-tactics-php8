@@ -268,9 +268,13 @@ class Planet
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $last_update = null;
 
+    #[ORM\OneToMany(mappedBy: 'planet', targetEntity: BuildingsQueue::class)]
+    private Collection $building;
+
     public function __construct()
     {
         $this->planetBuildings = new ArrayCollection();
+        $this->building = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -1177,6 +1181,36 @@ class Planet
     public function setLastUpdate(?\DateTimeInterface $last_update): static
     {
         $this->last_update = $last_update;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BuildingsQueue>
+     */
+    public function getBuilding(): Collection
+    {
+        return $this->building;
+    }
+
+    public function addBuilding(BuildingsQueue $building): static
+    {
+        if (!$this->building->contains($building)) {
+            $this->building->add($building);
+            $building->setPlanet($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBuilding(BuildingsQueue $building): static
+    {
+        if ($this->building->removeElement($building)) {
+            // set the owning side to null (unless already changed)
+            if ($building->getPlanet() === $this) {
+                $building->setPlanet(null);
+            }
+        }
 
         return $this;
     }

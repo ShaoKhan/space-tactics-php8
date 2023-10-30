@@ -1,0 +1,61 @@
+#buildQueue {
+  background-color: #f5f5f5;
+  border: 1px solid #eaeaea;
+  padding: 8px;
+  margin-bottom: 20px;
+  box-shadow: rgb(38, 57, 77) 0 20px 30px -10px;
+
+  .row{
+    margin: 0;
+    > *{
+      padding: 0;
+    }
+  }
+
+
+  #queueItem {
+    background-color: #d2d2d2;
+    border: 1px solid #eaeaea;
+    height: 30px;
+    width: 100%;
+
+    .queueItemName {
+      padding: 0;
+      margin: -2px 8px;
+    }
+  }
+}
+
+.progress-bar {
+  height: 20px;
+  background-color: green;
+  width: 100%;
+  margin-top: 10px;
+  transition: width 1s linear;
+}
+
+.countdown-bar {
+  height: 20px;
+  background-color: gray;
+  width: 100%;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.countdown-progress {
+  height: 100%;
+  background-color: green;
+  animation: shrink-countdown linear;
+  animation-duration: 1s;
+  padding: 0 10px 0;
+  color: white;
+}
+
+@keyframes shrink-countdown {
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: 0;
+  }
+}

@@ -20,3 +20,8 @@ laserphalanx_building: 'Laserphalanx'
 
 upgrade_to: 'Ausbauen auf Stufe'
 recycle: 'Abreißen'
+
+only_one_per_planet: 'Du kannst dieses Gebäude nur einmal pro Planet bauen.'
+not_enough_resources: 'Du hast nicht genug Ressourcen für den Bau dieses Gebäudes.'
+building_queue: 'Gebäude-Warteschlange voll'
+already_in_queue: 'Das Gebäude wird bereits gebaut.'

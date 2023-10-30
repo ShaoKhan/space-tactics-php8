@@ -2,11 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\Planet;
 use App\Entity\PlanetBuilding;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -42,18 +40,24 @@ class PlanetBuildingRepository extends ServiceEntityRepository
         }
     }
 
-    public function getPlanetBuildingsByPlanetId(EntityManagerInterface $entityManager, int $planetId)
+    public function getPlanetBuildingsByPlanetId(
+        EntityManagerInterface $entityManager,
+        int $planetId, $startFromLevel = 0
+    )
     {
         $query = $entityManager->createQuery(
             '
     SELECT pb, b.name AS buildingName
     FROM App\Entity\PlanetBuilding pb
     JOIN pb.building_id b
-    WHERE pb.planet_id = :planetId
+    WHERE pb.planet_id = :planetId 
+    AND pb.building_level >= :byLevel
 ',
         );
 
         $query->setParameter('planetId', $planetId);
+        $query->setParameter('byLevel', $startFromLevel);
+
         return $query->getResult();
     }
 

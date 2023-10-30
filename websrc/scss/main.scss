@@ -1,3 +1,11 @@
+#logo{
+  img{
+    width: auto;
+    height: 125px;
+    margin: 10px 0;
+  }
+}
+
 .hint {
   font-size: 0.5em;
 }
@@ -23,5 +31,11 @@
     color: #FFF;
     border: 0;
     font-size: 1.5em;
+  }
+}
+
+.alert-success, .alert-danger{
+  ul{
+    margin: 0;
   }
 }

@@ -18,3 +18,5 @@ import './changePlanet.js';
 import './galaxymap.js';
 import './support.js';
 import './messages.js';
+import './startConstruction.js';
+import './queues.js';

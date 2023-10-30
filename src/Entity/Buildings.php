@@ -62,6 +62,17 @@ class Buildings
     #[ORM\Column]
     private ?bool $isBuildable = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $slug = null;
+
+    #[ORM\OneToMany(mappedBy: 'building', targetEntity: BuildingsQueue::class)]
+    private Collection $buildingsQueues;
+
+    public function __construct()
+    {
+        $this->buildingsQueues = new ArrayCollection();
+    }
+
     /**
      * @return float|null
      */
@@ -259,6 +270,48 @@ class Buildings
     public function setIsBuildable(bool $isBuildable): static
     {
         $this->isBuildable = $isBuildable;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BuildingsQueue>
+     */
+    public function getBuildingsQueues(): Collection
+    {
+        return $this->buildingsQueues;
+    }
+
+    public function addBuildingsQueue(BuildingsQueue $buildingsQueue): static
+    {
+        if (!$this->buildingsQueues->contains($buildingsQueue)) {
+            $this->buildingsQueues->add($buildingsQueue);
+            $buildingsQueue->setBuilding($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBuildingsQueue(BuildingsQueue $buildingsQueue): static
+    {
+        if ($this->buildingsQueues->removeElement($buildingsQueue)) {
+            // set the owning side to null (unless already changed)
+            if ($buildingsQueue->getBuilding() === $this) {
+                $buildingsQueue->setBuilding(null);
+            }
+        }
 
         return $this;
     }

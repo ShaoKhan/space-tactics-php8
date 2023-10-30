@@ -1,0 +1,26 @@
+.statistics {
+  .planetdata {
+    .resourceText {
+      display: flex;
+      flex-direction: row;
+      font-size: 0.8em;
+      justify-content: space-between;
+    }
+
+    .buildingData {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      justify-content: space-between;
+      box-shadow: $box-shadow;
+
+      &:nth-child(even) {
+        background-color: #d2d2d2;
+      }
+
+      .building, .buildingLevel {
+        padding: 0 10px;
+      }
+    }
+  }
+}

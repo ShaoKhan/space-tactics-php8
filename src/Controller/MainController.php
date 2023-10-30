@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Planet;
 use App\Entity\Support;
 use App\Entity\User;
 use App\Form\SupportType;
+use App\Repository\BuildingsQueueRepository;
+use App\Repository\PlanetBuildingRepository;
 use App\Repository\PlanetRepository;
 use App\Repository\SupportRepository;
 use App\Service\BuildingCalculationService;
@@ -31,8 +34,10 @@ class MainController extends CustomAbstractController
         Security                   $security,
         PlanetRepository           $p,
         BuildingCalculationService $bcs,
+        BuildingsQueueRepository   $bqr,
         Request                    $request,
                                    $slug,
+        EntityManagerInterface     $em,
     ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -44,6 +49,12 @@ class MainController extends CustomAbstractController
 
         $res        = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
         $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
+        $now        = new \DateTime();
+        $nowString  = $now->format('Y-m-d H:i:s');
+
+        //ToDo
+        // 1. get all buildings in queue
+
 
         return $this->render(
             'main/index.html.twig', [
@@ -87,17 +98,34 @@ class MainController extends CustomAbstractController
 
     #[Route('/statistics/{slug?}', name: 'statistics')]
     public function statistics(
-        Request                $request,
-        ManagerRegistry        $managerRegistry,
-        PlanetRepository       $p,
-        EntityManagerInterface $em,
-        Security               $security,
-                               $slug = NULL,
+        ManagerRegistry            $managerRegistry,
+        Security                   $security,
+        PlanetRepository           $p,
+        PlanetBuildingRepository   $pbr,
+        BuildingCalculationService $bcs,
+        BuildingsQueueRepository   $bqr,
+        Request                    $request,
+                                   $slug,
+        EntityManagerInterface     $em,
     ): Response
     {
-        $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+
+
+        $planets            = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $slug               = $slug ?? $planets[0]->getSlug();
+        $repository         = $managerRegistry->getRepository(Planet::class);
+        $planet             = $repository->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $metalBuilding      = $planet->getMetalBuilding();
+        $crystalBuilding    = $planet->getCrystalBuilding();
+        $deuteriumBuilding  = $planet->getDeuteriumBuilding();
+        $prodActual         = $bcs->calculateActualBuildingProduction($metalBuilding, $crystalBuilding, $deuteriumBuilding, $managerRegistry);
+        $planetForBuildings = $repository->findBy(['user_uuid' => $this->user_uuid]);
+        $buildings          = [];
+
+        foreach($planetForBuildings as $pl) {
+            $buildings[$pl->getSlug()] = $pbr->getPlanetBuildingsByPlanetId($em, $pl->getId());
+        }
 
         return $this->render(
             'main/statistics.html.twig', [
@@ -107,6 +135,8 @@ class MainController extends CustomAbstractController
             'user'           => $this->getUser(),
             'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
+            'production'     => $prodActual,
+            'buildings'      => $buildings,
         ],
         );
     }
