@@ -16,3 +16,14 @@ Try to work on the base of the 2moons browsergame with the new php version with 
 - jquery
 
 feel free to ask.
+***
+screenshots:
+- buildings with queue
+![Gebäude mit Queue](https://user-images.githubusercontent.com/9558272/279050732-e9103a8e-9a39-4c7c-91c6-5f86a1af7578.png "buildings with queue")
+___
+- statistics view
+![Alt text](https://user-images.githubusercontent.com/9558272/279050742-c6faed1e-cfb8-48dd-9fd3-6fb1655bd8af.png "")
+___
+- galaxy view
+![Alt text](https://user-images.githubusercontent.com/9558272/279050745-8035bfbc-89b2-4b79-807c-f3d0b31bc616.png "")
+___
