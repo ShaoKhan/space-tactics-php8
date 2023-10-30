@@ -12537,6 +12537,9 @@ section:last-child,
 .ticket-options {
   margin-right: 0;
   margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 .ticket .message {
   display: none;

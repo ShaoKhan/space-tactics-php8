@@ -25,21 +25,6 @@
                                 <h3>Du benötigst Hilfe, {{ user.username }} ? Schreib uns fix an.</h3>
                                 <span>Schau bitte auch im <a href="#" target="_blank">Forum</a>, vielleicht ist dein Anliegen dort bereits bekannt.</span>
                             </div>
-                            <div class="col-lg-6">
-                                <select name="planet" class="form-control planet-switcher-select">
-                                    {% for planet in planets %}
-
-                                        <option
-                                                value="{{ planet.slug }}"
-                                                style="color: #000;"
-                                                {{ planet.slug == slug ? 'selected' : '' }}
-                                        >
-                                            {{ planet.name }}
-                                            {{ planet.systemX }}:{{ planet.systemY }}:{{ planet.systemZ }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
-                            </div>
                         </div>
 
                         <div class="container-fluid mt-3">
@@ -51,20 +36,21 @@
                                 {% endfor %}
 
                                 <div class="col-12">
+                                    <h3>Deine aktuellen Tickets</h3>
                                     {% for ticket in tickets %}
                                         <div class="ticket" data-ticket="{{ ticket.id }}">
                                             <div class="ticket-headline">
                                                 <div class="ticket-headline-badge ticket-headline-{{ ticket.theme|lower }}"></div>
                                                 <div class="ticket-subject">
-                                                    {{ ticket.subject }} vom ( {{ ticket.datum|date('d.m.Y H:i') }} )
+                                                    "{{ ticket.subject }}" vom {{ ticket.datum|date('d.m.Y H:i') }} Uhr
                                                 </div>
                                                 <div class="ticket-options">
                                                     <form action="{{ path('ticket_close', {ticketId: ticket.id, slug: slug}) }}"
                                                           method="post">
-                                                        <button type="submit" class="btn btn-sm btn-danger">Schließen
-                                                        </button>
+                                                        <button type="submit" class="btn btn-sm btn-danger">Schließen</button>
                                                     </form>
                                                 </div>
+
                                             </div>
                                             <div class="message ticket-body-{{ ticket.id }}">
                                                 <p>{{ ticket.message }}</p>

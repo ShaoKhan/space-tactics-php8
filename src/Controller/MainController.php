@@ -21,6 +21,8 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Uid\Uuid;
 
 class MainController extends CustomAbstractController
 {
@@ -143,21 +145,28 @@ class MainController extends CustomAbstractController
 
     #[Route('/support/{slug?}', name: 'support')]
     public function support(
-        Request                $request,
-        ManagerRegistry        $managerRegistry,
-        PlanetRepository       $p,
-        EntityManagerInterface $em,
-        Security               $security,
-        Session                $session,
-        SupportRepository      $supportRepository,
-                               $slug = NULL,
+        Request                    $request,
+        ManagerRegistry            $managerRegistry,
+        PlanetRepository           $p,
+        EntityManagerInterface     $em,
+        Security                   $security,
+        Session                    $session,
+        SupportRepository          $supportRepository,
+        BuildingCalculationService $bcs,
+                                   $slug = NULL,
     ): Response
     {
-        $user_uuid = $security->getUser()->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
 
-        $tickets = $supportRepository->findBy(['uuid' => $user_uuid, 'closed' => 0]);
+        if($slug === NULL) {
+            $slug = $planets[1]->getSlug();
+        }
+
+        $res        = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
+
+        $tickets = $supportRepository->findBy(['uuid' => $this->user_uuid, 'closed' => 0]);
 
         $form = $this->createForm(SupportType::class, new Support());
         $form->handleRequest($request);
@@ -167,6 +176,7 @@ class MainController extends CustomAbstractController
             $form->getData()->setDatum(new \DateTime());
             $form->getData()->setAnswered(FALSE);
             $form->getData()->setClosed(FALSE);
+            $form->getData()->setSlug(Uuid::v4());
 
             $em->persist($form->getData());
             $em->flush();
@@ -174,16 +184,17 @@ class MainController extends CustomAbstractController
         }
         return $this->render(
             'main/support.html.twig', [
-            'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
             'user'           => $this->getUser(),
             'messages'       => $this->getMessages($security, $managerRegistry),
             'form'           => $form->createView(),
             'tickets'        => $tickets,
             'slug'           => $slug,
+            'production'     => $prodActual,
         ],
         );
     }
+
 
     /*#[Route('/rules/{slug?}', name: 'rules')]
     public function rules(
@@ -235,6 +246,30 @@ class MainController extends CustomAbstractController
         $ticket->setClosed(1);
         $em->persist($ticket);
         $em->flush();
+
+        return $this->redirectToRoute(
+            'support',
+            [
+                'slug' => $slug,
+            ],
+        );
+    }
+
+    #[Route('/support/ticket_answer/{ticketId}/{slug?}', name: 'ticket_answer')]
+    public function answerTicket(
+        int                    $ticketId,
+        SupportRepository      $supportRepository,
+        EntityManagerInterface $em,
+                               $slug = NULL,
+        #[CurrentUser] User    $user,
+    )
+    {
+        $ticket = $supportRepository->find($ticketId);
+        $ticket->setParentMessage($ticket->getSlug());
+        $ticket->setProcessedBy($user->getUsername());
+        #$ticket->setClosed(1);
+        #$em->persist($ticket);
+        #$em->flush();
 
         return $this->redirectToRoute(
             'support',
