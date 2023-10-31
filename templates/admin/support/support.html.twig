@@ -1,16 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/support.css') }}">
-{% endblock %}
+{% block stylesheets %}{% endblock %}
 {% block javascript %}{% endblock %}
-{% block title %}Space-Tactics Main{% endblock %}
+{% block title %}Space-Tactics Admin | Support{% endblock %}
 
 {% block body %}
     <!-- Main Menu -->
     {% include 'admin/parts/mainmenu.html.twig' %}
-
-
     <!-- Content -->
     <section id="content">
         <div class="container-fluid">
@@ -43,7 +39,8 @@
                     <div class="accordion" id="supportAccordion">
                         {% for messageId, messageData in groupedMessages %}
                             <div class="card">
-                                <div class="ticket ticket-{{ messageData.question.theme|lower }} card-header" id="heading{{ messageId }}">
+                                <div class="ticket ticket-{{ messageData.question.theme|lower }} card-header"
+                                     id="heading{{ messageId }}">
                                     <div class="col-3">
                                         <h2 class="mb-0">
                                             <button class="btn btn-link" type="button"
@@ -92,12 +89,20 @@
                                 </div>
 
                                 {% if messageData.answers|length > 0 %}
-                                    <div id="collapse{{ messageId }}" class="collapse" aria-labelledby="heading{{ messageId }}" data-parent="#supportAccordion">
+                                    <div id="collapse{{ messageId }}" class="collapse"
+                                         aria-labelledby="heading{{ messageId }}" data-parent="#supportAccordion">
                                         <div class="card-body">
                                             <div class="list-group">
                                                 {% for answer in messageData.answers %}
-                                                    <div class="col-3">
-                                                        Antwort von {{ answer.username }}: {{ answer.message }}
+                                                    <div class="row">
+                                                        <div class="col-3 border-bottom">
+                                                            Antwort von {{ answer.username }}
+                                                            am {{ answer.datum|date('d.m.Y') }}
+                                                            um {{ answer.datum|date('H:i') }}
+                                                        </div>
+                                                        <div class="col-3 border-bottom">
+                                                            {{ answer.message }}
+                                                        </div>
                                                     </div>
                                                 {% endfor %}
                                             </div>
