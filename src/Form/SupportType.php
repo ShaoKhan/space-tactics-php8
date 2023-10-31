@@ -44,7 +44,7 @@ class SupportType extends AbstractType
                         'bitte wählen' => '',
                         'ich habe einen Bug gefunden' => 'Bug',
                         'ein Problem mit anderem Spieler' => 'Spieler',
-                        'Technische Probleme' => 'Technische Probleme',
+                        'Technische Probleme' => 'Technisch',
                         'Sonstiges' => 'Sonstiges',
                     ],
                     'constraints' => [

@@ -18,7 +18,7 @@
                     {% endif %}
                 </div>
 
-                <div class="col-lg-10 col-md-12">
+                <div class="col-lg-10 col-md-12 ingame_support">
                     <section>
                         <div class="row">
                             <div class="col-lg-6 mt-1">
@@ -47,7 +47,8 @@
                                                 <div class="ticket-options">
                                                     <form action="{{ path('ticket_close', {ticketId: ticket.id, slug: slug}) }}"
                                                           method="post">
-                                                        <button type="submit" class="btn btn-sm btn-danger">Schließen</button>
+                                                        <button type="submit" class="btn btn-sm btn-danger">Schließen
+                                                        </button>
                                                     </form>
                                                 </div>
 
