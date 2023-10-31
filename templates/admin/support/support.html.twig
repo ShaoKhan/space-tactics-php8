@@ -26,7 +26,6 @@
                             <h3>Hallo Admin {{ app.user.username }} </h3>
                         </div>
                     </div>
-
                     <div class="ticket">
                         <div class="col-3">Name</div>
                         <div class="col-3">Datum</div>
@@ -35,130 +34,87 @@
                     </div>
 
                     {% if groupedMessages is iterable %}
-
-                    <div class="accordion" id="supportAccordion">
-                        {% for messageId, messageData in groupedMessages %}
-                            <div class="card">
-                                <div class="ticket ticket-{{ messageData.question.theme|lower }} card-header"
-                                     id="heading{{ messageId }}">
-                                    <div class="col-3">
-                                        <h2 class="mb-0">
-                                            <button class="btn btn-link" type="button"
-                                                    {% if messageData.answers|length > 0 %}data-bs-toggle="collapse"{% endif %}
-                                                    data-bs-target="#collapse{{ messageId }}" aria-expanded="true"
-                                                    aria-controls="collapse{{ messageId }}">
-                                                {{ messageData.question.message }}
-                                                {% if messageData.answers|length > 0 %}
-                                                    <span class="ms-2 badge bg-dark rounded-circle">{{ messageData.answers|length }}</span>
-                                                {% endif %}
-                                            </button>
-                                        </h2>
-                                    </div>
-                                    <div class="col-3">
-                                        {{ messageData.question.datum|date('d.m.Y') }}
-                                        um {{ messageData.question.datum|date('H:i') }}
-                                    </div>
-                                    <div class="col-3">
-                                        {{ messageData.question.subject }}
-                                    </div>
-                                    <div class="col-3">
-                                        <button href="#"
-                                                class="btn btn-info"
-                                                role="link"
-                                                {% if messageData.question.closed != 1 %}
-                                                    data-bs-toggle="modal" data-bs-target="#supportModal"
-                                                    data-ticketID="{{ messageData.question.slug }}"
-                                                {% endif %}
-                                        >
-                                            {% if messageData.question.closed == 1 %}
-                                                Geschlossen
-                                            {% else %}
-                                                <i class="bi bi-reply"></i>
-                                            {% endif %}
-                                        </button>
-                                        <a href="{{ path('admin_support_delete', {'slug': messageData.question.slug}) }}"
-                                           title="Löschen">
-                                            <button
+                        <div class="accordion" id="supportAccordion">
+                            {% for messageId, messageData in groupedMessages %}
+                                <div class="card">
+                                    <div class="ticket ticket-{{ messageData.question.theme|lower }} card-header"
+                                         id="heading{{ messageId }}">
+                                        <div class="col-3">
+                                            <h2 class="mb-0">
+                                                <button class="btn btn-link" type="button"
+                                                        {% if messageData.answers|length > 0 %}data-bs-toggle="collapse"{% endif %}
+                                                        data-bs-target="#collapse{{ messageId }}" aria-expanded="true"
+                                                        aria-controls="collapse{{ messageId }}">
+                                                    {{ messageData.question.message }}
+                                                    {% if messageData.answers|length > 0 %}
+                                                        <span class="ms-2 badge bg-dark rounded-circle">{{ messageData.answers|length }}</span>
+                                                    {% endif %}
+                                                </button>
+                                            </h2>
+                                        </div>
+                                        <div class="col-3">
+                                            {{ messageData.question.datum|date('d.m.Y') }}
+                                            um {{ messageData.question.datum|date('H:i') }}
+                                        </div>
+                                        <div class="col-3">
+                                            {{ messageData.question.subject }}
+                                        </div>
+                                        <div class="col-3">
+                                            <button href="#"
                                                     class="btn btn-info"
                                                     role="link"
+                                                    {% if messageData.question.closed != 1 %}
+                                                        data-bs-toggle="modal" data-bs-target="#supportModal"
+                                                        data-ticketID="{{ messageData.question.slug }}"
+                                                    {% endif %}
                                             >
-                                                <i class="bi bi-trash3-fill"></i>
+                                                {% if messageData.question.closed == 1 %}
+                                                    Geschlossen
+                                                {% else %}
+                                                    <i class="bi bi-reply"></i>
+                                                {% endif %}
                                             </button>
-                                        </a>
-                                    </div>
-                                </div>
-
-                                {% if messageData.answers|length > 0 %}
-                                    <div id="collapse{{ messageId }}" class="collapse"
-                                         aria-labelledby="heading{{ messageId }}" data-parent="#supportAccordion">
-                                        <div class="card-body">
-                                            <div class="list-group">
-                                                {% for answer in messageData.answers %}
-                                                    <div class="row">
-                                                        <div class="col-3 border-bottom">
-                                                            Antwort von {{ answer.username }}
-                                                            am {{ answer.datum|date('d.m.Y') }}
-                                                            um {{ answer.datum|date('H:i') }}
-                                                        </div>
-                                                        <div class="col-3 border-bottom">
-                                                            {{ answer.message }}
-                                                        </div>
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
+                                            <a href="{{ path('admin_support_delete', {'slug': messageData.question.slug}) }}"
+                                               title="Löschen">
+                                                <button
+                                                        class="btn btn-info"
+                                                        role="link"
+                                                >
+                                                    <i class="bi bi-trash3-fill"></i>
+                                                </button>
+                                            </a>
                                         </div>
                                     </div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
+
+                                    {% if messageData.answers|length > 0 %}
+                                        <div id="collapse{{ messageId }}" class="collapse"
+                                             aria-labelledby="heading{{ messageId }}" data-parent="#supportAccordion">
+                                            <div class="card-body">
+                                                <div class="list-group">
+                                                    {% for answer in messageData.answers %}
+                                                        <div class="row border-bottom">
+                                                            <div class="col-3">
+                                                                Antwort von {{ answer.username }}
+                                                                am {{ answer.datum|date('d.m.Y') }}
+                                                                um {{ answer.datum|date('H:i') }}
+                                                            </div>
+                                                            <div class="col-9">
+                                                                {{ answer.message }}
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
-
-                {% endif %}
-
-
-                {# {% if tickets is iterable %}
-
-                        {% for ticket in tickets %}
-                            {% set disabled = (ticket.closed == 1) ? 'disabled="disabled"' : '' %}
-                            {% set closed = (ticket.closed == 1) ? 'Geschlossen' : 'Antworten' %}
-
-                            <div class="ticket ticket-{{ ticket.theme|lower }}">
-                                <div class="col-3">
-                                    <i class="bi bi-arrow-down-square-fill" data-ticket="{{ ticket.slug }}"></i>
-                                    {{ ticket.username }}
-                                </div>
-                                <div class="col-3">
-                                    {{ ticket.datum|date('d.m.Y') }} um {{ ticket.datum|date('H:i') }}
-                                </div>
-                                <div class="col-3">{{ ticket.subject }}</div>
-                                <div class="col-3">
-                                    <button href="#" {{ disabled }}
-                                            class="btn btn-info"
-                                            role="link"
-                                            {% if ticket.closed != 1 %}
-                                                data-bs-toggle="modal" data-bs-target="#supportModal"
-                                                data-ticketID="{{ ticket.slug }}"
-                                            {% endif %}
-                                    >
-                                        {{ closed }}
-                                    </button>
-                                    <a href="{{ path('admin_support_delete', {'slug': ticket.slug}) }}"
-                                       title="Löschen">
-                                        <i class="bi-trash3"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="ticket ticket-{{ ticket.theme|lower }} message ticket-body-{{ ticket.slug }}">
-                                <div class="col-12">{{ ticket.message }}</div>
-                            </div>
-                        {% endfor %}
-                    {% else %}
-                        <h3>No Support Messages</h3>
-                    {% endif %} #}
             </div>
         </div>
-        </div>
+
 
         <div class="modal fade" id="supportModal" tabindex="-1" aria-labelledby="supportModalLabel" aria-hidden="true">
             <div class="modal-dialog">
