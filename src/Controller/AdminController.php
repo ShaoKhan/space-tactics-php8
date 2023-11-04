@@ -14,23 +14,22 @@
 namespace App\Controller;
 
 use App\Entity\Server;
+use App\Entity\Support;
 use App\Form\ServerType;
+use App\Form\SupportAnswerType;
 use App\Repository\BuildingsQueueRepository;
 use App\Repository\PlanetBuildingRepository;
-use App\Repository\PlanetRepository;
 use App\Repository\ServerRepository;
 use App\Repository\SupportRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
-use Omines\DataTablesBundle\Column\DateTimeColumn;
-use Omines\DataTablesBundle\Column\TextColumn;
-use Omines\DataTablesBundle\DataTableFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Uid\Uuid;
 
 class AdminController extends AbstractController
 {
@@ -99,16 +98,63 @@ class AdminController extends AbstractController
 
     #[Route('/admin_support', name: 'admin_support')]
     public function adminSupport(
-        SupportRepository $supportRepository,
+        SupportRepository      $supportRepository,
+        Request                $request,
+        Security               $security,
+        EntityManagerInterface $em,
     ): Response
     {
+        //ToDo: Es werden nur nicht geschlossene Tickets angezeigt.
+        //      Evtl. sollte hier die Möglichkeit einer Suche gegeben sein, die auch bereits geschlossene Tickets findet.
+
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $support = $supportRepository->findBy(['closed' => 0]);
 
+        $groupedMessages = [];
+        foreach($support as $message) {
+            $parentId = $message->getParentMessage();
+            if(!isset($parentId)) {
+                $groupedMessages[$message->getId()] = [
+                    'question' => $message,
+                    'answers'  => [],
+                ];
+            }
+            else {
+                $groupedMessages[$parentId]['answers'][] = $message;
+            }
+        }
+
+        $form = $this->createForm(SupportAnswerType::class);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()) {
+
+            $user      = $security->getUser();
+            $old       = $supportRepository->findOneBy(['slug' => $form->get('ticketId')->getData()]);
+            $newTicket = new Support();
+
+            $newTicket->setUuid($user->getUuid())
+                      ->setDatum(new \DateTime())
+                      ->setSubject('RE: ' . $old->getSubject())
+                      ->setTheme($old->getTheme())
+                      ->setMessage($form->get('message')->getData())
+                      ->setProcessedBy($user->getUsername())
+                      ->setProcessedSince(new \DateTime())
+                      ->setAnswered(1)
+                      ->setClosed(0)
+                      ->setParentMessage($old->getId())
+                      ->setUsername($user->getUsername())
+                      ->setSlug(Uuid::v4())
+            ;
+
+            $em->persist($newTicket);
+            $em->flush();
+        }
 
         return $this->render(
             'admin/support/support.html.twig', [
-            'tickets' => $support,
+            'groupedMessages' => $groupedMessages,
+            'form'            => $form->createView(),
         ],
         );
     }
