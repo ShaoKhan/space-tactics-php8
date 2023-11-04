@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Planet;
 use App\Entity\Support;
 use App\Entity\User;
+use App\Form\SupportAnswerType;
 use App\Form\SupportType;
 use App\Repository\BuildingsQueueRepository;
 use App\Repository\PlanetBuildingRepository;
@@ -168,6 +169,48 @@ class MainController extends CustomAbstractController
 
         $tickets = $supportRepository->findBy(['uuid' => $this->user_uuid, 'closed' => 0]);
 
+        $groupedMessages = [];
+        foreach($tickets as $message) {
+            $parentId = $message->getParentMessage();
+            if(!isset($parentId)) {
+                $groupedMessages[$message->getId()] = [
+                    'question' => $message,
+                    'answers'  => [],
+                ];
+            }
+            else {
+                $groupedMessages[$parentId]['answers'][] = $message;
+            }
+        }
+
+        $answerForm = $this->createForm(SupportAnswerType::class);
+        $answerForm->handleRequest($request);
+
+        if($answerForm->isSubmitted() && $answerForm->isValid()) {
+
+            $user      = $security->getUser();
+            $old       = $supportRepository->findOneBy(['slug' => $answerForm->get('ticketId')->getData()]);
+            $newTicket = new Support();
+
+            $newTicket->setUuid($user->getUuid())
+                      ->setDatum(new \DateTime())
+                      ->setSubject('RE: ' . $old->getSubject())
+                      ->setTheme($old->getTheme())
+                      ->setMessage($answerForm->get('message')->getData())
+                      ->setProcessedBy($user->getUsername())
+                      ->setProcessedSince(new \DateTime())
+                      ->setAnswered(1)
+                      ->setClosed(0)
+                      ->setParentMessage($old->getId())
+                      ->setUsername($user->getUsername())
+                      ->setSlug(Uuid::v4())
+            ;
+
+            $em->persist($newTicket);
+            $em->flush();
+        }
+
+
         $form = $this->createForm(SupportType::class, new Support());
         $form->handleRequest($request);
         if($form->isSubmitted()) {
@@ -188,9 +231,11 @@ class MainController extends CustomAbstractController
             'user'           => $this->getUser(),
             'messages'       => $this->getMessages($security, $managerRegistry),
             'form'           => $form->createView(),
+            'answerForm'     => $answerForm->createView(),
             'tickets'        => $tickets,
             'slug'           => $slug,
             'production'     => $prodActual,
+            'groupedMessages' => $groupedMessages,
         ],
         );
     }
