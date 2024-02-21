@@ -60,13 +60,16 @@ class BuildingsController extends CustomAbstractController
     ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
+        if($slug === null) {
+            throw new \Exception('planet slug is null');
+        }
 
+        $planets        = $this->getPlanetsByPlayer($managerRegistry, $this->user, $slug);
         $uni            = $uniRepository->findOneBy(['id' => 1]);
-        $planets        = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
-        $planet         = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $planet         = $p->findOneBy(['user_uuid' => $this->user->getUuid(), 'slug' => $slug]);
         $actualPlanetId = $planets[1]->getId();
         $buildings      = $br->findAll(); //buildings repository
-        $buildlist      = [];
+        $buildingList   = [];
         $buildingQueue  = $bqr->findBy(['planet' => $planet]);
 
         foreach($buildingQueue as $buildQueue) {
@@ -76,12 +79,12 @@ class BuildingsController extends CustomAbstractController
             $timeDifferenceInSeconds = $endDateTime->getTimestamp() - $startDateTime->getTimestamp();
 
             if($timeDifferenceInSeconds >= 0) {
-                $buildlist[] = [
+                $buildingList[] = [
                     'buildingId' => $buildQueue->getBuilding()->getSlug(),
-                    'name'     => $buildQueue->getBuilding()->getName(),
-                    'start'    => $buildQueue->getStartBuild()->format('Y-m-d H:i:s'),
-                    'end'      => $buildQueue->getEndBuild()->format('Y-m-d H:i:s'),
-                    'timeLeft' => $timeDifferenceInSeconds,
+                    'name'       => $buildQueue->getBuilding()->getName(),
+                    'start'      => $buildQueue->getStartBuild()->format('Y-m-d H:i:s'),
+                    'end'        => $buildQueue->getEndBuild()->format('Y-m-d H:i:s'),
+                    'timeLeft'   => $timeDifferenceInSeconds,
                 ];
             }
         }
@@ -90,7 +93,7 @@ class BuildingsController extends CustomAbstractController
             $planetBuildings = $pb->findBy(['planet_id' => $actualPlanetId, 'building_id' => $building->getId()]);
 
             if(!empty($building)) {
-                $building->setIsBuildable($buildingDependencyChecker->canConstructBuilding($building->getId(), $this->getUser(), $actualPlanetId));
+                $building->setIsBuildable($buildingDependencyChecker->canConstructBuilding($building->getId(), $security->getUser(), $actualPlanetId));
                 $building->nextLevelProd       = $bcs->calculateNextBuildingLevelProduction($building->getId(), $actualPlanetId, $managerRegistry) * 3600;
                 $building->nextLevelBuildCost  = $bcs->calculateNextBuildingCosts($building->getId(), $actualPlanetId, $managerRegistry);
                 $building->nextLevelEnergyCost = $bcs->calculateNextBuildingLevelEnergyCosts($building->getId(), $actualPlanetId, $managerRegistry) * 3600;
@@ -111,7 +114,7 @@ class BuildingsController extends CustomAbstractController
             'slug'           => $slug,
             'buildings'      => $buildings,
             'production'     => $prodActual,
-            'buildlist'      => $buildlist,
+            'buildList'      => $buildingList,
             'maxQueue'       => $uni->getMaxConstructionCount(),
         ],
         );
@@ -125,6 +128,7 @@ class BuildingsController extends CustomAbstractController
      * @param null                   $slug
      *
      * @return JsonResponse
+     * @throws Exception
      */
 
     #[Route('/saveResource/{slug?}', name: 'save-resource')]
@@ -135,27 +139,27 @@ class BuildingsController extends CustomAbstractController
                                $slug = NULL,
     ): JsonResponse
     {
-        if($slug !== NULL) {
-            $data = json_decode($request->getContent(), true);
-
-            $referer = $request->headers->get('referer');
-            $referer = explode('/', $referer);
-            $slug    = end($referer);
-
-            /** @var Planet $planet */
-            $planet = $p->findOneBy(['slug' => $slug]);
-            $planet->setMetal(intval($data['amountMetal']));
-            $planet->setCrystal(intval($data['amountCrystal']));
-            $planet->setDeuterium(intval($data['amountDeuterium']));
-            $planet->setLastUpdate(new \DateTime());
-            $em->persist($planet);
-            $em->flush();
-
-            return new JsonResponse($data);
+        if($slug === null) {
+            throw new Exception('planet slug is null - can\'t save resources.');
         }
-        else {
-            dd('slug is null');
-        }
+
+        $data = json_decode($request->getContent(), true);
+
+        $referer = $request->headers->get('referer');
+        $referer = explode('/', $referer);
+        $slug    = end($referer);
+
+        /** @var Planet $planet */
+        $planet = $p->findOneBy(['slug' => $slug]);
+        $planet->setMetal(intval($data['amountMetal']));
+        $planet->setCrystal(intval($data['amountCrystal']));
+        $planet->setDeuterium(intval($data['amountDeuterium']));
+        $planet->setLastUpdate(new \DateTime());
+        $em->persist($planet);
+        $em->flush();
+
+        return new JsonResponse($data);
+
     }
 
     /**
@@ -184,6 +188,7 @@ class BuildingsController extends CustomAbstractController
         // check if building is already in queue [done]
         //start construction [done]
         //update planet resources
+        //ToDo: create cronjob to remove from building queue and update energy resources
         $successMessages = [];
         $errorMessages   = [];
         $user            = $security->getUser();
@@ -194,7 +199,7 @@ class BuildingsController extends CustomAbstractController
         $actualBuildingData = $planetBuildingRepository->findOneBy(['planet_slug' => $planetId, 'building_slug' => $buildingId]);
         $buildingData       = $buildingsRepository->findOneBy(['slug' => $buildingId]);
         $planet             = $planetRepository->findOneBy(['slug' => $planetId]);
-        $uni                = $uniRepository->findOneBy(['id' => 1]);
+        $uni                = $uniRepository->findOneBy(['id' => $user->getUni()]);
 
         $metalOnPlanet     = $planet->getMetal();
         $crystalOnPlanet   = $planet->getCrystal();
@@ -228,9 +233,7 @@ class BuildingsController extends CustomAbstractController
             }
         }
 
-
         if($status !== false) {
-
             //calculate new resources
             $newMetal     = $metalOnPlanet - $buildCosts["metal"];
             $newCrystal   = $crystalOnPlanet - $buildCosts["crystal"];
@@ -252,7 +255,7 @@ class BuildingsController extends CustomAbstractController
             $em->persist($planet);
             $em->flush();
 
-            $successMessages[] = 'Das Gebäude wurde in die Warteschlange eingereiht.';
+            $successMessages[] = 'Das folgende Gebäude wurde in die Warteschlange eingereiht: ';
 
         }
 
@@ -260,8 +263,8 @@ class BuildingsController extends CustomAbstractController
             [
                 'successMessages' => $successMessages,
                 'errorMessages'   => $errorMessages,
-                'building'        => $translator->trans($buildingData->getName(),[], 'buildings'),
-                'end'             => $end,
+                'building'        => $translator->trans($buildingData->getName(), [], 'buildings'),
+                'end'             => $end ?? null,
             ],
         );
     }

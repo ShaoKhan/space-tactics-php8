@@ -44,13 +44,13 @@ class MainController extends CustomAbstractController
     ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user, $slug);
 
         if($slug === NULL) {
             $slug = $planets[1]->getSlug();
         }
 
-        $res        = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $res        = $p->findOneBy(['user_uuid' => $this->user->getUuid(), 'slug' => $slug]);
         $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
         $now        = new \DateTime();
         $nowString  = $now->format('Y-m-d H:i:s');
@@ -64,7 +64,7 @@ class MainController extends CustomAbstractController
             'planets'        => $planets[0],
             'selectedPlanet' => $planets[1],
             'planetData'     => $planets[2],
-            'user'           => $this->getUser(),
+            'user'           => $this->user,
             'messages'       => $this->getMessages($security, $managerRegistry),
             'slug'           => $slug,
             'production'     => $prodActual,
@@ -85,7 +85,7 @@ class MainController extends CustomAbstractController
         if($authorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
             // Custom logout logic, if needed
             /** @var User $user */
-            $user = $this->getUser();
+            $user = $this->user;
             $user->setLogoutOn(new \DateTime());
             $entityManager->persist($user);
             $entityManager->flush();
@@ -115,15 +115,15 @@ class MainController extends CustomAbstractController
         $this->denyAccessUnlessGranted('ROLE_USER');
 
 
-        $planets            = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $planets            = $this->getPlanetsByPlayer($managerRegistry, $this->user, $slug);
         $slug               = $slug ?? $planets[0]->getSlug();
         $repository         = $managerRegistry->getRepository(Planet::class);
-        $planet             = $repository->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $planet             = $repository->findOneBy(['user_uuid' => $this->user->getUuid(), 'slug' => $slug]);
         $metalBuilding      = $planet->getMetalBuilding();
         $crystalBuilding    = $planet->getCrystalBuilding();
         $deuteriumBuilding  = $planet->getDeuteriumBuilding();
         $prodActual         = $bcs->calculateActualBuildingProduction($metalBuilding, $crystalBuilding, $deuteriumBuilding, $managerRegistry);
-        $planetForBuildings = $repository->findBy(['user_uuid' => $this->user_uuid]);
+        $planetForBuildings = $repository->findBy(['user_uuid' => $this->user->getUuid()]);
         $buildings          = [];
 
         foreach($planetForBuildings as $pl) {
@@ -158,16 +158,16 @@ class MainController extends CustomAbstractController
     ): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user, $slug);
 
         if($slug === NULL) {
             $slug = $planets[1]->getSlug();
         }
 
-        $res        = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $res        = $p->findOneBy(['user_uuid' =>$this->user->getUuid(), 'slug' => $slug]);
         $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
 
-        $tickets = $supportRepository->findBy(['uuid' => $this->user_uuid, 'closed' => 0]);
+        $tickets = $supportRepository->findBy(['uuid' => $this->user->getUuid(), 'closed' => 0]);
 
         $groupedMessages = [];
         foreach($tickets as $message) {
@@ -264,7 +264,7 @@ class MainController extends CustomAbstractController
         Request $request, ManagerRegistry $managerRegistry, PlanetRepository $p, EntityManagerInterface $em, Security $security, $slug = NULL,
     ): Response
     {
-        $user_uuid = $security->getUser()->getUuid();
+        $user_uuid = $this->user->getUuid();
         $this->denyAccessUnlessGranted('ROLE_USER');
         $planets = $this->getPlanetsByPlayer($managerRegistry, $user_uuid, $slug);
 

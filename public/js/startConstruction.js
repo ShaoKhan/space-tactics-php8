@@ -15,22 +15,7 @@ $(document).ready(function () {
                 let successMessages = response.successMessages;
                 let errorMessages = response.errorMessages;
                 let building = response.building;
-
-                function displayMessages(messages, element) {
-                    if (messages.length > 0) {
-                        let messageElement = $(element);
-                        let ul = $('<ul>');
-
-                        messageElement.css('display', 'block');
-                        messages.foreach = (message) => {
-                            ul.append($('<li>').text(message));
-                        }
-                        messageElement.html(ul);
-                    }
-                    location.reload();
-                }
-
-                displayMessages(successMessages, '.alert-success');
+                displayMessages(successMessages, '.alert-success', building);
                 displayMessages(errorMessages, '.alert-danger');
             },
             error: function (xhr, status, error) {
@@ -39,3 +24,20 @@ $(document).ready(function () {
         });
     });
 });
+
+function displayMessages(messages, element, building = false) {
+    if (messages.length > 0) {
+        let messageElement = $(element);
+        let ul = $('<ul>');
+
+        messageElement.css('display', 'block');
+        messages.forEach((message) => {
+            if (building) {
+                message += ' ' + building;
+            }
+            ul.append($('<li>').text(message));
+        });
+        messageElement.append(ul);
+    }
+    location.reload();
+}

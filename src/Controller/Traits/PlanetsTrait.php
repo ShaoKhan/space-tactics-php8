@@ -10,14 +10,21 @@ use Symfony\Component\HttpFoundation\Request;
 
 trait PlanetsTrait
 {
+    /**
+     * @throws \Exception
+     */
     private function getPlanetsByPlayer(
         $managerRegistry,
-        $user_uuid,
+        $user,
         $slug,
     ): array
     {
+        if(!$user || $slug === null){
+            throw new \Exception('User Entity or Planet-Slug is null');
+        }
+
         $planetRepository = $managerRegistry->getRepository(Planet::class);
-        $planets = $planetRepository->findByField($user_uuid);
+        $planets = $planetRepository->findByField($user->getUuid());
 
         $selectedPlanet = null;
         $selectedPlanetTypeData = null;

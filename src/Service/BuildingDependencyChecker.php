@@ -9,6 +9,7 @@ use App\Entity\PlanetBuilding;
 use App\Entity\Sciences;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class BuildingDependencyChecker
 {
@@ -19,7 +20,7 @@ class BuildingDependencyChecker
         $this->entityManager = $entityManager;
     }
 
-    public function canConstructBuilding(int $buildingId, User $user, int $planetId): bool
+    public function canConstructBuilding(int $buildingId, UserInterface $user, int $planetId): bool
     {
         $repository   = $this->entityManager->getRepository(BuildingDependency::class);
         $dependencies = $repository->findBy(['building' => $buildingId]);

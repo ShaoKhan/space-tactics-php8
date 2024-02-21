@@ -44,9 +44,9 @@
                             </div>
                         </div>
                         <div class="container-fluid mt-3">
-                            {% if buildlist|length > 0 %}
+                            {% if buildList|length > 0 %}
                                 <div id="buildQueue">
-                                    {% for queuedBuilding in buildlist %}
+                                    {% for queuedBuilding in buildList %}
                                         {% set remainingTime = queuedBuilding.timeLeft - "now"|date("U") %}
                                         <div class="row">
                                             <div class="col-1">{{ queuedBuilding.name|trans({}, 'buildings') }}</div>
@@ -126,7 +126,7 @@
 
     <script>
 
-        let buildlist = {{ buildlist|json_encode|raw }};
+        let buildlist = {{ buildList|json_encode|raw }};
 
         function formatTime(seconds) {
             const days = Math.floor(seconds / (60 * 60 * 24));

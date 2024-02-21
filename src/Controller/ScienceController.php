@@ -30,12 +30,12 @@ class ScienceController extends CustomAbstractController
     {
 
         $this->denyAccessUnlessGranted('ROLE_USER');
-        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user_uuid, $slug);
+        $planets = $this->getPlanetsByPlayer($managerRegistry, $this->user, $slug);
 
         if($slug === NULL) {
             $slug = $planets[1]->getSlug();
         }
-        $res        = $p->findOneBy(['user_uuid' => $this->user_uuid, 'slug' => $slug]);
+        $res        = $p->findOneBy(['user_uuid' => $this->user->getUuid(), 'slug' => $slug]);
         $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
 
         //science
