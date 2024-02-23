@@ -164,7 +164,7 @@ class MainController extends CustomAbstractController
             $slug = $planets[1]->getSlug();
         }
 
-        $res        = $p->findOneBy(['user_uuid' =>$this->user->getUuid(), 'slug' => $slug]);
+        $res        = $p->findOneBy(['user_uuid' => $this->user->getUuid(), 'slug' => $slug]);
         $prodActual = $bcs->calculateActualBuildingProduction($res->getMetalBuilding(), $res->getCrystalBuilding(), $res->getDeuteriumBuilding(), $managerRegistry);
 
         $tickets = $supportRepository->findBy(['uuid' => $this->user->getUuid(), 'closed' => 0]);
@@ -227,14 +227,14 @@ class MainController extends CustomAbstractController
         }
         return $this->render(
             'main/support.html.twig', [
-            'selectedPlanet' => $planets[1],
-            'user'           => $this->getUser(),
-            'messages'       => $this->getMessages($security, $managerRegistry),
-            'form'           => $form->createView(),
-            'answerForm'     => $answerForm->createView(),
-            'tickets'        => $tickets,
-            'slug'           => $slug,
-            'production'     => $prodActual,
+            'selectedPlanet'  => $planets[1],
+            'user'            => $this->getUser(),
+            'messages'        => $this->getMessages($security, $managerRegistry),
+            'form'            => $form->createView(),
+            'answerForm'      => $answerForm->createView(),
+            'tickets'         => $tickets,
+            'slug'            => $slug,
+            'production'      => $prodActual,
             'groupedMessages' => $groupedMessages,
         ],
         );

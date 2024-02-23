@@ -32,9 +32,13 @@ $(document).ready(function () {
     // ################################################
     // save resources on every click on a-tag or button
     // ################################################
-    $("a, button").each(function () {
+    $("a").each(function () {
+
         $(this).on("click", function (e) {
+
             let slug = window.location.pathname.split('/')[2];
+
+
             let data = {
                 amountMetal: $('.res_metal').attr('data-res-count'),
                 amountCrystal: $('.res_crystal').attr('data-res-count'),
@@ -53,6 +57,7 @@ $(document).ready(function () {
                     //
                 }
             });
+
         });
     });
 
