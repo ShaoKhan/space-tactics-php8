@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -232,35 +231,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @see \Serializable::serialize() */
     public function serialize()
     {
-        return serialize(array(
-            $this->id,
-            $this->username,
-            $this->password,
-            // see section on salt below
-            // $this->salt,
-        ));
+        return serialize(
+            [
+                $this->id,
+                $this->username,
+                $this->password,
+                // see section on salt below
+                // $this->salt,
+            ],
+        );
     }
 
     /** @see \Serializable::unserialize() */
     public function unserialize($serialized)
     {
-        list (
+        [
             $this->id,
             $this->username,
             $this->password,
             // see section on salt below
             // $this->salt
-            ) = unserialize($serialized, array('allowed_classes' => false));
+        ] = unserialize($serialized, ['allowed_classes' => false]);
     }
 
     public function getUserIdentifier(): string
     {
         return $this->email;
-    }
-
-    public function eraseCredentials()
-    {
-        // TODO: Implement eraseCredentials() method.
     }
 
     public function getLoginOn(): ?\DateTimeInterface
@@ -285,5 +281,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->logout_on = $logout_on;
 
         return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // TODO: Implement eraseCredentials() method.
     }
 }

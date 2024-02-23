@@ -28,6 +28,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use JetBrains\PhpStorm\NoReturn;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -131,7 +132,7 @@ class BuildingsController extends CustomAbstractController
      * @throws Exception
      */
 
-    #[Route('/saveResource/{slug?}', name: 'save-resource')]
+    #[NoReturn] #[Route('/saveResource/{slug?}', name: 'save-resource')]
     public function saveResource(
         Request                $request,
         PlanetRepository       $p,
@@ -139,9 +140,7 @@ class BuildingsController extends CustomAbstractController
                                $slug = NULL,
     ): JsonResponse
     {
-        if($slug === null) {
-            throw new Exception('planet slug is null - can\'t save resources.');
-        }
+
 
         $data = json_decode($request->getContent(), true);
 
